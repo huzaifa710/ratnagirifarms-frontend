@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, ShoppingBasket } from "lucide-react";
-import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 
 interface CartItem {
@@ -18,20 +17,14 @@ export default function Cart() {
   const { items: cartItems, updateQuantity } = useCart();
 
   const handleQuantityChange = (id: number, change: number) => {
-    const newQuantity = Math.max(0, cartItems.find(item => item.id === id)?.quantity + change || 0);
-    updateQuantity(id, newQuantity);
-      items.map(item => {
-        if (item.id === id) {
-          const newQuantity = Math.max(0, item.quantity + change);
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      }).filter(item => item.quantity > 0)
-    );
+    const item = cartItems.find(item => item.id === id);
+    if (item) {
+      const newQuantity = Math.max(0, item.quantity + change);
+      updateQuantity(id, newQuantity);
+    }
   };
 
   const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
 
   if (cartItems.length === 0) {
     return (
@@ -55,73 +48,64 @@ export default function Cart() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-8">Shopping Cart</h1>
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-4">
-          {cartItems.map((item) => (
-            <Card key={item.id}>
-              <CardContent className="p-4">
-                <div className="flex gap-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-24 h-24 object-cover rounded"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-[#F4A034] font-bold">₹{item.price}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.id, -1)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <Input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => {
-                          const newQuantity = parseInt(e.target.value, 10) - item.quantity;
+      <div className="grid grid-cols-1 gap-6">
+        {cartItems.map((item) => (
+          <Card key={item.id}>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div className="flex-1">
+                  <h3 className="font-semibold">{item.name}</h3>
+                  <p className="text-gray-600">₹{item.price}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleQuantityChange(item.id, -1)}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <Input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => {
+                        const newQuantity = parseInt(e.target.value, 10);
+                        if (!isNaN(newQuantity)) {
                           updateQuantity(item.id, newQuantity);
-                        }}
-                        className="w-16 text-center"
-                      />
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.id, 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
+                        }
+                      }}
+                      className="w-16 text-center"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleQuantityChange(item.id, 1)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div>
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-              <div className="space-y-2">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex justify-between">
-                    <span>{item.name} × {item.quantity}</span>
-                    <span>₹{item.price * item.quantity}</span>
-                  </div>
-                ))}
-                <div className="border-t pt-2 mt-4">
-                  <div className="flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>₹{totalAmount}</span>
-                  </div>
+                <div className="text-right">
+                  <p className="font-semibold">₹{item.price * item.quantity}</p>
                 </div>
               </div>
-              <Button className="w-full mt-4">Proceed to Checkout</Button>
             </CardContent>
           </Card>
-        </div>
+        ))}
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">Total</span>
+              <span className="font-semibold text-xl">₹{totalAmount}</span>
+            </div>
+            <Button className="w-full mt-4">Proceed to Checkout</Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
