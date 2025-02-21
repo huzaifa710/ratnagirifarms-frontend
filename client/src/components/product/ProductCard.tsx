@@ -7,9 +7,12 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  images: string[];
+  image: string;
+  sizes: {
+    pieces: number;
+    available: boolean;
+  }[];
   inStock: boolean;
-  tags: string[];
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -19,27 +22,39 @@ export default function ProductCard({ product }: { product: Product }) {
         <Link href={`/product/${product.id}`}>
           <a className="block relative aspect-square overflow-hidden">
             <img
-              src={product.images[0]}
+              src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            {product.tags.map((tag) => (
-              <Badge key={tag} className="absolute top-2 left-2">
-                {tag}
-              </Badge>
-            ))}
           </a>
         </Link>
-        
+
         <div className="p-4">
           <Link href={`/product/${product.id}`}>
-            <a className="text-lg font-semibold hover:text-primary">{product.name}</a>
+            <a className="text-lg font-semibold hover:text-primary line-clamp-2">{product.name}</a>
           </Link>
-          
-          <div className="mt-2 flex items-center justify-between">
-            <span className="text-xl font-bold">₹{product.price}</span>
-            <Button disabled={!product.inStock}>
-              {product.inStock ? "Add to Cart" : "Out of Stock"}
+
+          <div className="mt-2 space-y-3">
+            <div className="text-xl font-bold text-primary">₹{product.price}</div>
+
+            <div className="flex gap-2">
+              {product.sizes.map((size) => (
+                <Badge
+                  key={size.pieces}
+                  variant={size.available ? "default" : "secondary"}
+                  className="px-3 py-1"
+                >
+                  {size.pieces}
+                </Badge>
+              ))}
+            </div>
+
+            <Button
+              className="w-full"
+              variant={product.inStock ? "default" : "secondary"}
+              disabled={!product.inStock}
+            >
+              {product.inStock ? "Add to Cart" : "Sold Out"}
             </Button>
           </div>
         </div>
