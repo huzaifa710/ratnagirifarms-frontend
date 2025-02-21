@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState } from 'react';
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
 
 interface Product {
   id: number;
