@@ -8,8 +8,11 @@ export const products = [
       "https://www.farm2you.in/uploads/products/2024/03/13/65f194ef7691d1-41469246.png",
       "https://www.farm2you.in/uploads/products/2024/03/13/65f194f07b0b50-42745497.png"
     ],
-    sizes: [12, 24],
-    inStock: false,
+    sizes: [
+      { pieces: 12, available: true },
+      { pieces: 24, available: true }
+    ],
+    inStock: true,
     category: "Ratnagiri Alphonso",
     tags: ["Carbide Free"]
   },
@@ -22,8 +25,11 @@ export const products = [
       "https://www.farm2you.in/uploads/products/2024/03/13/65f191803374d0-83101497.png",
       "https://www.farm2you.in/uploads/products/2024/03/13/65f19181376cc9-71980808.png"
     ],
-    sizes: [12, 24],
-    inStock: false,
+    sizes: [
+      { pieces: 12, available: true },
+      { pieces: 24, available: true }
+    ],
+    inStock: true,
     category: "Ratnagiri Alphonso",
     tags: ["Carbide Free"]
   }
