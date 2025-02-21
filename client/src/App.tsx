@@ -13,6 +13,8 @@ import Checkout from "@/pages/Checkout";
 import NotFound from "@/pages/not-found";
 import Category from "@/pages/Category";
 import BulkOrder from "@/pages/BulkOrder";
+import Login from "@/pages/Login"; // Added Login page import
+import Register from "@/pages/Register"; // Added Register page import
 import { CartProvider } from "@/contexts/CartContext"; // Added CartProvider import
 
 function Router() {
@@ -52,6 +54,16 @@ function Router() {
             <Route path="/bulk-order">
               <PageTransition key="bulk-order">
                 <BulkOrder />
+              </PageTransition>
+            </Route>
+            <Route path="/login"> {/* Added Login route */}
+              <PageTransition key="login">
+                <Login />
+              </PageTransition>
+            </Route>
+            <Route path="/register"> {/* Added Register route */}
+              <PageTransition key="register">
+                <Register />
               </PageTransition>
             </Route>
             <Route>
