@@ -33,13 +33,7 @@ type CheckoutForm = z.infer<typeof checkoutSchema>;
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart();
-  const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    if (items.length === 0) {
-      setLocation("/");
-    }
-  }, [items.length, setLocation]);
+  const [, navigate] = useLocation();
 
   const form = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
@@ -55,10 +49,21 @@ export default function Checkout() {
     },
   });
 
-  function onSubmit(data: CheckoutForm) {
-    console.log({ ...data, items, total });
-    clearCart();
-    setLocation("/thank-you");
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate("/");
+    }
+  }, [items.length, navigate]);
+
+  async function onSubmit(data: CheckoutForm) {
+    try {
+      // Here you would typically send this data to your backend
+      console.log({ ...data, items, total });
+      clearCart();
+      navigate("/thank-you");
+    } catch (error) {
+      console.error("Checkout failed:", error);
+    }
   }
 
   if (items.length === 0) {
