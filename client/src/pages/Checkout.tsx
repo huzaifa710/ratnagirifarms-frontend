@@ -1,3 +1,4 @@
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,8 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/stores/cart";
+import { useLocation } from "wouter";
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -29,6 +31,9 @@ const checkoutSchema = z.object({
 type CheckoutForm = z.infer<typeof checkoutSchema>;
 
 export default function Checkout() {
+  const { items, total, clearCart } = useCart();
+  const [, setLocation] = useLocation();
+
   const form = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -44,14 +49,21 @@ export default function Checkout() {
   });
 
   function onSubmit(data: CheckoutForm) {
-    console.log(data);
-    // Handle order submission
+    // Here you would typically send this data to your backend
+    console.log({ ...data, items, total });
+    clearCart();
+    setLocation("/thank-you");
+  }
+
+  if (items.length === 0) {
+    setLocation("/");
+    return null;
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-8">Checkout</h1>
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <Card>
@@ -123,7 +135,7 @@ export default function Checkout() {
                       <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -172,7 +184,7 @@ export default function Checkout() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg">
+                  <Button type="submit" className="w-full">
                     Place Order
                   </Button>
                 </form>
@@ -185,39 +197,22 @@ export default function Checkout() {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
-
+              
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-4">
-                    <img
-                      src="https://www.farm2you.in/uploads/products/2024/03/13/65f194ef7691d1-41469246.png"
-                      alt="Product"
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div>
-                      <h4 className="font-medium">Ratnagiri Alphonso Mango</h4>
-                      <p className="text-sm text-gray-500">12 pieces</p>
-                    </div>
+                {items.map((item) => (
+                  <div key={item.id} className="flex justify-between">
+                    <span>
+                      {item.name} x {item.quantity}
+                    </span>
+                    <span>₹{item.price * item.quantity}</span>
                   </div>
-                  <span className="font-medium">₹899</span>
-                </div>
-
+                ))}
+                
                 <Separator />
-
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Subtotal</span>
-                    <span className="font-medium">₹899</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Shipping</span>
-                    <span className="font-medium">Free</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-semibold">
-                    <span>Total</span>
-                    <span>₹899</span>
-                  </div>
+                
+                <div className="flex justify-between font-semibold">
+                  <span>Total</span>
+                  <span>₹{total}</span>
                 </div>
               </div>
             </CardContent>

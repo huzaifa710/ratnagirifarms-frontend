@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useState } from 'react';
 
 interface Product {
   id: number;
@@ -15,7 +16,30 @@ interface Product {
   inStock: boolean;
 }
 
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
 export default function ProductCard({ product }: { product: Product }) {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  const addToCart = () => {
+    if (product.inStock) {
+      const existingItem = cart.find((item) => item.id === product.id);
+      if (existingItem) {
+        setCart(cart.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        ));
+      } else {
+        setCart([...cart, { ...product, image: product.images[0], quantity: 1 }]);
+      }
+    }
+  };
+
   return (
     <Card className="overflow-hidden group">
       <CardContent className="p-0">
@@ -65,6 +89,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
           <Button
             className="w-full bg-[#F4A034] hover:bg-[#F4A034]/90 text-white"
+            onClick={addToCart}
             disabled={!product.inStock}
           >
             {product.inStock ? "Add to Cart" : "Sold Out"}
