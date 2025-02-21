@@ -36,6 +36,9 @@ export default function Navbar() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            <Link href="/bulk-order">
+              <a className="hover:text-primary">Bulk Order</a>
+            </Link>
             <Link href="/cart">
               <a className="hover:text-primary">My Wishlist</a>
             </Link>
