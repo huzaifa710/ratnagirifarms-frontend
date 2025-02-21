@@ -7,7 +7,7 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  image: string;
+  images: string[];
   sizes: {
     pieces: number;
     available: boolean;
@@ -21,28 +21,37 @@ export default function ProductCard({ product }: { product: Product }) {
       <CardContent className="p-0">
         <Link href={`/product/${product.id}`}>
           <a className="block relative aspect-square overflow-hidden">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+            <div className="relative w-full h-full">
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              {!product.inStock && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <span className="text-white text-lg font-semibold">Sold Out</span>
+                </div>
+              )}
+            </div>
           </a>
         </Link>
 
         <div className="p-4">
           <Link href={`/product/${product.id}`}>
-            <a className="text-lg font-semibold hover:text-primary line-clamp-2">{product.name}</a>
+            <a className="block text-lg font-semibold text-gray-900 hover:text-primary line-clamp-2 mb-2">
+              {product.name}
+            </a>
           </Link>
 
-          <div className="mt-2 space-y-3">
-            <div className="text-xl font-bold text-primary">₹{product.price}</div>
+          <div className="space-y-3">
+            <div className="text-xl font-bold text-[#F4A034]">₹{product.price.toLocaleString('en-IN')}</div>
 
             <div className="flex gap-2">
               {product.sizes.map((size) => (
                 <Badge
                   key={size.pieces}
-                  variant={size.available ? "default" : "secondary"}
-                  className="px-3 py-1"
+                  variant={size.available ? "outline" : "secondary"}
+                  className="px-4 py-1 text-sm"
                 >
                   {size.pieces}
                 </Badge>
@@ -50,8 +59,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
 
             <Button
-              className="w-full"
-              variant={product.inStock ? "default" : "secondary"}
+              className="w-full bg-[#F4A034] hover:bg-[#F4A034]/90 text-white"
               disabled={!product.inStock}
             >
               {product.inStock ? "Add to Cart" : "Sold Out"}
