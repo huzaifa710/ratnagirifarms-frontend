@@ -3,7 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from 'react';
-import { useCart } from "@/contexts/CartContext"; // Added import
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface Product {
   id: number;
@@ -27,6 +28,7 @@ interface CartItem {
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = () => {
     if (product.inStock) {
