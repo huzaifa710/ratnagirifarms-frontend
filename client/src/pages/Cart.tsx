@@ -15,11 +15,11 @@ interface CartItem {
 }
 
 export default function Cart() {
-  const { items: cartItems, updateQuantity, total } = useCart();
+  const { items: cartItems, updateQuantity } = useCart();
 
-  const updateQuantity = (id: number, change: number) => {
-    //This function remains unchanged from original code
-    setCartItems(items =>
+  const handleQuantityChange = (id: number, change: number) => {
+    const newQuantity = Math.max(0, cartItems.find(item => item.id === id)?.quantity + change || 0);
+    updateQuantity(id, newQuantity);
       items.map(item => {
         if (item.id === id) {
           const newQuantity = Math.max(0, item.quantity + change);
