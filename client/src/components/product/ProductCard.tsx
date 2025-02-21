@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from 'react';
+import { useCart } from "@/contexts/CartContext"; // Added import
 
 interface Product {
   id: number;
@@ -87,7 +88,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
           <Button
             className="w-full bg-[#F4A034] hover:bg-[#F4A034]/90 text-white"
-            onClick={addToCart}
+            onClick={handleAddToCart} //Corrected onClick handler
             disabled={!product.inStock}
           >
             {product.inStock ? "Add to Cart" : "Sold Out"}
