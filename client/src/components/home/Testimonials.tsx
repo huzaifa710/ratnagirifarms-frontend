@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { testimonials } from "@/lib/data";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,15 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Testimonials() {
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Add auto-slide functionality
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % testimonials.length);
+    }, 8000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % testimonials.length);
@@ -20,7 +29,7 @@ export default function Testimonials() {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-12 text-center">Latest Testimonials</h2>
-        
+
         <div className="relative max-w-3xl mx-auto">
           <Button
             variant="ghost"
@@ -30,7 +39,7 @@ export default function Testimonials() {
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
-          
+
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-300 ease-in-out"
@@ -56,7 +65,7 @@ export default function Testimonials() {
               ))}
             </div>
           </div>
-          
+
           <Button
             variant="ghost"
             size="icon"

@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { banners } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Add auto-slide functionality
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % banners.length);
@@ -30,7 +39,7 @@ export default function Hero() {
           />
         </div>
       ))}
-      
+
       <Button
         variant="ghost"
         size="icon"
@@ -39,7 +48,7 @@ export default function Hero() {
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
-      
+
       <Button
         variant="ghost"
         size="icon"
@@ -48,7 +57,7 @@ export default function Hero() {
       >
         <ChevronRight className="h-6 w-6" />
       </Button>
-      
+
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
         {banners.map((_, index) => (
           <button
