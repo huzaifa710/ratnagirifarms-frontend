@@ -22,17 +22,43 @@ function Router() {
       <Navbar />
       <main className="flex-1">
         <AnimatePresence mode="wait">
-          <PageTransition key={location}>
-            <Switch>
-              <Route path="/" component={Home} />
-              <Route path="/category/:id" component={Category} />
-              <Route path="/product/:id" component={Product} />
-              <Route path="/cart" component={Cart} />
-              <Route path="/checkout" component={Checkout} />
-              <Route path="/bulk-order" component={BulkOrder} />
-              <Route component={NotFound} />
-            </Switch>
-          </PageTransition>
+          <Switch>
+            <Route path="/">
+              <PageTransition key="home">
+                <Home />
+              </PageTransition>
+            </Route>
+            <Route path="/category/:id">
+              <PageTransition key="category">
+                <Category />
+              </PageTransition>
+            </Route>
+            <Route path="/product/:id">
+              <PageTransition key="product">
+                <Product />
+              </PageTransition>
+            </Route>
+            <Route path="/cart">
+              <PageTransition key="cart">
+                <Cart />
+              </PageTransition>
+            </Route>
+            <Route path="/checkout">
+              <PageTransition key="checkout">
+                <Checkout />
+              </PageTransition>
+            </Route>
+            <Route path="/bulk-order">
+              <PageTransition key="bulk-order">
+                <BulkOrder />
+              </PageTransition>
+            </Route>
+            <Route>
+              <PageTransition key="not-found">
+                <NotFound />
+              </PageTransition>
+            </Route>
+          </Switch>
         </AnimatePresence>
       </main>
       <Footer />
