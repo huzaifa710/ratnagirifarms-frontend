@@ -34,8 +34,12 @@ export default function ProductCard({ product }: { product: Product }) {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
-        quantity: 1
+        image: product.images[0]
+      });
+      toast({
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart.`,
+        duration: 2000
       });
     }
   };
