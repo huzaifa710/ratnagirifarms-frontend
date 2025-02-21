@@ -1,10 +1,10 @@
-
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, ShoppingBasket } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 interface CartItem {
   id: number;
@@ -16,23 +16,9 @@ interface CartItem {
 
 export default function Cart() {
   const { items: cartItems, updateQuantity, total } = useCart();
-    {
-      id: 1,
-      name: "Ratnagiri Alphonso Mango (Regular 180-210g)",
-      price: 899,
-      quantity: 2,
-      image: "https://www.farm2you.in/uploads/products/2024/03/13/65f194ef7691d1-41469246.png"
-    },
-    {
-      id: 2,
-      name: "Devgad Alphonso Mango (King Size)",
-      price: 1329,
-      quantity: 1,
-      image: "https://www.farm2you.in/uploads/products/2024/03/13/65f1865b9eab37-13345717.png"
-    }
-  ]);
 
   const updateQuantity = (id: number, change: number) => {
+    //This function remains unchanged from original code
     setCartItems(items =>
       items.map(item => {
         if (item.id === id) {
@@ -44,7 +30,8 @@ export default function Cart() {
     );
   };
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
 
   if (cartItems.length === 0) {
     return (
@@ -94,7 +81,7 @@ export default function Cart() {
                         type="number"
                         value={item.quantity}
                         onChange={(e) => {
-                          const newQuantity = parseInt(e.target.value) - item.quantity;
+                          const newQuantity = parseInt(e.target.value, 10) - item.quantity;
                           updateQuantity(item.id, newQuantity);
                         }}
                         className="w-16 text-center"
@@ -127,7 +114,7 @@ export default function Cart() {
                 <div className="border-t pt-2 mt-4">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>₹{total}</span>
+                    <span>₹{totalAmount}</span>
                   </div>
                 </div>
               </div>
