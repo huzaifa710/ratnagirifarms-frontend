@@ -25,18 +25,16 @@ interface CartItem {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const { addToCart } = useCart();
 
-  const addToCart = () => {
+  const handleAddToCart = () => {
     if (product.inStock) {
-      const existingItem = cart.find((item) => item.id === product.id);
-      if (existingItem) {
-        setCart(cart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        ));
-      } else {
-        setCart([...cart, { ...product, image: product.images[0], quantity: 1 }]);
-      }
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0]
+      });
     }
   };
 

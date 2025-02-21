@@ -15,7 +15,7 @@ interface CartItem {
 }
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
+  const { items: cartItems, updateQuantity, total } = useCart();
     {
       id: 1,
       name: "Ratnagiri Alphonso Mango (Regular 180-210g)",

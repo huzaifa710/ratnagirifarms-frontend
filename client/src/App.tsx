@@ -13,6 +13,7 @@ import Checkout from "@/pages/Checkout";
 import NotFound from "@/pages/not-found";
 import Category from "@/pages/Category";
 import BulkOrder from "@/pages/BulkOrder";
+import { CartProvider } from "@/contexts/CartContext"; // Added CartProvider import
 
 function Router() {
   const [location] = useLocation();
@@ -69,8 +70,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <CartProvider> {/* Added CartProvider */}
+        <Router />
+        <Toaster />
+      </CartProvider> {/* Added CartProvider */}
     </QueryClientProvider>
   );
 }
