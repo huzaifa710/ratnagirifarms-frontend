@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/stores/cart";
 import { useLocation } from "wouter";
+import { useEffect } from "react";
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -34,6 +35,12 @@ export default function Checkout() {
   const { items, total, clearCart } = useCart();
   const [, setLocation] = useLocation();
 
+  useEffect(() => {
+    if (items.length === 0) {
+      setLocation("/");
+    }
+  }, [items.length, setLocation]);
+
   const form = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -49,14 +56,12 @@ export default function Checkout() {
   });
 
   function onSubmit(data: CheckoutForm) {
-    // Here you would typically send this data to your backend
     console.log({ ...data, items, total });
     clearCart();
     setLocation("/thank-you");
   }
 
   if (items.length === 0) {
-    setLocation("/");
     return null;
   }
 
