@@ -189,3 +189,77 @@ function useToast() {
 }
 
 export { useToast, toast }
+import * as React from "react"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+} from "@/components/ui/toast"
+
+const TOAST_LIMIT = 1
+const TOAST_REMOVE_DELAY = 1000000
+
+type ToasterToast = ToastProps & {
+  id: string
+  title?: React.ReactNode
+  description?: React.ReactNode
+  action?: ToastActionElement
+}
+
+type State = {
+  toasts: ToasterToast[]
+}
+
+export const toastState: State = {
+  toasts: [],
+}
+
+export function toast({ ...props }: Omit<ToasterToast, "id">) {
+  const id = Math.random().toString(36).substr(2, 9)
+
+  const update = (props: ToasterToast) => {
+    toastState.toasts = toastState.toasts.map((t) =>
+      t.id === id ? { ...t, ...props } : t
+    )
+  }
+
+  const dismiss = () => {
+    toastState.toasts = toastState.toasts.filter((t) => t.id !== id)
+  }
+
+  toastState.toasts = [
+    { ...props, id, open: true, onOpenChange: (open) => {
+      if (!open) dismiss()
+    }},
+    ...toastState.toasts,
+  ].slice(0, TOAST_LIMIT)
+
+  return {
+    id,
+    dismiss,
+    update,
+  }
+}
+
+export function useToast() {
+  const [state, setState] = React.useState<State>(toastState)
+
+  React.useEffect(() => {
+    const listener = () => setState({ ...toastState })
+    document.addEventListener('toast', listener)
+    return () => document.removeEventListener('toast', listener)
+  }, [])
+
+  return {
+    ...state,
+    toast,
+    dismiss: (toastId?: string) => {
+      if (toastId) {
+        toastState.toasts = toastState.toasts.filter((t) => t.id !== toastId)
+      } else {
+        toastState.toasts = []
+      }
+      document.dispatchEvent(new Event('toast'))
+    },
+  }
+}
