@@ -103,9 +103,12 @@ export default function Cart() {
               <span className="font-semibold">Total</span>
               <span className="font-semibold text-xl">₹{totalAmount}</span>
             </div>
-            <Link href="/checkout">
-              <Button className="w-full mt-4">Proceed to Checkout</Button>
-            </Link>
+            <Button 
+              className="w-full mt-4" 
+              onClick={() => window.location.href = '/checkout'}
+            >
+              Proceed to Checkout
+            </Button>
           </CardContent>
         </Card>
       </div>
