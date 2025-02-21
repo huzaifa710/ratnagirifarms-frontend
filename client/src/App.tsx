@@ -9,6 +9,7 @@ import Product from "@/pages/Product";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import NotFound from "@/pages/not-found";
+import Category from "@/pages/Category"; // Import the Category component
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/category/:id" component={Category} />
           <Route path="/product/:id" component={Product} />
           <Route path="/cart" component={Cart} />
           <Route path="/checkout" component={Checkout} />
