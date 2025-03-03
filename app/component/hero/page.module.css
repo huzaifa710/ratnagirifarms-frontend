@@ -1,0 +1,101 @@
+/* Hero Section */
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 40rem; /* Full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  
+}
+
+/* Background Image */
+.heroBackground {
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+}
+
+/* Content */
+.heroContent {
+  text-align: center;
+  color: white;
+  max-width: 700px;
+  padding: 20px;
+}
+
+/* Title */
+.heroTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #E5C07B;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Text */
+.heroText {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Button */
+.heroButton {
+  margin-top: 20px;
+  background-color: #E5C07B;
+  color: black;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  border: none;
+  cursor: pointer;
+}
+
+.heroButton:hover {
+  background-color: white;
+}
+
+/* 🔥 MOBILE RESPONSIVENESS 🔥 */
+@media (max-width: 768px) {
+  .heroSection {
+    height: 80vh; /* Reduce height on smaller screens */
+    padding: 10px;
+  }
+
+  .heroTitle {
+    font-size: 2rem; /* Reduce title size */
+  }
+
+  .heroText {
+    font-size: 1rem; /* Smaller text */
+  }
+
+  .heroButton {
+    padding: 10px 20px; /* Smaller button */
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 1.8rem; /* Even smaller for very small screens */
+  }
+
+  .heroText {
+    font-size: 0.9rem;
+  }
+
+  .heroButton {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+}

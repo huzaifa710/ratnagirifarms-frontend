@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { environment } from "@/environment";
 import axios from "axios";
-import { Toaster, toast } from "react-hot-toast"; // Import toast
+import { Toaster, toast } from "react-hot-toast";
+import styles from "./page.module.css"; // Import CSS module
 
 export default function BulkOrder() {
   const [formData, setFormData] = useState({
@@ -141,197 +142,197 @@ export default function BulkOrder() {
           },
         }}
       />
-      <div className="container mx-auto px-4 py-12 ">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Bulk Order</h1>
-            <p className="text-xl text-gray-600">Start Your Own Store</p>
-            <p className="text-2xl font-semibold text-primary mt-4">
-              100% Naturally Ripen Alphonso Mango
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-md"
-                />
-                {errors.fullName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className={`min-h-screen ${styles.bulkOrderContainer}`}>
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h1 className={`text-4xl font-bold mb-4 ${styles.heading}`}>Bulk Order</h1>
+              <p className={`text-xl ${styles.subheading}`}>Start Your Own Store</p>
+              <p className={`text-2xl font-semibold ${styles.primaryText}`}>
+                100% Naturally Ripen Alphonso Mango
+              </p>
+            </div>
+            <div className={styles.formContainer}>
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Phone Number *
+                  <label className={styles.label}>
+                    Full Name *
                   </label>
                   <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded-md"
+                    className={styles.input}
                   />
-                  {errors.phone && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  {errors.fullName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={styles.label}>
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className={styles.input}
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className={styles.label}>
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={styles.input}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* <div>
+                  <label className={styles.label}>
+                    Types of Mango *
+                  </label>
+                  <select
+                    name="mangoType"
+                    value={formData.mangoType}
+                    onChange={handleChange}
+                    className={styles.select}
+                  >
+                    <option value="">Select mango type</option>
+                    <option value="ratnagiri">Ratnagiri</option>
+                    <option value="devgad">Devgad</option>
+                    <option value="others">Others</option>
+                  </select>
+                  {errors.mangoType && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.mangoType}
+                    </p>
+                  )}
+                </div> */}
+
+                <div className="space-y-4">
+                  <h3 className={styles.subheading}>Type of Box *</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className={styles.label}>
+                        6 piece
+                      </label>
+                      <input
+                        type="number"
+                        name="sixPieceQuantity"
+                        value={formData.sixPieceQuantity}
+                        onChange={handleChange}
+                        placeholder="Quantity"
+                        min="0"
+                        className={styles.input}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={styles.label}>
+                        12 piece
+                      </label>
+                      <input
+                        type="number"
+                        name="twelvePieceQuantity"
+                        value={formData.twelvePieceQuantity}
+                        onChange={handleChange}
+                        placeholder="Quantity"
+                        min="0"
+                        className={styles.input}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={styles.label}>
+                        24 piece
+                      </label>
+                      <input
+                        type="number"
+                        name="twentyFourPieceQuantity"
+                        value={formData.twentyFourPieceQuantity}
+                        onChange={handleChange}
+                        placeholder="Quantity"
+                        min="0"
+                        className={styles.input}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className={styles.label}>
+                    Sizes of Mango *
+                  </label>
+                  <select
+                    name="mangoSize"
+                    value={formData.mangoSize}
+                    onChange={handleChange}
+                    className={styles.select}
+                  >
+                    <option value="">Select size</option>
+                    <option value="king">King</option>
+                    <option value="queen">Queen</option>
+                    <option value="regular">Regular</option>
+                  </select>
+                  {errors.mangoSize && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.mangoSize}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Email Address *
-                  </label>
+                  <label className={styles.label}>City *</label>
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="city"
+                    value={formData.city}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded-md"
+                    className={styles.input}
                   />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  {errors.city && (
+                    <p className="text-red-500 text-sm mt-1">{errors.city}</p>
                   )}
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Types of Mango *
-                </label>
-                <select
-                  name="mangoType"
-                  value={formData.mangoType}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value="">Select mango type</option>
-                  <option value="ratnagiri">Ratnagiri</option>
-                  <option value="devgad">Devgad</option>
-                  <option value="others">Others</option>
-                </select>
-                {errors.mangoType && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.mangoType}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="font-medium">Type of Box *</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      6 piece
-                    </label>
-                    <input
-                      type="number"
-                      name="sixPieceQuantity"
-                      value={formData.sixPieceQuantity}
-                      onChange={handleChange}
-                      placeholder="Quantity"
-                      min="0"
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      12 piece
-                    </label>
-                    <input
-                      type="number"
-                      name="twelvePieceQuantity"
-                      value={formData.twelvePieceQuantity}
-                      onChange={handleChange}
-                      placeholder="Quantity"
-                      min="0"
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      24 piece
-                    </label>
-                    <input
-                      type="number"
-                      name="twentyFourPieceQuantity"
-                      value={formData.twentyFourPieceQuantity}
-                      onChange={handleChange}
-                      placeholder="Quantity"
-                      min="0"
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
+                <div>
+                  <label className={styles.label}>
+                    Message
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows="4"
+                    placeholder="Add any additional requirements or questions"
+                    className={styles.textarea}
+                  />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Sizes of Mango *
-                </label>
-                <select
-                  name="mangoSize"
-                  value={formData.mangoSize}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-md"
+                <button
+                  type="submit"
+                  className={styles.submitButton}
                 >
-                  <option value="">Select size</option>
-                  <option value="king">King</option>
-                  <option value="queen">Queen</option>
-                  <option value="regular">Regular</option>
-                </select>
-                {errors.mangoSize && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.mangoSize}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">City *</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-md"
-                />
-                {errors.city && (
-                  <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Message
-                </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="4"
-                  placeholder="Add any additional requirements or questions"
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
-              >
-                Send Message
-              </button>
-            </form>
+                  Send Message
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

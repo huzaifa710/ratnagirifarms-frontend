@@ -6,13 +6,13 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #1a1a1a;
+  --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
+    --background: #1a1a1a;  /* Keep it same for light mode too */
     --foreground: #ededed;
   }
 }
@@ -20,5 +20,21 @@
 body {
   color: var(--foreground);
   background: var(--background);
+  min-height: 100vh; /* This ensures full viewport height coverage */
+  margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  flex-direction: column;
+  display: flex;
+}
+
+main {
+  flex: 1;
+}
+img {
+  content-visibility: auto; /* Optimize image loading */
+}
+
+/* Remove unused CSS */
+* {
+  text-rendering: optimizeLegibility;
 }

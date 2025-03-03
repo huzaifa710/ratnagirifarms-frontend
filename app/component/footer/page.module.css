@@ -1,0 +1,92 @@
+.footer {
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  margin-top: auto; /* This pushes the footer to the bottom */
+  width: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contactInfo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.icon {
+  height: 1.25rem;
+  width: 1.25rem;
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.link {
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: white;
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.divider {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.paymentSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.paymentIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paymentIcon {
+  height: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .paymentSection {
+    flex-direction: row;
+  }
+}
