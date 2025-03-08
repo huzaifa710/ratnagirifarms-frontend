@@ -6,19 +6,22 @@ import styles from "./page.module.css";
 import { FaShoppingCart } from "react-icons/fa";
 import { Toaster, toast } from "react-hot-toast"; // Import toast
 import { useCart } from "@/app/cart-context/page";
+import { useAuth } from "@/app/auth-context/page";
+import api from "@/utils/axios";
 
 const getAllProducts = async () => {
-  const response = await axios.get(`${environment.API_URL}/products/all`);
+  const response = await api.get(`/products/all`);
   return response.data.products;
 };
 
 function SingleProduct({ product }) {
   const { updateCartCount } = useCart();
+  const { uuid } = useAuth();
 
   const handleAddToCart = async (variant) => {
     try {
-      await axios.post(`${environment.API_URL}/carts/add`, {
-        uuid: "d0e66e4c-0195-4375-a327-676a38f62e88",
+      await api.post(`/carts/add`, {
+        uuid,
         product_variant_id: variant.id,
         quantity: 1,
       });

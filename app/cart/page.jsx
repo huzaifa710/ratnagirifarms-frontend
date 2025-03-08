@@ -1,41 +1,45 @@
 "use client";
 import { useState, useEffect } from "react";
-import { environment } from "@/environment";
-import axios from "axios";
 import styles from "./page.module.css";
 import { FaTrash } from "react-icons/fa";
 import { Toaster, toast } from "react-hot-toast";
 import { useCart } from "@/app/cart-context/page";
-
-const uuid = "d0e66e4c-0195-4375-a327-676a38f62e88";
+import { useAuth } from "@/app/auth-context/page";
+import api from "@/utils/axios";
 
 export default function Cart() {
+  // debugger
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const { updateCartCount } = useCart();
-
-  useEffect(() => {
-    fetchCartItems();
-  }, []);
+  const { uuid, accessToken } = useAuth();
 
   const fetchCartItems = async () => {
+    if (!uuid && !accessToken) {
+      setCartItems([]);
+      setLoading(false);
+      return;
+    }
     try {
-      const response = await axios.get(
-        `${environment.API_URL}/carts/by-uuid/${uuid}`
-      );
+      const response = await api.get(`/carts/by-uuid/${uuid}`);
       setCartItems(response.data.cartItems);
       setLoading(false);
-      updateCartCount()
+      updateCartCount();
     } catch (error) {
+      console.log(error);
       toast.error("Failed to fetch cart items");
       setLoading(false);
     }
   };
 
   const removeFromCart = async (product_variant_id, quantity) => {
+    if (!uuid && !accessToken) {
+      toast.error("Please login first");
+      return;
+    }
     try {
-      const payload = { uuid, product_variant_id, quantity };
-      await axios.post(`${environment.API_URL}/carts/remove`, payload);
+      const payload = { uuid: uuid, product_variant_id, quantity };
+      await api.post(`/carts/remove`, payload);
       toast.success("Item removed from cart");
       fetchCartItems();
     } catch (error) {
@@ -44,9 +48,13 @@ export default function Cart() {
   };
 
   const handleAddToCart = async (product_variant_id) => {
+    if (!uuid && !accessToken) {
+      toast.error("Please login first");
+      return;
+    }
     try {
-      await axios.post(`${environment.API_URL}/carts/add`, {
-        uuid: "d0e66e4c-0195-4375-a327-676a38f62e88",
+      await api.post(`/carts/add`, {
+        uuid: uuid,
         product_variant_id,
         quantity: 1,
       });
@@ -58,18 +66,22 @@ export default function Cart() {
     }
   };
 
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
   return (
     <div className={styles.cartContainer}>
       <Toaster position="top-center" />
       <h1 className={styles.title}>Shopping Cart</h1>
       {loading ? (
         <p>Loading...</p>
-      ) : cartItems.length === 0 ? (
+      ) : cartItems.length == 0 ? (
         <p className={styles.emptyCart}>Your cart is empty</p>
       ) : (
         <>
           <div className={styles.cartItems}>
-            {cartItems.map((item) => (
+            {cartItems?.map((item) => (
               <div key={item.product_variant_id} className={styles.cartItem}>
                 <img
                   src="/card/image1.png"
@@ -115,14 +127,23 @@ export default function Cart() {
               <span>Subtotal</span>
               <span>
                 ₹
-                {cartItems.reduce(
+                {cartItems?.reduce(
                   (total, item) => total + item.price * item.quantity,
                   0
                 )}
               </span>
             </div>
-            <button className={styles.checkoutButton}>
+            <button
+              className={styles.checkoutButton}
+              onClick={() => router.push("/checkout")}
+            >
               Proceed to Checkout
+            </button>
+            <button
+              className={styles.checkoutButton}
+              onClick={() => router.push("/guest-checkout")}
+            >
+              Proceed as Guest
             </button>
           </div>
         </>

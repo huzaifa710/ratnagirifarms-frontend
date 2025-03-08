@@ -1,9 +1,9 @@
 import styles from "./page.module.css";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
-
-return (
+  return (
     <section className={styles.heroSection}>
       {/* Background Image */}
       <div className={styles.heroBackground}>
@@ -24,9 +24,12 @@ return (
           TASTE THE FINEST RATNAGIRI ALPHONSO MANGOES
         </h1>
         <p className={styles.heroText}>
-          Directly from our farms to your doorstep. Pure, organic, and delicious.
+          Directly from our farms to your doorstep. Pure, organic, and
+          delicious.
         </p>
-        <button className={styles.heroButton}>Order Now</button>
+        <Link href="/ratnagiri-alphonso">
+          <button className={styles.heroButton}>Order Now</button>{" "}
+        </Link>
       </div>
     </section>
   );

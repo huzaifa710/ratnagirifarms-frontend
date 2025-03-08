@@ -82,12 +82,13 @@ export default function Register() {
           <div className={styles.inputGroup}>
             <label htmlFor="mobile_number">Mobile Number</label>
             <input
-              type="number"
+              type="tel"
               id="mobile_number"
               name="mobile_number"
               value={formData.mobile_number}
               onChange={handleChange}
               required
+              minLength={10}
             />
           </div>
           <div className={styles.inputGroup}>
@@ -110,6 +111,7 @@ export default function Register() {
               value={formData.password}
               onChange={handleChange}
               required
+              minLength={8}
             />
           </div>
           <div className={styles.inputGroup}>
@@ -121,6 +123,7 @@ export default function Register() {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
+              minLength={8}
             />
           </div>
           <button type="submit" className={styles.submitButton}>

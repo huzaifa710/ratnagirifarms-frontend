@@ -9,7 +9,7 @@ import { useAuth } from "@/app/auth-context/page";
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { cartCount, updateCartCount } = useCart();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { accessToken, user, logout } = useAuth();
 
   useEffect(() => {
     updateCartCount();
@@ -19,7 +19,7 @@ const Navbar = () => {
     logout();
     setShowDropdown(false);
   };
-
+  
   return (
     <nav className={styles.navbar}>
       {/* Logo */}
@@ -62,15 +62,14 @@ const Navbar = () => {
 
           {showDropdown && (
             <div className={styles.dropdown}>
-              {isAuthenticated ? (
+              {accessToken ? (
                 <>
-                  <span className={styles.dropdownItem}>{user?.name}</span>
-                  <Link href="/profile" className={styles.dropdownItem}>
+                  {/* <Link href="/profile" className={styles.dropdownItem}>
                     Profile
                   </Link>
                   <Link href="/orders" className={styles.dropdownItem}>
                     Orders
-                  </Link>
+                  </Link> */}
                   <button
                     onClick={handleLogout}
                     className={styles.dropdownItem}

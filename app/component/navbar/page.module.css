@@ -77,6 +77,8 @@
 }
 
 .dropdownItem {
+  width: 100%;
+  text-align: left;
   display: block;
   padding: 0.5rem 1rem;
   text-decoration: none;

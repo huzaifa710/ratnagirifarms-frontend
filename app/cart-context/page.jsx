@@ -1,25 +1,36 @@
 "use client";
-import { createContext, useContext, useState } from "react";
-import axios from "axios";
-import { environment } from "@/environment";
+import { createContext, useContext, useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/app/auth-context/page";
+import api from "@/utils/axios";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartCount, setCartCount] = useState(0);
-  const uuid = "d0e66e4c-0195-4375-a327-676a38f62e88";
+  const { uuid, accessToken } = useAuth();
 
   const updateCartCount = async () => {
+    if (!uuid && !accessToken) {
+      setCartCount(0);
+      return;
+    }
+
     try {
-      const response = await axios.get(
-        `${environment.API_URL}/carts/count/${uuid}`
-      );
+      const response = await api.get(`/carts/count/${uuid}`);
       const count = response.data.count;
       setCartCount(count);
     } catch (error) {
       console.error("Error updating cart count:", error);
+      setCartCount(0);
     }
   };
+
+  useEffect(() => {
+    if (uuid && accessToken) {
+      updateCartCount();
+    }
+  }, [uuid, accessToken]);
 
   return (
     <CartContext.Provider value={{ cartCount, updateCartCount }}>
