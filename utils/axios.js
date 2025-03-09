@@ -1,23 +1,27 @@
-import axios from 'axios';
-import { environment } from '@/environment';
+import axios from "axios";
+import { environment } from "@/environment";
+import toast from "react-hot-toast";
 
 const api = axios.create({
   baseURL: environment.API_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
 });
 
 // Add request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
     if (token) {
       // Set Authorization header correctly
       config.headers = {
         ...config.headers,
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       };
     }
     return config;
@@ -36,8 +40,8 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
+        const accessToken = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
 
         // Call sign in using token with a new axios instance to avoid interceptors
         const response = await axios.post(
@@ -47,24 +51,30 @@ api.interceptors.response.use(
 
         if (response.data.success) {
           const newToken = response.data.accessToken;
-          
+
           // Update tokens in localStorage
-          localStorage.setItem('accessToken', newToken);
-          localStorage.setItem('refreshToken', response.data.refreshToken);
-          localStorage.setItem('uuid', response.data.user.uuid);
+          localStorage.setItem("accessToken", newToken);
+          localStorage.setItem("refreshToken", response.data.refreshToken);
+          localStorage.setItem("uuid", response.data.user.uuid);
 
           // Update the failed request config with new token
-          originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
 
           // Retry the original request with new token
           return axios(originalRequest);
+        } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("uuid");
+          toast.error("You have been logged out. Please login again");
+          // window.location.href = '/login';
         }
       } catch (err) {
         // Clear auth data and redirect to login
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('uuid');
-        window.location.href = '/login';
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("uuid");
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
