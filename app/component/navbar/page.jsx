@@ -1,6 +1,6 @@
 "use client";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 import { useCart } from "@/app/cart-context/page";
@@ -10,13 +10,28 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { cartCount, updateCartCount } = useCart();
   const { accessToken, user, logout } = useAuth();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     updateCartCount();
+
+    // Add click event listener to close dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleLogout = () => {
     logout();
+    setShowDropdown(false);
+  };
+
+  const handleDropdownItemClick = () => {
     setShowDropdown(false);
   };
   
@@ -52,7 +67,7 @@ const Navbar = () => {
           <span className={styles.cartCount}>{cartCount}</span>
         </Link>
         {/* User Dropdown */}
-        <div className={styles.userContainer}>
+        <div className={styles.userContainer} ref={dropdownRef}>
           <div
             onClick={() => setShowDropdown(!showDropdown)}
             className={styles.iconButton}
@@ -64,12 +79,13 @@ const Navbar = () => {
             <div className={styles.dropdown}>
               {accessToken ? (
                 <>
-                  {/* <Link href="/profile" className={styles.dropdownItem}>
-                    Profile
-                  </Link>
-                  <Link href="/orders" className={styles.dropdownItem}>
+                  <Link 
+                    href="/orders" 
+                    className={styles.dropdownItem}
+                    onClick={handleDropdownItemClick}
+                  >
                     Orders
-                  </Link> */}
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className={styles.dropdownItem}
@@ -79,10 +95,18 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Link href="/login" className={styles.dropdownItem}>
+                  <Link 
+                    href="/login" 
+                    className={styles.dropdownItem}
+                    onClick={handleDropdownItemClick}
+                  >
                     Login
                   </Link>
-                  <Link href="/register" className={styles.dropdownItem}>
+                  <Link 
+                    href="/register" 
+                    className={styles.dropdownItem}
+                    onClick={handleDropdownItemClick}
+                  >
                     Register
                   </Link>
                 </>

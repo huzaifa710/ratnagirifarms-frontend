@@ -3,37 +3,80 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
+import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartCount, setCartCount] = useState(0);
+  const [guestCart, setGuestCart] = useState([]);
   const { uuid, accessToken } = useAuth();
 
+  useEffect(() => {
+    if (!uuid || !accessToken) {
+      const cookieCart = getCartFromCookie();
+      setGuestCart(cookieCart);
+      setCartCount(cookieCart.reduce((sum, item) => sum + item.quantity, 0));
+    }
+  }, [uuid, accessToken]);
+
   const updateCartCount = async () => {
-    if (!uuid && !accessToken) {
-      setCartCount(0);
+    if (!uuid || !accessToken) {
+      const cookieCart = getCartFromCookie();
+      setCartCount(cookieCart.reduce((sum, item) => sum + item.quantity, 0));
       return;
     }
 
     try {
       const response = await api.get(`/carts/count/${uuid}`);
-      const count = response.data.count;
-      setCartCount(count);
+      setCartCount(response.data.count);
     } catch (error) {
       console.error("Error updating cart count:", error);
       setCartCount(0);
     }
   };
 
-  useEffect(() => {
-    if (uuid && accessToken) {
-      updateCartCount();
+  const addToGuestCart = (product) => {
+    const updatedCart = [...guestCart];
+    const existingItem = updatedCart.find(
+      item => item.product_variant_id === product.product_variant_id
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      updatedCart.push({ ...product, quantity: 1 });
     }
-  }, [uuid, accessToken]);
+
+    setGuestCart(updatedCart);
+    setCartCookie(updatedCart);
+    updateCartCount();
+  };
+
+  const removeFromGuestCart = (product_variant_id, quantity = 1) => {
+    const updatedCart = guestCart.map(item => {
+      if (item.product_variant_id === product_variant_id) {
+        return { 
+          ...item, 
+          quantity: Math.max(0, item.quantity - quantity) 
+        };
+      }
+      return item;
+    }).filter(item => item.quantity > 0);
+
+    setGuestCart(updatedCart);
+    setCartCookie(updatedCart);
+    updateCartCount();
+  };
 
   return (
-    <CartContext.Provider value={{ cartCount, updateCartCount }}>
+    <CartContext.Provider value={{ 
+      cartCount, 
+      updateCartCount,
+      guestCart,
+      addToGuestCart,
+      removeFromGuestCart 
+    }}>
       {children}
     </CartContext.Provider>
   );

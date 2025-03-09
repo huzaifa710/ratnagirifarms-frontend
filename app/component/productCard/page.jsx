@@ -1,7 +1,5 @@
 "use client";
-import axios from "axios";
 import { useState, useEffect } from "react";
-import { environment } from "@/environment";
 import styles from "./page.module.css";
 import { FaShoppingCart } from "react-icons/fa";
 import { Toaster, toast } from "react-hot-toast"; // Import toast
@@ -15,10 +13,24 @@ const getAllProducts = async () => {
 };
 
 function SingleProduct({ product }) {
-  const { updateCartCount } = useCart();
-  const { uuid } = useAuth();
+  const { updateCartCount, addToGuestCart } = useCart();
+  const { uuid, accessToken } = useAuth();
 
   const handleAddToCart = async (variant) => {
+    if (!uuid || !accessToken) {
+      // Handle guest cart
+      addToGuestCart({
+        product_variant_id: variant.id,
+        name: product.name,
+        price: variant.price,
+        quantity_per_box: variant.quantity_per_box,
+        is_active: variant.is_active
+      });
+      toast.success("Added to cart");
+      return;
+    }
+
+    // Handle authenticated cart
     try {
       await api.post(`/carts/add`, {
         uuid,

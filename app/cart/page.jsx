@@ -6,17 +6,19 @@ import { Toaster, toast } from "react-hot-toast";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
-  // debugger
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { updateCartCount } = useCart();
+  const { updateCartCount, guestCart, addToGuestCart, removeFromGuestCart } =
+    useCart();
   const { uuid, accessToken } = useAuth();
+  const router = useRouter();
 
   const fetchCartItems = async () => {
     if (!uuid && !accessToken) {
-      setCartItems([]);
+      setCartItems(guestCart);
       setLoading(false);
       return;
     }
@@ -32,24 +34,15 @@ export default function Cart() {
     }
   };
 
-  const removeFromCart = async (product_variant_id, quantity) => {
-    if (!uuid && !accessToken) {
-      toast.error("Please login first");
-      return;
-    }
-    try {
-      const payload = { uuid: uuid, product_variant_id, quantity };
-      await api.post(`/carts/remove`, payload);
-      toast.success("Item removed from cart");
-      fetchCartItems();
-    } catch (error) {
-      toast.error("Failed to remove item");
-    }
-  };
-
   const handleAddToCart = async (product_variant_id) => {
-    if (!uuid && !accessToken) {
-      toast.error("Please login first");
+    if (!uuid || !accessToken) {
+      const product = cartItems.find(
+        (item) => item.product_variant_id === product_variant_id
+      );
+      if (product) {
+        addToGuestCart(product);
+        toast.success("Added to cart");
+      }
       return;
     }
     try {
@@ -66,9 +59,26 @@ export default function Cart() {
     }
   };
 
+  const removeFromCart = async (product_variant_id, quantity) => {
+    if (!uuid || !accessToken) {
+      removeFromGuestCart(product_variant_id, quantity);
+      toast.success("Item removed from cart");
+      fetchCartItems();
+      return;
+    }
+    try {
+      const payload = { uuid: uuid, product_variant_id, quantity };
+      await api.post(`/carts/remove`, payload);
+      toast.success("Item removed from cart");
+      fetchCartItems();
+    } catch (error) {
+      toast.error("Failed to remove item");
+    }
+  };
+
   useEffect(() => {
     fetchCartItems();
-  }, []);
+  }, [uuid, accessToken, guestCart]);
 
   return (
     <div className={styles.cartContainer}>
@@ -139,12 +149,14 @@ export default function Cart() {
             >
               Proceed to Checkout
             </button>
-            <button
-              className={styles.checkoutButton}
-              onClick={() => router.push("/guest-checkout")}
-            >
-              Proceed as Guest
-            </button>
+            {!uuid && !accessToken && (
+              <button
+                className={styles.checkoutButton}
+                onClick={() => router.push("/checkout?guest=true")}
+              >
+                Proceed as Guest
+              </button>
+            )}
           </div>
         </>
       )}
