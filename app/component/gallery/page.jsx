@@ -6,32 +6,32 @@ import Image from 'next/image';
 const galleryImages = [
   {
     id: 1,
-    src: "/gallery/mangoes1.jpg",
+    src: "/gallery/mangoes1.JPG",
     alt: "Mango Farm View",
   },
   {
     id: 2,
-    src: "/gallery/mangoes1.jpg",
+    src: "/gallery/mangoes1.JPG",
     alt: "Mango Packing Process",
   },
   {
     id: 3,
-    src: "/gallery/mangoes1.jpg",
+    src: "/gallery/mangoes1.JPG",
     alt: "Fresh Mangoes",
   },
   {
     id: 4,
-    src: "/gallery/mangoes1.jpg",
+    src: "/gallery/mangoes1.JPG",
     alt: "Mango Trees",
   },
   {
     id: 5,
-    src: "/gallery/mangoes1.jpg",
+    src: "/gallery/mangoes1.JPG",
     alt: "Mango Harvesting",
   },
   {
     id: 6,
-    src: "/gallery/mangoes1.jpg",
+    src: "/gallery/mangoes1.JPG",
     alt: "Quality Check",
   }
 ];
