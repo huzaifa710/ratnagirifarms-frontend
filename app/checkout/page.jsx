@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
@@ -10,7 +10,6 @@ import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 
 export default function Checkout() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { uuid, accessToken, setShowAuthModal } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
