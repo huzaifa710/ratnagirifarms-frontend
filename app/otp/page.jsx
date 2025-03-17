@@ -3,14 +3,14 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import { toast } from "react-hot-toast";
 import api from "@/utils/axios";
-import Router from "next/router";
-
+import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
+import { environment } from "@/environment";
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
   const [step, setStep] = useState("mobile"); // 'mobile' or 'otp'
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  
+  const [testOtp, setTestOtp] = useState("");
   const handleSendOTP = async () => {
     if (!/^\d{10}$/.test(mobile)) {
       toast.error("Please enter a valid 10-digit mobile number");
@@ -24,6 +24,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
       });
       if (response.data.success) {
         toast.success("OTP sent successfully!");
+        setTestOtp(response.data.otp);
+        setOtp(response.data.otp); // Auto-popu
         setStep("otp");
       }
     } catch (error) {
@@ -51,7 +53,6 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         window.location.reload();
       } else {
         toast.error(response?.data?.message || "Invalid OTP");
-        console.log(response.data.message)
         if (
           response.data.message ===
             "Too many failed attempts. Please request new OTP" ||
@@ -101,7 +102,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
           <div className={styles.inputGroup}>
             <input
               type="text"
-              value={otp}
+              value={otp} // Use otp state instead of actualOtp
               onChange={(e) => setOtp(e.target.value)}
               placeholder="Enter 6-digit OTP"
               maxLength={6}
@@ -114,6 +115,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
           </div>
+        )}
+        {/* Add this for development/testing only */}
+        {environment.IS_PROD == false && testOtp && (
+          <div className={styles.testOtp}>Test OTP: {testOtp}</div>
         )}
       </div>
     </div>

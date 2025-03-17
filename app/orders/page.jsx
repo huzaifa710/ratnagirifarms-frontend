@@ -198,10 +198,6 @@ export default function Orders() {
                         </button>
                       )}
                     </div>
-                    {/* <div className={styles.orderTotal}>
-                      <span>Total Amount</span>
-                      <span>₹{order.total_price}</span>
-                    </div> */}
                   </div>
                 </div>
               )}

@@ -58,18 +58,11 @@ export function AuthProvider({ children }) {
           quantity: item.quantity,
         }));
 
-        const response = await api.post(
-          "/carts/transfer",
-          {
-            uuid,
-            cartItems,
-          },
-        );
-
-        // Clear guest cart after successful transfer
-        if (response.data.success) {
-          setCartCookie([]); // Clear the cookie cart
-        }
+        const response = await api.post("/carts/transfer", {
+          uuid,
+          cartItems,
+        });
+        setCartCookie([]); // Clear the cookie cart
       }
     } catch (error) {
       console.error("Error transferring guest cart:", error);
