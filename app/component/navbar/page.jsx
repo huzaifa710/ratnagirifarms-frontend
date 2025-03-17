@@ -1,5 +1,5 @@
 "use client";
-import { FaShoppingCart, FaUser } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
@@ -8,66 +8,116 @@ import { useAuth } from "@/app/auth-context/page";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cartCount, updateCartCount } = useCart();
-  const { accessToken, user, logout } = useAuth();
+  const { accessToken, user, logout, setShowAuthModal } = useAuth();
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   useEffect(() => {
     updateCartCount();
 
-    // Add click event listener to close dropdown when clicking outside
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
     logout();
     setShowDropdown(false);
+    setIsMobileMenuOpen(false);
   };
 
   const handleDropdownItemClick = () => {
     setShowDropdown(false);
+    setIsMobileMenuOpen(false);
   };
-  
+
+  const navigationLinks = (
+    <>
+      <Link
+        href="/"
+        className={styles.navItem}
+        onClick={handleDropdownItemClick}
+      >
+        Home
+      </Link>
+      <Link
+        href="/product"
+        className={styles.navItem}
+        onClick={handleDropdownItemClick}
+      >
+        Product
+      </Link>
+      <Link
+        href="/bulk-order"
+        className={styles.navItem}
+        onClick={handleDropdownItemClick}
+      >
+        Bulk Order
+      </Link>
+      <Link
+        href="/partner-with-us"
+        className={styles.navItem}
+        onClick={handleDropdownItemClick}
+      >
+        Partner With Us
+      </Link>
+      <Link
+        href="contact-us"
+        className={styles.navItem}
+        onClick={handleDropdownItemClick}
+      >
+        Contact Us
+      </Link>
+    </>
+  );
+
   return (
     <nav className={styles.navbar}>
-      {/* Logo */}
-      {/* <div className={styles.logo}>Ratnagiri Farms</div> */}
+      {/* Hamburger Menu Button (Mobile Only) */}
+      <button
+        className={styles.hamburger}
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+      </button>
 
-      {/* Navigation Links */}
-      <div className={styles.navLinks}>
-        <Link href="/" className={styles.navItem}>
-          Home
-        </Link>
-        <Link href="/ratnagiri-alphonso" className={styles.navItem}>
-          Ratnagiri Alphonso
-        </Link>
-        <Link href="/bulk-order" className={styles.navItem}>
-          Bulk Order
-        </Link>
-        <Link href="/partner-with-us" className={styles.navItem}>
-          Partner With Us
-        </Link>
-        <Link href="contact-us" className={styles.navItem}>
-          Contact Us
-        </Link>
+      {/* Desktop Navigation */}
+      <div className={styles.desktopNav}>
+        <div className={styles.navLinks}>{navigationLinks}</div>
       </div>
 
-      {/* Cart & User Icons */}
+      {/* Mobile Navigation */}
+      <div
+        className={`${styles.mobileNav} ${
+          isMobileMenuOpen ? styles.mobileNavOpen : ""
+        }`}
+        ref={mobileMenuRef}
+      >
+        <div className={styles.mobileNavLinks}>{navigationLinks}</div>
+      </div>
+
+      {/* Cart & User Icons (Always Visible) */}
       <div className={styles.iconsContainer}>
-        {/* Cart Button */}
         <Link href="/cart" className={styles.iconButton}>
           <FaShoppingCart size={20} />
           <span className={styles.cartCount}>{cartCount}</span>
         </Link>
-        {/* User Dropdown */}
-        <div className={styles.userContainer} ref={dropdownRef}>
+
+        {/* User Dropdown (Desktop Only) */}
+        <div className={`${styles.userContainer}`} ref={dropdownRef}>
           <div
             onClick={() => setShowDropdown(!showDropdown)}
             className={styles.iconButton}
@@ -79,8 +129,8 @@ const Navbar = () => {
             <div className={styles.dropdown}>
               {accessToken ? (
                 <>
-                  <Link 
-                    href="/orders" 
+                  <Link
+                    href="/orders"
                     className={styles.dropdownItem}
                     onClick={handleDropdownItemClick}
                   >
@@ -94,22 +144,12 @@ const Navbar = () => {
                   </button>
                 </>
               ) : (
-                <>
-                  <Link 
-                    href="/login" 
-                    className={styles.dropdownItem}
-                    onClick={handleDropdownItemClick}
-                  >
-                    Login
-                  </Link>
-                  <Link 
-                    href="/register" 
-                    className={styles.dropdownItem}
-                    onClick={handleDropdownItemClick}
-                  >
-                    Register
-                  </Link>
-                </>
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className={styles.dropdownItem}
+                >
+                  Login/Register
+                </button>
               )}
             </div>
           )}

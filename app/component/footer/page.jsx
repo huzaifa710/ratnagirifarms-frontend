@@ -51,25 +51,25 @@ export default function Footer() {
                 </Link>
               </li> */}
               <li>
-                <Link href="/about" className={styles.link}>
+                <Link href="/about-us" className={styles.link}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/partner" className={styles.link}>
+                <Link href="/partner-with-us" className={styles.link}>
                   Partner With Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className={styles.link}>
+                <Link href="/contact-us" className={styles.link}>
                   Contact Us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/faqs" className={styles.link}>
                   FAQs
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -78,7 +78,7 @@ export default function Footer() {
             <h3 className={styles.heading}>Business Policies</h3>
             <ul className={styles.listContainer}>
               <li>
-                <Link href="/terms" className={styles.link}>
+                <Link href="/terms-and-conditions" className={styles.link}>
                   Terms & Conditions
                 </Link>
               </li>
@@ -88,7 +88,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/refund" className={styles.link}>
+                <Link href="/refund-returns" className={styles.link}>
                   Cancellation & Refund Policy
                 </Link>
               </li>

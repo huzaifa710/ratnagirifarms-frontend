@@ -1,119 +1,240 @@
 .bulkOrderContainer {
-  background: #1a1a1a;
-  color: #fff; /* Set default text color to white */
+  background-color: #1a1a1a;
+  color: #e5c07b;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.heading {
-  color: #a88734; /* Gold color for heading */
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.subheading {
-  color: #ddd; /* Lighter color for subheading */
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.primaryText {
-  color: #90ee90; /* Light green for primary text */
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;.aboutSection {
+    background-color: #1a1a1a;
+    padding: 4rem 2rem;
+    color: #fff;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .sectionTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #e5c07b;
+    margin-bottom: 3rem;
+  }
+  
+  .gridContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+  }
+  
+  .imageContainer {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(229, 192, 123, 0.3);
+  }
+  
+  .aboutImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .imageContainer:hover .aboutImage {
+    transform: scale(1.05);
+  }
+  
+  .contentContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .subtitle {
+    color: #e5c07b;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .description {
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .feature {
+    text-align: center;
+  }
+  
+  .icon {
+    color: #e5c07b;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .feature h4 {
+    color: #e5c07b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .feature p {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  
+  .statsContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(229, 192, 123, 0.3);
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat h3 {
+    color: #e5c07b;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat p {
+    color: #888;
+  }
+  
+  @media (max-width: 768px) {
+    .gridContainer {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  
+    .features {
+      grid-template-columns: 1fr;
+    }
+  
+    .statsContainer {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
 }
 
 .formContainer {
-  background-color: #333; /* Dark gray form container */
-  padding: 20px;
+  background: #222;
+  padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
 }
 
 .label {
   display: block;
-  margin-bottom: 5px;
-  color: #eee; /* Light color for labels */
+  margin-bottom: 0.5rem;
+  color: #e5c07b;
 }
 
 .input,
 .select,
 .textarea {
   width: 100%;
-  padding: 4px;
-  border: 1px solid #555;
+  padding: 0.75rem;
   border-radius: 4px;
-  background-color: #444; /* Dark background for inputs */
-  color: #fff;
-  box-sizing: border-box;
-}
-
-.textarea {
-  height: 100px; /* Adjust height as needed */
-  resize: vertical;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
 }
 
 .input:focus,
 .select:focus,
 .textarea:focus {
-  border-color: #a88734; /* Gold focus color */
   outline: none;
-  box-shadow: 0 0 5px #a88734;
+  border-color: #e5c07b;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
 .select {
-  appearance: none; /* Remove default arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5c07b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11.5l-5-5h10l-5 5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 8px top 50%;
-  background-size: 16px;
+  background-position: right 0.75rem center;
+  padding-right: 2.5rem;
+}
+
+.error {
+  color: #ff4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 
 .submitButton {
-  background-color: #6b8e23; /* Green submit button */
-  color: white;
   width: 100%;
-  padding: 10px 20px;
+  padding: 1rem;
+  background-color: #e5c07b;
+  color: #1a1a1a;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1.5rem;
 }
 
 .submitButton:hover {
-  background-color: #556b2f; /* Darker green on hover */
+  background-color: #d4af37;
 }
 
-.iconButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e5c07b;
-  color: black;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  gap: 0.5rem; /* Add space between icon and count */
+.submitButton:disabled {
+  background-color: #666;
+  cursor: not-allowed;
 }
 
-.cartCount {
-  width: 18px;
-  height: 18px;
-  display: flex; 
-   align-items: center;
-  justify-content: center;
-  background-color: #ffa006;
-  font-size: 12px;
-  padding: 0;
-  border-radius: 2px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .heading {
-    font-size: 2rem;
+  .bulkOrderContainer {
+    padding: 1rem;
   }
 
-  .subheading {
-    font-size: 1rem;
+  .formContainer {
+    padding: 1.5rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

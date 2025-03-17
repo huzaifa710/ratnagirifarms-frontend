@@ -9,10 +9,9 @@ export default function Hero() {
       <div className={styles.heroBackground}>
         <Image
           src="/home/hero-5.png"
-          alt="Ratnagiri Mango Farm"
-          layout="fill"
-          objectFit="cover"
-          quality={100}
+          alt="Hero Image"
+          fill
+          style={{ objectFit: "cover" }} // Replace objectFit prop with style
           priority
         />
         <div className={styles.overlay}></div>
@@ -27,7 +26,7 @@ export default function Hero() {
           Directly from our farms to your doorstep. Pure, organic, and
           delicious.
         </p>
-        <Link href="/ratnagiri-alphonso">
+        <Link href="/product">
           <button className={styles.heroButton}>Order Now</button>{" "}
         </Link>
       </div>

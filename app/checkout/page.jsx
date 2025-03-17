@@ -11,8 +11,7 @@ import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 export default function Checkout() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isGuestCheckout = searchParams.get("guest") === "true";
-  const { uuid, accessToken, user } = useAuth();
+  const { uuid, accessToken, setShowAuthModal } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -21,7 +20,10 @@ export default function Checkout() {
   const [editingAddress, setEditingAddress] = useState(null);
   const { guestCart, updateCartCount, addToGuestCart, removeFromGuestCart } =
     useCart();
+
   const [addressForm, setAddressForm] = useState({
+    full_name: "",
+    email: "",
     address: "",
     city: "",
     state: "",
@@ -29,21 +31,9 @@ export default function Checkout() {
     is_default: false,
   });
 
-  // Guest checkout form
-  const [guestForm, setGuestForm] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    mobile_number: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-  });
-
   useEffect(() => {
-    if (!uuid && !accessToken && !isGuestCheckout) {
-      router.push("/login");
+    if (!uuid && !accessToken) {
+      setShowAuthModal(true);
       return;
     }
 
@@ -54,7 +44,7 @@ export default function Checkout() {
       fetchCartItems();
       fetchAddresses();
     }
-  }, [uuid, accessToken, isGuestCheckout]);
+  }, [uuid, accessToken]);
 
   const fetchCartItems = async () => {
     try {
@@ -158,6 +148,8 @@ export default function Checkout() {
       setShowAddressForm(false);
       setEditingAddress(null);
       setAddressForm({
+        full_name: "",
+        email: "",
         address: "",
         city: "",
         state: "",
@@ -184,6 +176,8 @@ export default function Checkout() {
   const handleEditAddress = (address) => {
     setEditingAddress(address);
     setAddressForm({
+      full_name: address.full_name,
+      email: address.email,
       address: address.address,
       city: address.city,
       state: address.state,
@@ -194,33 +188,33 @@ export default function Checkout() {
   };
 
   const handlePlaceOrder = async () => {
+    if (!selectedAddress) {
+      toast.error("Please select a delivery address");
+      return;
+    }
+
     try {
-      // 1. Create order and get razorpay_order_id
-      const createOrderResponse = await api.post(`/orders/create/${uuid}`, {
+      // Create guest order or regular order based on checkout type
+      const createOrderResponse = await api.post("orders/create", {
+        uuid,
         cart_ids: cartItems.map((item) => item.id),
         user_address_id: selectedAddress.id,
       });
 
-      if (!createOrderResponse.data.success) {
-        toast.error("Failed to create order");
-        return;
-      }
-
-      // 2. Initialize Razorpay
+      // Initialize Razorpay with appropriate details
       const options = {
-        key: "rzp_test_KHe9PXRSfLoVw5",
-        amount: createOrderResponse.data.amount, // amount from response
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: createOrderResponse.data.amount,
         currency: "INR",
         name: "Ratnagiri Farms",
         description: "Order Payment",
         order_id: createOrderResponse.data.razorpay_order_id,
         prefill: {
-          name: `Huzaifa Noori`,
-          email: "abc@test.com",
-          contact: "1234567890",
+          name: addressForm.full_name,
+          email: addressForm.address.email,
+          contact: addressForm.mobile_number,
         },
         handler: async (response) => {
-          // 3. Verify payment
           try {
             const verifyResponse = await api.post("/orders/verify-payment", {
               razorpay_order_id: response.razorpay_order_id,
@@ -230,20 +224,16 @@ export default function Checkout() {
 
             if (verifyResponse.data.success) {
               toast.success("Payment successful!");
-              router.push("/orders"); // Redirect to orders page
-            } else {
-              toast.error("Payment verification failed");
+              router.push("/orders");
             }
           } catch (error) {
             toast.error("Payment verification failed");
-            console.error(error);
           }
         },
         theme: {
           color: "#e5c07b",
         },
       };
-
       // Load Razorpay script
       const loadRazorpay = () => {
         return new Promise((resolve) => {
@@ -279,143 +269,188 @@ export default function Checkout() {
       <Toaster position="top-center" />
       <h1 className={styles.title}>Checkout</h1>
       <div className={styles.checkoutContent}>
-        {!isGuestCheckout ? (
-          // Logged in user view
-          <div className={styles.addressSection}>
-            <div className={styles.addressHeader}>
-              <h2>Delivery Address</h2>
-              <button
-                onClick={() => {
-                  setShowAddressForm(true);
-                  setEditingAddress(null);
-                  setAddressForm({
-                    address: "",
-                    city: "",
-                    state: "",
-                    pincode: "",
-                    is_default: false,
-                  });
-                }}
-                className={styles.addAddressBtn}
-              >
-                Add New Address
-              </button>
-            </div>
-
-            {showAddressForm && (
-              <form
-                onSubmit={handleAddressSubmit}
-                className={styles.addressForm}
-              >
-                <h3>{editingAddress ? "Edit Address" : "Add New Address"}</h3>
-                <textarea
-                  placeholder="Address"
-                  name="address"
-                  value={addressForm.address}
-                  onChange={(e) =>
-                    setAddressForm({ ...addressForm, address: e.target.value })
-                  }
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="City"
-                  name="city"
-                  value={addressForm.city}
-                  onChange={(e) =>
-                    setAddressForm({ ...addressForm, city: e.target.value })
-                  }
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="State"
-                  name="state"
-                  value={addressForm.state}
-                  onChange={(e) =>
-                    setAddressForm({ ...addressForm, state: e.target.value })
-                  }
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Pincode"
-                  name="pincode"
-                  value={addressForm.pincode}
-                  onChange={(e) =>
-                    setAddressForm({ ...addressForm, pincode: e.target.value })
-                  }
-                  required
-                  maxLength={6}
-                />
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={addressForm.is_default}
-                    onChange={(e) =>
-                      setAddressForm({
-                        ...addressForm,
-                        is_default: e.target.checked,
-                      })
-                    }
-                  />
-                  Set as default address
-                </label>
-                <div className={styles.formButtons}>
-                  <button type="submit">
-                    {editingAddress ? "Update" : "Add"} Address
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddressForm(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
+        <div className={styles.addressSection}>
+          <div className={styles.addressHeader}>
+            {addresses.length == 0 ? (
+              <h2 className={styles.Message}>
+                {" "}
+                Please add new address to proceed with the order
+              </h2>
+            ) : (
+              <h2 className={styles.Message}> Delivery Address</h2>
             )}
+            <button
+              onClick={() => {
+                setShowAddressForm(true);
+                setEditingAddress(null);
+                setAddressForm({
+                  full_name: "",
+                  email: "",
+                  address: "",
+                  city: "",
+                  state: "",
+                  pincode: "",
+                  is_default: false,
+                });
+              }}
+              className={styles.addAddressBtn}
+            >
+              Add New Address
+            </button>
+          </div>
 
-            <div className={styles.addressList}>
-              {addresses.map((address) => (
-                <div
-                  key={address.id}
-                  className={`${styles.addressCard} ${
-                    selectedAddress?.id === address.id ? styles.selected : ""
-                  }`}
-                  onClick={() => setSelectedAddress(address)}
-                >
-                  <div className={styles.addressInfo}>
-                    <p>{address.address}</p>
-                    <p>
-                      {address.city}, {address.state} - {address.pincode}
-                    </p>
+          {showAddressForm && (
+            <form onSubmit={handleAddressSubmit} className={styles.addressForm}>
+              <h3>{editingAddress ? "Edit Address" : "Add New Address"}</h3>
+              <input
+                type="text"
+                placeholder="Full Name (First and Last Name"
+                name="full_name"
+                value={addressForm.full_name}
+                onChange={(e) =>
+                  setAddressForm({
+                    ...addressForm,
+                    full_name: e.target.value,
+                  })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Email"
+                name="email"
+                value={addressForm.email}
+                onChange={(e) =>
+                  setAddressForm({
+                    ...addressForm,
+                    email: e.target.value,
+                  })
+                }
+                required
+              />
+              <textarea
+                placeholder="Address"
+                name="address"
+                value={addressForm.address}
+                onChange={(e) =>
+                  setAddressForm({ ...addressForm, address: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="City"
+                name="city"
+                value={addressForm.city}
+                onChange={(e) =>
+                  setAddressForm({ ...addressForm, city: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="State"
+                name="state"
+                value={addressForm.state}
+                onChange={(e) =>
+                  setAddressForm({ ...addressForm, state: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Pincode"
+                name="pincode"
+                value={addressForm.pincode}
+                onChange={(e) =>
+                  setAddressForm({ ...addressForm, pincode: e.target.value })
+                }
+                required
+                maxLength={6}
+              />
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={addressForm.is_default}
+                  onChange={(e) =>
+                    setAddressForm({
+                      ...addressForm,
+                      is_default: e.target.checked,
+                    })
+                  }
+                />
+                Set as default address
+              </label>
+              <div className={styles.formButtons}>
+                <button type="submit">
+                  {editingAddress ? "Update" : "Add"} Address
+                </button>
+                <button type="button" onClick={() => setShowAddressForm(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+
+          <div className={styles.addressList}>
+            {addresses.map((address) => (
+              <div
+                key={address.id}
+                className={`${styles.addressCard} ${
+                  selectedAddress?.id === address.id ? styles.selected : ""
+                }`}
+                onClick={() => setSelectedAddress(address)}
+              >
+                <div className={styles.addressInfo}>
+                  <p>{address.full_name}</p>
+                  <p>{address.email}</p>
+                  <p>{address.address}</p>
+                  <p>
+                    {address.city}, {address.state} - {address.pincode}
+                  </p>
+                  <div className={styles.addressActions}>
                     {address.is_default && (
                       <span className={styles.defaultBadge}>Default</span>
                     )}
-                  </div>
-                  <div className={styles.addressActions}>
-                    <button onClick={() => handleEditAddress(address)}>
-                      Edit
-                    </button>
-                    <button onClick={() => handleDeleteAddress(address.id)}>
-                      Delete
-                    </button>
+                    <div className={styles.actionButtons}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditAddress(address);
+                        }}
+                        className={styles.editBtn}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteAddress(address.id);
+                        }}
+                        className={styles.deleteBtn}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
+                {/* <div className={styles.addressActions}>
+                  <button onClick={() => handleEditAddress(address)}>
+                    Edit
+                  </button>
+                  <button onClick={() => handleDeleteAddress(address.id)}>
+                    Delete
+                  </button>
+                </div> */}
+              </div>
+            ))}
           </div>
-        ) : (
-          // Guest checkout form
-          <div className={styles.guestForm}>
-            {/* Existing guest form code */}
-          </div>
-        )}
+        </div>
 
         <div className={styles.productSummaryContainer}>
           <div className={styles.itemsList}>
             {cartItems.map((item) => (
-              <div key={item.id} className={styles.orderItem}>
+              <div key={item.product_variant_id} className={styles.orderItem}>
                 <div className={styles.itemInfo}>
                   <h3>{item.name}</h3>
                   <p>No Of Pieces Per Box : {item.quantity_per_box}</p>
@@ -489,7 +524,7 @@ export default function Checkout() {
             <button
               className={styles.placeOrderBtn}
               onClick={handlePlaceOrder}
-              disabled={!isGuestCheckout && !selectedAddress}
+              disabled={!selectedAddress}
             >
               Place Order
             </button>

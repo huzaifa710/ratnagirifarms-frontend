@@ -35,7 +35,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // If error is 401 and we haven't tried refreshing token yet
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -43,7 +42,6 @@ api.interceptors.response.use(
         const accessToken = localStorage.getItem("accessToken");
         const refreshToken = localStorage.getItem("refreshToken");
 
-        // Call sign in using token with a new axios instance to avoid interceptors
         const response = await axios.post(
           `${environment.API_URL}/users/sign-in-using-token`,
           { accessToken, refreshToken }
@@ -51,34 +49,34 @@ api.interceptors.response.use(
 
         if (response.data.success) {
           const newToken = response.data.accessToken;
-
-          // Update tokens in localStorage
           localStorage.setItem("accessToken", newToken);
           localStorage.setItem("refreshToken", response.data.refreshToken);
           localStorage.setItem("uuid", response.data.user.uuid);
 
-          // Update the failed request config with new token
           originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-
-          // Retry the original request with new token
           return axios(originalRequest);
         } else {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("uuid");
-          toast.error("You have been logged out. Please login again");
-          // window.location.href = '/login';
+          toast.error("Session expired. Please login again.");
+          // Instead of redirecting, show auth modal
+          if (typeof window !== "undefined") {
+            const authContext = window.__AUTH_CONTEXT__;
+            if (authContext && authContext.setShowAuthModal) {
+              authContext.setShowAuthModal(true);
+            }
+          }
         }
       } catch (err) {
-        // Clear auth data and redirect to login
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("uuid");
-        window.location.href = "/login";
+        toast.error("Session expired. Please login again.");
+
       }
     }
     return Promise.reject(error);
   }
 );
-
 export default api;

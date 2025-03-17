@@ -143,3 +143,10 @@
 .errorToast {
   background: red !important;
 }
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+    max-width: 100%;
+  }
+}

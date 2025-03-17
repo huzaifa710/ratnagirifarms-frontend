@@ -83,6 +83,8 @@
   font-weight: bold;
   min-width: 100px;
   text-align: right;
+  display: flex;
+  justify-content: space-between;
 }
 
 .removeButton {
@@ -138,3 +140,77 @@
 .checkoutButton:hover {
   background: #ffd700;
 }
+
+@media (max-width: 768px) {
+  .cartContainer {
+    padding: 1rem;
+  }
+
+  .cartItem {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .itemImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .itemInfo {
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  .itemInfo h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .quantityControl {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(229, 192, 123, 0.1);
+    border-bottom: 1px solid rgba(229, 192, 123, 0.1);
+  }
+
+  .itemTotal {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .cartSummary {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #222;
+    padding: 1rem;
+    border-top: 1px solid rgba(229, 192, 123, 0.3);
+    z-index: 10;
+  }
+
+  .cartItems {
+    margin-bottom: 150px; /* Add space for fixed cart summary */
+  }
+
+  .checkoutButton {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .summaryRow {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Add margin to the last cart item to prevent overlap with fixed summary */
+/* .cartItems > div:last-child {
+  margin-bottom: 1rem;
+} */

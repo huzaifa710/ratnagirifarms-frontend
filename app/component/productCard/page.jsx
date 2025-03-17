@@ -24,7 +24,7 @@ function SingleProduct({ product }) {
         name: product.name,
         price: variant.price,
         quantity_per_box: variant.quantity_per_box,
-        is_active: variant.is_active
+        is_active: variant.is_active,
       });
       toast.success("Added to cart");
       return;
@@ -59,23 +59,9 @@ function SingleProduct({ product }) {
 
   return (
     <>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        gutter={8}
-        toastOptions={{
-          className: styles.toast,
-          success: {
-            className: styles.successToast,
-          },
-          error: {
-            className: styles.errorToast,
-          },
-        }}
-      />
       <div className={styles.card}>
         <img
-          src="/card/image1.png"
+          src="/card/image2.png"
           alt={product.name}
           className={styles.productImage}
         />

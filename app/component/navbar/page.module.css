@@ -6,6 +6,24 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #e5c07b;
+  position: relative;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: #e5c07b;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 100;
+}
+
+/* Desktop Navigation */
+.desktopNav {
+  display: flex;
+  align-items: center;
 }
 
 /* Logo */
@@ -27,10 +45,36 @@
   transition: color 0.3s ease;
   text-decoration: none;
   color: #e5c07b;
+  text-align: left;
 }
 
 .navItem:hover {
   color: white;
+}
+
+/* Mobile Navigation */
+.mobileNav {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 70%;
+  height: 100vh;
+  background-color: #1a1a1a;
+  padding: 5rem 2rem 2rem;
+  transition: left 0.3s ease-in-out;
+  z-index: 99;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.mobileNavOpen {
+  left: 0;
+}
+
+.mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /* Cart & User Icons */
@@ -89,4 +133,31 @@
 .dropdownItem:hover {
   background-color: #e5c07b;
   color: black;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .desktopNav {
+    display: none;
+  }
+
+  .mobileNav {
+    display: block;
+  }
+
+  .desktopOnly {
+    display: none;
+  }
+
+  .navbar {
+    padding: 1rem;
+  }
+
+  .iconsContainer {
+    gap: 0.5rem;
+  }
 }

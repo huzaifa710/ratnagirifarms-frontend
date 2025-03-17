@@ -12,11 +12,17 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #1a1a1a;  /* Keep it same for light mode too */
+    --background: #1a1a1a; /* Keep it same for light mode too */
     --foreground: #ededed;
   }
 }
+.successToast {
+  background: #fff !important;
+}
 
+.errorToast {
+  background: red !important;
+}
 body {
   color: var(--foreground);
   background: var(--background);

@@ -16,14 +16,14 @@ export function CartProvider({ children }) {
     if (!uuid || !accessToken) {
       const cookieCart = getCartFromCookie();
       setGuestCart(cookieCart);
-      setCartCount(cookieCart.reduce((sum, item) => sum + item.quantity, 0));
+      setCartCount(cookieCart ? cookieCart.length : 0);
     }
   }, [uuid, accessToken]);
 
   const updateCartCount = async () => {
     if (!uuid || !accessToken) {
       const cookieCart = getCartFromCookie();
-      setCartCount(cookieCart.reduce((sum, item) => sum + item.quantity, 0));
+      setCartCount(cookieCart ? cookieCart.length : 0);
       return;
     }
 
@@ -36,16 +36,20 @@ export function CartProvider({ children }) {
     }
   };
 
-  const addToGuestCart = (product) => {
+  const addToGuestCart = async (product) => {
     const updatedCart = [...guestCart];
     const existingItem = updatedCart.find(
-      item => item.product_variant_id === product.product_variant_id
+      (item) => item.product_variant_id === product.product_variant_id
     );
 
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      updatedCart.push({ ...product, quantity: 1 });
+      // Only store product_variant_id and quantity
+      updatedCart.push({
+        product_variant_id: product.product_variant_id,
+        quantity: 1,
+      });
     }
 
     setGuestCart(updatedCart);
@@ -54,15 +58,17 @@ export function CartProvider({ children }) {
   };
 
   const removeFromGuestCart = (product_variant_id, quantity = 1) => {
-    const updatedCart = guestCart.map(item => {
-      if (item.product_variant_id === product_variant_id) {
-        return { 
-          ...item, 
-          quantity: Math.max(0, item.quantity - quantity) 
-        };
-      }
-      return item;
-    }).filter(item => item.quantity > 0);
+    const updatedCart = guestCart
+      .map((item) => {
+        if (item.product_variant_id === product_variant_id) {
+          return {
+            product_variant_id: item.product_variant_id,
+            quantity: Math.max(0, item.quantity - quantity),
+          };
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
 
     setGuestCart(updatedCart);
     setCartCookie(updatedCart);
@@ -70,13 +76,15 @@ export function CartProvider({ children }) {
   };
 
   return (
-    <CartContext.Provider value={{ 
-      cartCount, 
-      updateCartCount,
-      guestCart,
-      addToGuestCart,
-      removeFromGuestCart 
-    }}>
+    <CartContext.Provider
+      value={{
+        cartCount,
+        updateCartCount,
+        guestCart,
+        addToGuestCart,
+        removeFromGuestCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

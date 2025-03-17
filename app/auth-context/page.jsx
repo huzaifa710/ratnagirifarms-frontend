@@ -3,13 +3,16 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { environment } from "@/environment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
+import AuthModal from "@/app/otp/page";
 const AuthContext = createContext();
+import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
+import api from "@/utils/axios";
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const login = async (email, password) => {
     try {
@@ -45,13 +48,64 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const transferGuestCart = async (uuid, accessToken) => {
+    try {
+      const guestCart = getCartFromCookie();
+      if (guestCart && guestCart.length > 0) {
+        // Send only product_variant_id and quantity
+        const cartItems = guestCart.map((item) => ({
+          product_variant_id: item.product_variant_id,
+          quantity: item.quantity,
+        }));
+
+        const response = await api.post(
+          "/carts/transfer",
+          {
+            uuid,
+            cartItems,
+          },
+        );
+
+        // Clear guest cart after successful transfer
+        if (response.data.success) {
+          setCartCookie([]); // Clear the cookie cart
+        }
+      }
+    } catch (error) {
+      console.error("Error transferring guest cart:", error);
+    }
+  };
+
+  const handleAuthSuccess = async (data) => {
+    const { accessToken, refreshToken, user } = data;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("uuid", user.uuid);
+    }
+    setIsAuthenticated(true);
+    setUser(user);
+
+    // Transfer cart with new credentials
+    await transferGuestCart(user.uuid, accessToken);
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.__AUTH_CONTEXT__ = {
+        setShowAuthModal,
+      };
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
         user,
-        login,
         logout,
+        showAuthModal,
+        setShowAuthModal,
         uuid:
           user?.uuid ||
           (typeof window !== "undefined" ? localStorage.getItem("uuid") : null),
@@ -62,6 +116,11 @@ export function AuthProvider({ children }) {
       }}
     >
       {children}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
     </AuthContext.Provider>
   );
 }

@@ -308,7 +308,7 @@
 
 .addressSection {
   background: #222;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 8px;
   width: 100%;
   border: 1px solid rgba(229, 192, 123, 0.3);
@@ -318,9 +318,22 @@
 
 .addressHeader {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.Message {
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: center;
+  background: rgba(229, 192, 123, 0.1);
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  border-radius: 8px;
+  margin: 2px 0;
+  color: #e5c07b;
 }
 
 .addAddressBtn {
@@ -331,6 +344,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
+  width: 100%;
 }
 
 .addressForm {
@@ -410,49 +424,82 @@
 }
 
 .addressCard {
-  background: #1a1a1a;
-  padding: 1rem;
+  background: #222;
+  border: 1px solid rgba(229, 192, 123, 0.3);
   border-radius: 8px;
-  border: 2px solid transparent;
+  padding: 1rem;
   cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  transition: all 0.3s ease;
 }
 
 .addressCard.selected {
-  border-color: #ffd700;
+  border-color: #e5c07b;
+  box-shadow: 0 0 0 2px rgba(229, 192, 123, 0.2);
 }
 
 .addressInfo {
-  flex: 1;
-}
-
-.defaultBadge {
-  background: #ffd700;
-  color: #1a1a1a;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  margin-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .addressActions {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(229, 192, 123, 0.1);
+}
+
+.actionButtons {
+  display: flex;
   gap: 0.5rem;
 }
 
-.addressActions button {
-  padding: 0.5rem;
-  border: none;
+.defaultBadge {
+  background: rgba(229, 192, 123, 0.2);
+  color: #e5c07b;
+  padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  cursor: pointer;
-  background: #333;
+  font-size: 0.875rem;
+}
+
+.editBtn,
+.deleteBtn {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.editBtn {
+  background: rgba(229, 192, 123, 0.2);
   color: #e5c07b;
 }
 
-.addressActions button:hover {
-  background: #444;
+.deleteBtn {
+  background: rgba(255, 87, 87, 0.2);
+  color: #ff5757;
+}
+
+@media (max-width: 768px) {
+  .addressCard {
+    padding: 0.875rem;
+  }
+
+  .addressActions {
+    margin-top: 0.75rem;
+  }
+
+  .actionButtons button {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+  }
+
+  .defaultBadge {
+    font-size: 1rem;
+  }
 }
 
 .productSummaryContainer {
@@ -470,8 +517,151 @@
   .productSummaryContainer {
     grid-template-columns: 1fr;
   }
-  
+
   .orderSummary {
     position: static;
+  }
+}
+
+.guestForm {
+  background: #222;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+}
+
+.guestForm h2 {
+  color: #e5c07b;
+  margin-bottom: 1.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  color: #e5c07b;
+  margin-bottom: 0.5rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: #1a1a1a;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  border-radius: 4px;
+  color: #e5c07b;
+}
+
+.formGroup textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Existing styles remain the same... */
+
+@media (max-width: 768px) {
+  .checkoutContainer {
+    padding: 1rem;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 50px);
+  }
+
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .checkoutContent {
+    gap: 1rem;
+  }
+
+  .addressSection {
+    padding: 1rem;
+  }
+
+  .productSummaryContainer {
+    grid-template-columns: 1fr;
+    gap: 0rem;
+    position: relative; /* For positioning context */
+  }
+
+  .itemsList {
+    margin-bottom: 1rem; /* Reset margin */
+    padding: 1rem;
+  }
+
+  .orderSummary {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 100;
+    margin: 0;
+    border-radius: 16px 16px 16px 16px;
+    padding: 1rem;
+    background: #222;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 100%;
+    transform: translateZ(0); /* Force GPU acceleration */
+  }
+
+  .summaryDetails {
+    margin-bottom: 1rem;
+  }
+
+  .summaryRow {
+    padding: 0.5rem 0;
+  }
+
+  .placeOrderBtn {
+    margin-bottom: env(safe-area-inset-bottom);
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  /* Add a collapsed version of summary that expands on tap */
+  .orderSummary.collapsed {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    cursor: pointer;
+  }
+
+  .orderSummary.collapsed .summaryDetails {
+    display: none;
+  }
+
+  .orderSummary.collapsed .summaryRow.total {
+    margin: 0;
+    padding: 0;
+  }
+
+  .itemsList {
+    margin-bottom: 200px;
+  }
+}
+
+/* Add these styles for a smoother mobile experience */
+@media (hover: none) {
+  .quantityBtn:active,
+  .removeBtn:active,
+  .addressCard:active {
+    opacity: 0.7;
   }
 }

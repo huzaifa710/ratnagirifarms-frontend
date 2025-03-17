@@ -7,6 +7,7 @@ import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
 import { useRouter } from "next/navigation";
+import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -17,11 +18,42 @@ export default function Cart() {
   const router = useRouter();
 
   const fetchCartItems = async () => {
-    if (!uuid && !accessToken) {
-      setCartItems(guestCart);
+    if (!uuid || !accessToken) {
+      // For guest cart, fetch product details from backend
+      const guestCartItems = getCartFromCookie();
+      if (guestCartItems.length > 0) {
+        try {
+          const variantIds = guestCartItems.map(
+            (item) => item.product_variant_id
+          );
+          const response = await api.post("/products/by-product_variant_id", {
+            variantIds,
+          });
+
+          // Merge product details with quantities from cookie
+          const cartWithDetails = guestCartItems.map((item) => {
+            const variantDetails = response.data.product.find(
+              (v) => v.product_variant_id === item.product_variant_id
+            );
+            return {
+              ...variantDetails,
+              quantity: item.quantity,
+            };
+          });
+
+          setCartItems(cartWithDetails);
+        } catch (error) {
+          console.error("Error fetching guest cart details:", error);
+          toast.error("Failed to fetch cart details");
+        }
+      } else {
+        setCartItems([]);
+      }
       setLoading(false);
       return;
     }
+
+    // For authenticated users, fetch from their cart
     try {
       const response = await api.get(`/carts/by-uuid/${uuid}`);
       setCartItems(response.data.cartItems);
@@ -82,7 +114,6 @@ export default function Cart() {
 
   return (
     <div className={styles.cartContainer}>
-      <Toaster position="top-center" />
       <h1 className={styles.title}>Shopping Cart</h1>
       {loading ? (
         <p>Loading...</p>
@@ -119,15 +150,15 @@ export default function Cart() {
                 </div>
                 <div className={styles.itemTotal}>
                   <p>₹{item.price * item.quantity}</p>
+                  <button
+                    className={styles.removeButton}
+                    onClick={() =>
+                      removeFromCart(item.product_variant_id, item.quantity)
+                    }
+                  >
+                    <FaTrash />
+                  </button>
                 </div>
-                <button
-                  className={styles.removeButton}
-                  onClick={() =>
-                    removeFromCart(item.product_variant_id, item.quantity)
-                  }
-                >
-                  <FaTrash />
-                </button>
               </div>
             ))}
           </div>
@@ -149,14 +180,14 @@ export default function Cart() {
             >
               Proceed to Checkout
             </button>
-            {!uuid && !accessToken && (
+            {/* {!uuid && !accessToken && (
               <button
                 className={styles.checkoutButton}
                 onClick={() => router.push("/checkout?guest=true")}
               >
                 Proceed as Guest
               </button>
-            )}
+            )} */}
           </div>
         </>
       )}

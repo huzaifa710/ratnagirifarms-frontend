@@ -1,0 +1,133 @@
+.testimonialSection {
+  /* padding: 4rem 2rem; */
+  background-color: #1a1a1a;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #e5c07b;
+  margin-bottom: 3rem;
+}
+
+.testimonialContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.testimonialWrapper {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.testimonialCard {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
+}
+
+.testimonialSlide {
+  min-width: 100%;
+  padding: 2rem;
+  background: #222;
+  border-radius: 1rem;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  text-align: center;
+}
+
+.quoteIcon {
+  color: #e5c07b;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.testimonialText {
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.testimonialAuthor {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.authorImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorInfo {
+  text-align: center;
+}
+
+.authorInfo h3 {
+  color: #e5c07b;
+  margin: 0;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.authorInfo p {
+  color: #888;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: #e5c07b;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.3s;
+  z-index: 2;
+}
+
+.navButton:hover {
+  color: #ffd700;
+}
+
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(229, 192, 123, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.3s ease;
+}
+
+.indicator.active {
+  background-color: #e5c07b;
+}
+
+@media (max-width: 768px) {
+  .testimonialContainer {
+    gap: 1rem;
+    flex-direction: column;
+  }
+
+  .navButton {
+    font-size: 1.5rem;
+    transform: rotate(90deg);
+  }
+}

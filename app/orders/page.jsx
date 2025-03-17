@@ -3,22 +3,32 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
 import { toast, Toaster } from "react-hot-toast";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {
+  FaChevronDown,
+  FaChevronUp,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/app/cart-context/page";
 
 export default function Orders() {
   const { uuid, accessToken } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const router = useRouter();
-  
+  const { updateCartCount } = useCart();
+  const [isCancelling, setIsCancelling] = useState(false);
+
   useEffect(() => {
-    if (!uuid || !accessToken) {
+    if (!uuid && !accessToken) {
       router.push("/login");
       return;
     }
+    updateCartCount();
     fetchOrders();
   }, [uuid, accessToken]);
 
@@ -59,6 +69,34 @@ export default function Orders() {
     }
   };
 
+  const handleCancelClick = (orderId) => {
+    setSelectedOrderId(orderId);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    setIsCancelling(true);
+    try {
+      const response = await api.post("/orders/cancel", {
+        order_id: selectedOrderId,
+        uuid,
+      });
+
+      if (response.data.success) {
+        toast.success("Order cancelled successfully. Refund initiated.");
+        fetchOrders();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to cancel order");
+      console.error(error);
+    } finally {
+      setIsCancelling(false);
+      setShowConfirmation(false);
+      setSelectedOrderId(null);
+    }
+  };
   if (loading) return <div className={styles.loading}>Loading...</div>;
 
   return (
@@ -98,8 +136,8 @@ export default function Orders() {
                       }}
                     >
                       {order.payment_status.toUpperCase()}
-                    </span>
-                  </div>
+                    </span> 
+                  </div> <br className="md:hidden block"/>
                   <div className={styles.statusGroup}>
                     <span className={styles.statusLabel}>Order Status:</span>
                     <span
@@ -142,12 +180,23 @@ export default function Orders() {
 
                   <div className={styles.orderFooter}>
                     <div className={styles.deliveryAddress}>
-                      <h3>Delivery Address</h3>
-                      <p>{order.user_address.address}</p>
-                      <p>
-                        {order.user_address.city}, {order.user_address.state}
-                      </p>
-                      <p>{order.user_address.pincode}</p>
+                      <div>
+                        <h3>Delivery Address</h3>
+                        <p>{order.user_address.address}</p>
+                        <p>
+                          {order.user_address.city}, {order.user_address.state}
+                        </p>
+                        <p>{order.user_address.pincode}</p>
+                      </div>
+                      {order.order_status === "processing" && (
+                        <button
+                          onClick={() => handleCancelClick(order.id)}
+                          className={styles.cancelButton}
+                        >
+                          <FaExclamationTriangle />
+                          Cancel Order
+                        </button>
+                      )}
                     </div>
                     {/* <div className={styles.orderTotal}>
                       <span>Total Amount</span>
@@ -160,6 +209,35 @@ export default function Orders() {
           ))
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className={styles.confirmationOverlay}>
+          <div className={styles.confirmationModal}>
+            <h3 className={styles.confirmationTitle}>Cancel Order?</h3>
+            <p className={styles.confirmationMessage}>
+              Are you sure you want to cancel this order? This action cannot be
+              undone.
+            </p>
+            <div className={styles.confirmationButtons}>
+              <button
+                className={styles.cancelModalButton}
+                onClick={() => setShowConfirmation(false)}
+                disabled={isCancelling}
+              >
+                No, Keep Order
+              </button>
+              <button
+                className={styles.confirmButton}
+                onClick={handleConfirmCancel}
+                disabled={isCancelling}
+              >
+                {isCancelling ? "Cancelling..." : "Yes, Cancel Order"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

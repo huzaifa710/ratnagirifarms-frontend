@@ -1,0 +1,115 @@
+.policyContainer {
+  background-color: #1a1a1a;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  color: #fff;
+}
+
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  color: #e5c07b;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+  background: #222;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+}
+
+.section h2 {
+  color: #e5c07b;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.section p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.section ul {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+
+.section ul li {
+  margin-bottom: 0.75rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.section ul li::before {
+  content: "•";
+  color: #e5c07b;
+  position: absolute;
+  left: -1.5rem;
+}
+
+.contactSection {
+  background: #222;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  text-align: center;
+}
+
+.contactSection h2 {
+  color: #e5c07b;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.contactInfo {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  color: #e5c07b;
+}
+
+.contactItem a {
+  color: #e5c07b;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contactItem a:hover {
+  color: #ffd700;
+}
+
+@media (max-width: 768px) {
+  .policyContainer {
+    padding: 2rem 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .section {
+    padding: 1.5rem;
+  }
+
+  .contactInfo {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
