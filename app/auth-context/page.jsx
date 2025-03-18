@@ -50,6 +50,7 @@ export function AuthProvider({ children }) {
 
   const transferGuestCart = async (uuid, accessToken) => {
     try {
+      debugger;
       const guestCart = getCartFromCookie();
       if (guestCart && guestCart.length > 0) {
         // Send only product_variant_id and quantity
@@ -58,10 +59,14 @@ export function AuthProvider({ children }) {
           quantity: item.quantity,
         }));
 
-        const response = await api.post("/carts/transfer", {
-          uuid,
-          cartItems,
-        });
+        const response = await axios.post(
+          "/carts/transfer",
+          {
+            uuid,
+            cartItems,
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
         setCartCookie([]); // Clear the cookie cart
       }
     } catch (error) {

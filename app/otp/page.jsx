@@ -47,6 +47,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         mobile_number: mobile,
         otp,
       });
+      debugger;
       if (response.data.success) {
         onSuccess(response.data);
         onClose();
