@@ -17,9 +17,9 @@ export default function ContactUs() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name) newErrors.name = "Name is required";
+    if (!formData.full_name) newErrors.full_name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.phone) newErrors.phone = "Phone number is required";
+    if (!formData.mobile_number) newErrors.mobile_number = "Phone number is required";
     if (!formData.message) newErrors.message = "Message is required";
 
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -44,9 +44,9 @@ export default function ContactUs() {
       if (response.status === 200) {
         toast.success("Message sent successfully!");
         setFormData({
-          name: "",
+          full_name: "",
           email: "",
-          phone: "",
+          mobile_number: "",
           message: "",
         });
       }
@@ -99,12 +99,12 @@ export default function ContactUs() {
                   <label className={styles.label}>Full Name *</label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="full_name"
+                    value={formData.full_name}
                     onChange={handleChange}
                     className={styles.input}
                   />
-                  {errors.name && <p className={styles.error}>{errors.name}</p>}
+                  {errors.full_name && <p className={styles.error}>{errors.full_name}</p>}
                 </div>
 
                 <div>
@@ -127,13 +127,13 @@ export default function ContactUs() {
                   <label className={styles.label}>Phone Number *</label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="mobile_number"
+                    value={formData.mobile_number}
                     onChange={handleChange}
                     className={styles.input}
                   />
                   {errors.phone && (
-                    <p className={styles.error}>{errors.phone}</p>
+                    <p className={styles.error}>{errors.mobile_number}</p>
                   )}
                 </div>
               </div>

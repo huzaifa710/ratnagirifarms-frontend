@@ -8,8 +8,8 @@ import api from "@/utils/axios";
 
 export default function PartnerWithUs() {
   const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
+    full_name: "",
+    mobile_number: "",
     email: "",
     message: "",
   });
@@ -18,8 +18,8 @@ export default function PartnerWithUs() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName) newErrors.fullName = "Full name is required";
-    if (!formData.phone) newErrors.phone = "Phone number is required";
+    if (!formData.full_name) newErrors.full_name = "Full name is required";
+    if (!formData.mobile_number) newErrors.mobile_number = "mobile_number number is required";
     if (!formData.email) newErrors.email = "Email is required";
 
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -47,8 +47,8 @@ export default function PartnerWithUs() {
       if (response.status === 200) {
         toast.success("Partnership request submitted successfully!");
         setFormData({
-          fullName: "",
-          phone: "",
+          full_name: "",
+          mobile_number: "",
           email: "",
           message: "",
         });
@@ -83,27 +83,27 @@ export default function PartnerWithUs() {
                   <label className={styles.label}>Full Name *</label>
                   <input
                     type="text"
-                    name="fullName"
-                    value={formData.fullName}
+                    name="full_name"
+                    value={formData.full_name}
                     onChange={handleChange}
                     className={styles.input}
                   />
-                  {errors.fullName && (
-                    <p className={styles.error}>{errors.fullName}</p>
+                  {errors.full_name && (
+                    <p className={styles.error}>{errors.full_name}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className={styles.label}>Phone Number *</label>
+                  <label className={styles.label}>Number *</label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="mobile_number"
+                    value={formData.mobile_number}
                     onChange={handleChange}
                     className={styles.input}
                   />
-                  {errors.phone && (
-                    <p className={styles.error}>{errors.phone}</p>
+                  {errors.mobile_number && (
+                    <p className={styles.error}>{errors.mobile_number}</p>
                   )}
                 </div>
               </div>
