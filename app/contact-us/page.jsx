@@ -7,9 +7,9 @@ import api from "@/utils/axios";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
-    name: "",
+    full_name: "",
     email: "",
-    phone: "",
+    mobile_number: "",
     message: "",
   });
 
@@ -39,17 +39,14 @@ export default function ContactUs() {
     }
 
     try {
-      const response = await api.post(
-        `forms/contact-us/create`,
-        formData
-      );
+      const response = await api.post(`forms/contact-us/create`, formData);
 
       if (response.status === 200) {
         toast.success("Message sent successfully!");
         setFormData({
           name: "",
           email: "",
-          phone: "", 
+          phone: "",
           message: "",
         });
       }
