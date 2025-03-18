@@ -25,7 +25,7 @@ export default function Orders() {
 
   useEffect(() => {
     if (!uuid && !accessToken) {
-      router.push("/login");
+      setShowAuthModal(true);
       return;
     }
     updateCartCount();
