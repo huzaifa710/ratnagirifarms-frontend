@@ -114,7 +114,7 @@ export default function Orders() {
                 className={styles.orderSummary}
                 onClick={() => handleOrderClick(order.id)}
               >
-                <div className={styles.orderBasicInfo}>
+                <div className="flex justify-between mb-3">
                   <div className={styles.orderIdDate}>
                     <h2>Order #{order.id}</h2>
                     <p>{new Date(order.createdAt).toLocaleDateString()}</p>
@@ -123,9 +123,9 @@ export default function Orders() {
                     Total Amount: ₹{order.total_price}
                   </div>
                 </div>
-                <div className={styles.statusContainer}>
-                  <div className={styles.statusGroup}>
-                    <span className={styles.statusLabel}>Payment:</span>
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center gap-2">
+                    <span>Payment Status:</span>
                     <span
                       className={styles.statusBadge}
                       style={{
@@ -136,26 +136,28 @@ export default function Orders() {
                       }}
                     >
                       {order.payment_status.toUpperCase()}
-                    </span> 
-                  </div> <br className="md:hidden block"/>
-                  <div className={styles.statusGroup}>
-                    <span className={styles.statusLabel}>Order Status:</span>
-                    <span
-                      className={styles.statusBadge}
-                      style={{
-                        backgroundColor: getStatusColor(order.order_status),
-                      }}
-                    >
-                      {order.order_status.toUpperCase()}
                     </span>
                   </div>
-                  <span className={styles.expandIcon}>
-                    {expandedOrderId === order.id ? (
-                      <FaChevronUp />
-                    ) : (
-                      <FaChevronDown />
-                    )}
-                  </span>
+                  <div className="flex justify-between items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className>Order Status:</span>
+                      <span
+                        className={styles.statusBadge}
+                        style={{
+                          backgroundColor: getStatusColor(order.order_status),
+                        }}
+                      >
+                        {order.order_status.toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="">
+                      {expandedOrderId === order.id ? (
+                        <FaChevronUp />
+                      ) : (
+                        <FaChevronDown />
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -166,10 +168,18 @@ export default function Orders() {
                     {order.order_items.map((item) => (
                       <div key={item.id} className={styles.item}>
                         <div className={styles.itemInfo}>
-                          <h3>{item.product_variant.product.name}</h3>
-                          <p>Quantity: {item.quantity}</p>
-                          <p>Price per unit: ₹{item.price_per_unit}</p>
-                          <p>No Of Pieces Per Box : ₹{item.price_per_unit}</p>
+                          <h3 className="text-[#014421] font-semibold">
+                            {item.product_variant.product.name}
+                          </h3>
+                          <p className="text-[#014421]/70">
+                            Quantity: {item.quantity}
+                          </p>
+                          <p className="text-[#014421]/70">
+                            Price per unit: ₹{item.price_per_unit}
+                          </p>
+                          <p className="text-[#014421]/70">
+                            No Of Pieces Per Box : ₹{item.price_per_unit}
+                          </p>
                         </div>
                         <div className={styles.itemTotal}>
                           ₹{item.total_price}
@@ -181,12 +191,18 @@ export default function Orders() {
                   <div className={styles.orderFooter}>
                     <div className={styles.deliveryAddress}>
                       <div>
-                        <h3>Delivery Address</h3>
-                        <p>{order.user_address.address}</p>
-                        <p>
+                        <h3 className="text-[#014421] font-semibold">
+                          Delivery Address
+                        </h3>
+                        <p className="text-[#014421]/70">
+                          {order.user_address.address}
+                        </p>
+                        <p className="text-[#014421]/70">
                           {order.user_address.city}, {order.user_address.state}
                         </p>
-                        <p>{order.user_address.pincode}</p>
+                        <p className="text-[#014421]/70">
+                          {order.user_address.pincode}
+                        </p>
                       </div>
                       {order.order_status === "processing" && (
                         <button

@@ -175,9 +175,13 @@
     padding: 1rem;
   }
 
+  .productImage{
+    height: 150px;
+
+  }
+
   .card {
     min-height: 380px; /* Reduced from 400px */
-    gap: 0.5rem; /* Reduced from 0.75rem */
   }
 
   /* Title styles - remove truncation */

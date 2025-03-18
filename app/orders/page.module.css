@@ -77,10 +77,15 @@
   margin-bottom: 1rem;
 }
 
+/* .orderIdDate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+} */
+
 .orderIdDate h2 {
   color: #014421;
   font-size: 1.2rem;
-  margin-bottom: 0.25rem;
   font-family: "Playfair Display", serif;
 }
 
@@ -119,6 +124,7 @@
   border-radius: 12px;
   margin-bottom: 1rem;
   transition: transform 0.3s ease;
+  border: 2px solid rgba(1, 68, 33, 0.4);
 }
 
 .item:hover {
@@ -133,6 +139,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  border: 2px solid rgba(1, 68, 33, 0.4);
 }
 
 .cancelButton {
