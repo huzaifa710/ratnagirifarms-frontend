@@ -145,8 +145,33 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    gap: 20px;
+    padding: 10px;
+  }
+
   .card {
-    width: 100%;
-    max-width: 100%;
+    width: calc(50% - 10px); /* 50% width minus gap */
+    max-width: none;
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+
+  .addToCart,
+  .outOfStock {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .variantButton {
+    /* padding: 8px 8px; */
+    font-size: 12px;
   }
 }
