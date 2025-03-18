@@ -6,8 +6,8 @@
 }
 
 :root {
-  --background: #1a1a1a;
-  --foreground: #ededed;
+  --background: #FFFFFF;
+  --foreground: #014421;
 }
 
 @media (prefers-color-scheme: light) {
@@ -28,7 +28,7 @@ body {
   background: var(--background);
   min-height: 100vh; /* This ensures full viewport height coverage */
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', sans-serif;
   flex-direction: column;
   display: flex;
 }

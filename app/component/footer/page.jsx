@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.grid}>
-          {/* Contact Us */}
+          {/* Contact Us Section */}
           <div>
             <h3 className={styles.heading}>Contact Us</h3>
             <p className={styles.text}>
@@ -41,96 +41,99 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Important Links */}
-          <div>
-            <h3 className={styles.heading}>Important Links</h3>
-            <ul className={styles.listContainer}>
-              {/* <li>
-                <Link href="/blog" className={styles.link}>
-                  Blog
-                </Link>
-              </li> */}
-              <li>
-                <Link href="/about-us" className={styles.link}>
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/partner-with-us" className={styles.link}>
-                  Partner With Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact-us" className={styles.link}>
-                  Contact Us
-                </Link>
-              </li>
-              {/* <li>
-                <Link href="/faqs" className={styles.link}>
-                  FAQs
-                </Link>
-              </li> */}
-            </ul>
-          </div>
+          {/* Links Wrapper for side-by-side sections */}
+          <div className={styles.linksWrapper}>
+            {/* Important Links Section */}
+            <div>
+              <h3 className={styles.heading}>Important Links</h3>
+              <ul className={styles.listContainer}>
+                {/* <li>
+                  <Link href="/blog" className={styles.link}>
+                    Blog
+                  </Link>
+                </li> */}
+                <li>
+                  <Link href="/about-us" className={styles.link}>
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/partner-with-us" className={styles.link}>
+                    Partner With Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact-us" className={styles.link}>
+                    Contact Us
+                  </Link>
+                </li>
+                {/* <li>
+                  <Link href="/faqs" className={styles.link}>
+                    FAQs
+                  </Link>
+                </li> */}
+              </ul>
+            </div>
 
-          {/* Business Policies */}
-          <div>
-            <h3 className={styles.heading}>Business Policies</h3>
-            <ul className={styles.listContainer}>
-              <li>
-                <Link href="/terms-and-conditions" className={styles.link}>
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className={styles.link}>
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/refund-returns" className={styles.link}>
-                  Cancellation & Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/shipping" className={styles.link}>
-                  Shipping Policy
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Social Media & Payment Methods */}
-        {/* <div className={styles.divider}>
-          <div className={styles.paymentSection}>
-            <p className={styles.text}>
-              Copyright 2023. All Rights Reserved CANGO.
-            </p>
-            <div className={styles.paymentIcons}>
-              <img
-                src="/payment/visa.png"
-                alt="Visa"
-                className={styles.paymentIcon}
-              />
-              <img
-                src="/payment/mastercard.png"
-                alt="Mastercard"
-                className={styles.paymentIcon}
-              />
-              <img
-                src="/payment/rupay.png"
-                alt="RuPay"
-                className={styles.paymentIcon}
-              />
-              <img
-                src="/payment/upi.png"
-                alt="UPI"
-                className={styles.paymentIcon}
-              />
+            {/* Business Policy Section */}
+            <div>
+              <h3 className={styles.heading}>Business Policies</h3>
+              <ul className={styles.listContainer}>
+                <li>
+                  <Link href="/terms-and-conditions" className={styles.link}>
+                    Terms & Conditions
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className={styles.link}>
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/refund-returns" className={styles.link}>
+                    Cancellation & Refund Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shipping" className={styles.link}>
+                    Shipping Policy
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
-        </div> */}
+
+          {/* Payment Section */}
+          {/* <div className={styles.divider}>
+            <div className={styles.paymentSection}>
+              <p className={styles.text}>
+                Copyright 2023. All Rights Reserved CANGO.
+              </p>
+              <div className={styles.paymentIcons}>
+                <img
+                  src="/payment/visa.png"
+                  alt="Visa"
+                  className={styles.paymentIcon}
+                />
+                <img
+                  src="/payment/mastercard.png"
+                  alt="Mastercard"
+                  className={styles.paymentIcon}
+                />
+                <img
+                  src="/payment/rupay.png"
+                  alt="RuPay"
+                  className={styles.paymentIcon}
+                />
+                <img
+                  src="/payment/upi.png"
+                  alt="UPI"
+                  className={styles.paymentIcon}
+                />
+              </div>
+            </div>
+          </div> */}
+        </div>
       </div>
     </footer>
   );

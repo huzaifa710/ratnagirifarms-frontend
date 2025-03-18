@@ -26,11 +26,7 @@ export default function Home() {
       }
     );
 
-    const sections = [
-      productRef.current,
-      testimonialRef.current,
-      galleryRef.current,
-    ];
+    const sections = [productRef.current, testimonialRef.current, galleryRef.current];
     sections.forEach((section) => {
       if (section) observer.observe(section);
     });
@@ -43,28 +39,31 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <main className={styles.main}>
       <Hero />
-      <div
+      <section
         ref={productRef}
-        className={`${styles.productSection} ${styles.fadeIn} ${styles.delaySmall}`}
+        className={`${styles.productSection} ${styles.section} ${styles.fadeIn} ${styles.delaySmall}`}
       >
-        <h2 className={styles.sectionTitle}>Our Featured Products</h2>
+        <h2 className={styles.sectionTitle}>Premium Alphonso Mangoes</h2>
         <ProductCard />
-      </div>
-      <div
+      </section>
+      
+      <section
         ref={testimonialRef}
-        className={`${styles.fadeIn} ${styles.delayMedium}`}
+        className={`${styles.testimonialSection} ${styles.section} ${styles.fadeIn} ${styles.delayMedium}`}
       >
         <h2 className={styles.sectionTitle}>What Our Customers Say</h2>
-
         <Testimonials />
-      </div>
-      <div ref={galleryRef} className={`${styles.fadeIn} ${styles.delayLarge}`}>
-        <h2 className={styles.sectionTitle}>Our Gallery</h2>
-
+      </section>
+      
+      <section
+        ref={galleryRef}
+        className={`${styles.gallerySection} ${styles.section} ${styles.fadeIn} ${styles.delayLarge}`}
+      >
+        <h2 className={styles.sectionTitle}>Our Heritage</h2>
         <Gallery />
-      </div>
-    </>
+      </section>
+    </main>
   );
 }

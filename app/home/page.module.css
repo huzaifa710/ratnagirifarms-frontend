@@ -1,32 +1,44 @@
 .productSection {
-  background-color: #1a1a1a;
+  background-color: #FFFFFF;
+  padding: 2rem 1rem;
 }
 
 .section {
-  padding: 2rem 2rem;
+  padding: 2rem 1rem;
 }
 
 .sectionTitle {
+  font-family: 'Playfair Display', serif;
   text-align: center;
-  font-size: 2.5rem;
-  color: #e5c07b;
-  margin: 2rem 0rem;
+  font-size: 2rem;
+  color: #014421;
+  margin: 2rem 0;
+  position: relative;
+}
 
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: #D4AF37;
 }
 
 .fadeIn {
   opacity: 0;
-  transform: translateY(50px); /* Start 50px below */
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-  will-change: opacity, transform; /* Optimize animation performance */
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
 }
 
 .visible {
   opacity: 1;
-  transform: translateY(0); /* Move to original position */
+  transform: translateY(0);
 }
 
-/* Add different delays for each section */
 .delaySmall {
   transition-delay: 0.2s;
 }
@@ -39,15 +51,45 @@
   transition-delay: 0.6s;
 }
 
-@media (max-width: 768px) {
+/* Testimonials Section */
+.testimonialSection {
+  background-color: #F5F5DC;
+  padding: 3rem 1rem;
+}
+
+/* Gallery Section */
+.gallerySection {
+  background-color: #FFFFFF;
+  padding: 3rem 1rem;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
   .section {
-    padding: 2rem 2 2rem;
+    padding: 4rem 2rem;
   }
 
   .sectionTitle {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #e5c07b;
-    margin: 1rem 0rem;
+    font-size: 2.5rem;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: 5rem 4rem;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

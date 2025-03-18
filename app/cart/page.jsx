@@ -125,7 +125,7 @@ export default function Cart() {
             {cartItems?.map((item) => (
               <div key={item.product_variant_id} className={styles.cartItem}>
                 <img
-                  src="/card/image1.png"
+                  src="/card/image2.png"
                   alt={item.name}
                   className={styles.itemImage}
                 />

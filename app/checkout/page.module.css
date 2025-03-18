@@ -1,6 +1,6 @@
 .checkoutContainer {
-  background-color: #1a1a1a;
-  color: #e5c07b;
+  background-color: #ffffff;
+  color: #014421;
   min-height: 100vh;
   padding: 2rem;
   max-width: 1200px;
@@ -8,43 +8,32 @@
 }
 
 .title {
-  font-size: 2rem;
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 2rem;
   text-align: center;
+  color: #014421;
+  position: relative;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: #d4af37;
 }
 
 .checkoutContent {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 2rem;
 }
 
-.shippingForm {
-  background: #222;
-  padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid rgba(229, 192, 123, 0.3);
-}
-
-.formGroup {
-  margin-bottom: 1.5rem;
-}
-
-.formGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.formGroup input,
-.formGroup textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid rgba(229, 192, 123, 0.3);
-  border-radius: 4px;
-  background: #1a1a1a;
-  color: #e5c07b;
-}
 
 .submitButton {
   width: 100%;
@@ -58,40 +47,13 @@
   transition: background-color 0.3s;
 }
 
-.submitButton:hover {
-  background: #d4af37;
-}
-
-.submitButton {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 2rem;
-  background: #ffd700;
-  color: #1a1a1a;
-  border: none;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.submitButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.submitButton:hover:not(:disabled) {
-  opacity: 0.9;
-}
 
 .orderSummary {
-  position: sticky;
-  top: 2rem;
-  background: #222;
+  background: #ffffff;
   padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid rgba(229, 192, 123, 0.3);
-  height: fit-content;
+  border-radius: 16px;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
 }
 
 .orderSummary h2 {
@@ -107,30 +69,33 @@
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 0;
-  color: #888;
+  padding: 1rem 0;
+  color: #014421;
+  font-family: "Poppins", sans-serif;
 }
 
 .summaryRow.total {
-  border-top: 1px solid rgba(229, 192, 123, 0.3);
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  color: #e5c07b;
+  border-top: 2px solid rgba(1, 68, 33, 0.1);
+  margin-top: 1rem;
+  padding-top: 1.5rem;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .placeOrderBtn {
   width: 100%;
-  padding: 1rem;
-  background: #ffd700;
-  color: #1a1a1a;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #d4af37 0%, #c1971d 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  margin-top: 2rem;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 .placeOrderBtn:disabled {
@@ -139,23 +104,17 @@
 }
 
 .placeOrderBtn:hover:not(:disabled) {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  background: #014421;
+  box-shadow: 0 6px 20px rgba(1, 68, 33, 0.2);
 }
 
 .itemsList {
-  background: #222;
+  background: #fff;
   padding: 2rem;
   border-radius: 8px;
-  border: 1px solid rgba(229, 192, 123, 0.3);
+  border: 3px solid rgba(229, 192, 123, 0.3);
   margin-bottom: 2rem;
-}
-
-.orderItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(229, 192, 123, 0.3);
 }
 
 .itemInfo {
@@ -164,7 +123,7 @@
 
 .itemInfo h3 {
   margin: 0 0 0.5rem 0;
-  color: #e5c07b;
+  color: #014421;
 }
 
 .quantityControl {
@@ -200,7 +159,7 @@
 
 .itemPrice {
   font-weight: bold;
-  color: #e5c07b;
+  color: #014421;
 }
 
 .removeBtn {
@@ -224,18 +183,18 @@
 }
 
 .itemInfo h3 {
-  color: #e5c07b;
+  color: #014421;
   margin-bottom: 0.5rem;
   font-size: 1rem;
 }
 
 .itemInfo p {
-  color: #888;
+  color: #014421;
   font-size: 0.9rem;
 }
 
 .itemPrice {
-  color: #e5c07b;
+  color: #014421;
   font-weight: 600;
 }
 
@@ -262,7 +221,7 @@
 }
 
 .orderSummary {
-  background: #222;
+  background: #fff;
   padding: 2rem;
   border-radius: 8px;
   border: 1px solid rgba(229, 192, 123, 0.3);
@@ -288,7 +247,7 @@
 .itemInfo p {
   margin: 0.25rem 0;
   font-size: 0.9rem;
-  color: #888;
+  color: #014421;
 }
 
 .itemPrice {
@@ -307,11 +266,12 @@
 /* Add these new styles to your existing CSS */
 
 .addressSection {
-  background: #222;
-  padding: 1rem;
-  border-radius: 8px;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
   width: 100%;
-  border: 1px solid rgba(229, 192, 123, 0.3);
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
   align-self: start; /* This prevents stretching */
   height: fit-content; /* This ensures it only takes needed height */
 }
@@ -326,29 +286,40 @@
 }
 
 .Message {
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   width: 100%;
   text-align: center;
-  background: rgba(229, 192, 123, 0.1);
-  border: 1px solid rgba(229, 192, 123, 0.3);
-  border-radius: 8px;
+  background: #f5f5dc;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  border-radius: 12px;
   margin: 2px 0;
-  color: #e5c07b;
+  color: #014421;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 1rem;
 }
 
 .addAddressBtn {
-  background: #ffd700;
-  color: #1a1a1a;
-  padding: 0.5rem 1rem;
+  background: #d4af37;
+  color: #ffffff;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   cursor: pointer;
   font-weight: 600;
-  width: 100%;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  width: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+.addAddressBtn:hover {
+  background: #014421;
+  transform: translateY(-2px);
 }
 
 .addressForm {
-  background: #1a1a1a;
+  background: #fff;
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -359,10 +330,10 @@
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 1rem;
-  background: #333;
+  background: #fff;
   border: 1px solid rgba(229, 192, 123, 0.3);
   border-radius: 4px;
-  color: #e5c07b;
+  color: #000;
 }
 
 .checkboxLabel {
@@ -387,12 +358,12 @@
 }
 
 .formButtons button:first-child {
-  background: #ffd700;
+  background: #d4af37;
   color: #1a1a1a;
 }
 
 .formButtons button:last-child {
-  background: #444;
+  background: #014421;
   color: #e5c07b;
 }
 
@@ -406,17 +377,17 @@
 
 /* Add custom scrollbar styling */
 .addressList::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 .addressList::-webkit-scrollbar-track {
-  background: #1a1a1a;
-  border-radius: 4px;
+  background: #fff;
+  border-radius: 2px;
 }
 
 .addressList::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+  background: #ffd700;
+  border-radius: 2px;
 }
 
 .addressList::-webkit-scrollbar-thumb:hover {
@@ -424,17 +395,23 @@
 }
 
 .addressCard {
-  background: #222;
-  border: 1px solid rgba(229, 192, 123, 0.3);
-  border-radius: 8px;
-  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(1, 68, 33, 0.05);
 }
 
 .addressCard.selected {
-  border-color: #e5c07b;
-  box-shadow: 0 0 0 2px rgba(229, 192, 123, 0.2);
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.addressCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(1, 68, 33, 0.1);
 }
 
 .addressInfo {
@@ -483,58 +460,6 @@
   color: #ff5757;
 }
 
-@media (max-width: 768px) {
-  .addressCard {
-    padding: 0.875rem;
-  }
-
-  .addressActions {
-    margin-top: 0.75rem;
-  }
-
-  .actionButtons button {
-    padding: 0.25rem 0.5rem;
-    font-size: 1rem;
-  }
-
-  .defaultBadge {
-    font-size: 1rem;
-  }
-}
-
-.productSummaryContainer {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-
-@media (max-width: 768px) {
-  .checkoutContent {
-    grid-template-columns: 1fr;
-  }
-
-  .productSummaryContainer {
-    grid-template-columns: 1fr;
-  }
-
-  .orderSummary {
-    position: static;
-  }
-}
-
-.guestForm {
-  background: #222;
-  padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid rgba(229, 192, 123, 0.3);
-}
-
-.guestForm h2 {
-  color: #e5c07b;
-  margin-bottom: 1.5rem;
-}
-
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -574,9 +499,73 @@
   display: block;
 }
 
-/* Existing styles remain the same... */
+.productSummaryContainer {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
 
 @media (max-width: 768px) {
+  .addressCard {
+    padding: 0.875rem;
+  }
+
+  .addressActions {
+    margin-top: 0.75rem;
+  }
+
+  .actionButtons button {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+  }
+
+  .defaultBadge {
+    font-size: 1rem;
+  }
+
+  .checkoutContainer {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .checkoutContent {
+    grid-template-columns: 1fr;
+  }
+
+  .productSummaryContainer {
+    grid-template-columns: 1fr;
+  }
+  .orderSummary {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 -4px 20px rgba(1, 68, 33, 0.12);
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .addressSection,
+  .orderSummary {
+    padding: 1rem;
+  }
+
+  .placeOrderBtn {
+    padding: 1rem;
+    position: relative;
+    bottom: 1rem;
+    z-index: 100;
+  }
   .checkoutContainer {
     padding: 1rem;
     padding-bottom: calc(env(safe-area-inset-bottom) + 50px);
@@ -616,24 +605,24 @@
     margin: 0;
     border-radius: 16px 16px 16px 16px;
     padding: 1rem;
-    background: #222;
+    background: #fff;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
     max-width: 100%;
     transform: translateZ(0); /* Force GPU acceleration */
   }
 
   .summaryDetails {
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
   }
 
   .summaryRow {
-    padding: 0.5rem 0;
+    padding: 0rem 0;
   }
 
   .placeOrderBtn {
     margin-bottom: env(safe-area-inset-bottom);
-    padding: 1rem;
-    font-size: 1.1rem;
+    padding: 0.3rem;
+    font-size: 1rem;
   }
 
   /* Add a collapsed version of summary that expands on tap */

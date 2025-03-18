@@ -1,12 +1,13 @@
 .navbar {
-  background-color: #1a1a1a;
-  color: #e5c07b;
-  padding: 1rem 2rem;
+  background-color: #d4af37;
+  color: #014421;
+  padding: 0.1rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e5c07b;
+  border-bottom: 1px solid rgba(1, 68, 33, 0.1);
   position: relative;
+  box-shadow: 0 2px 10px rgba(1, 68, 33, 0.05);
 }
 
 /* Hamburger Menu */
@@ -14,10 +15,46 @@
   display: none;
   background: none;
   border: none;
-  color: #e5c07b;
+  color: #014421;
   cursor: pointer;
   padding: 0.5rem;
   z-index: 100;
+  transition: all 0.3s ease;
+}
+
+/* Add bounce animation */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Add pulse animation */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(1, 68, 33, 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(1, 68, 33, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(1, 68, 33, 0);
+  }
+}
+
+/* Enhanced hamburger hover state */
+.hamburger:hover {
+  color: #d4af37;
+  animation: bounce 0.5s ease-in-out;
+  transform-origin: center;
+}
+
+.hamburger:active {
+  animation: pulse 0.3s ease-out;
 }
 
 /* Desktop Navigation */
@@ -28,28 +65,47 @@
 
 /* Logo */
 .logo {
+  font-family: "Playfair Display", serif;
   font-size: 1.5rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
+  color: #014421;
 }
 
 /* Navigation Links */
 .navLinks {
   display: flex;
   gap: 2rem;
+  font-weight: 1000;
 }
 
 .navItem {
   font-size: 1.125rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
-  color: #e5c07b;
+  color: #014421;
   text-align: left;
+  position: relative;
+}
+
+.navItem:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #d4af37;
+  transition: width 0.3s ease;
 }
 
 .navItem:hover {
-  color: white;
+  color: #fff;
+}
+
+.navItem:hover:after {
+  width: 100%;
 }
 
 /* Mobile Navigation */
@@ -60,11 +116,11 @@
   left: -100%;
   width: 70%;
   height: 100vh;
-  background-color: #1a1a1a;
+  background-color: #ffffff;
   padding: 5rem 2rem 2rem;
   transition: left 0.3s ease-in-out;
   z-index: 99;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 0 15px rgba(1, 68, 33, 0.1);
 }
 
 .mobileNavOpen {
@@ -89,16 +145,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e5c07b;
-  color: black;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
+  /* background-color: #D4AF37; */
+  color: #014421;
+  padding: 0.5rem 0.5rem;
+  border-radius: 30px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  border: 2px solid #d4af37;
 }
 
 .iconButton:hover {
-  background-color: white;
+  background-color: transparent;
+  color: #fff;
 }
 
 /* User Dropdown */
@@ -111,11 +169,10 @@
   right: 0;
   margin-top: 0.5rem;
   width: 10rem;
-  background-color: #1a1a1a;
-  color: #e5c07b;
-  border: 1px solid #e5c07b;
-  border-radius: 0.5rem;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
   padding: 0.5rem 0;
   z-index: 50;
 }
@@ -124,21 +181,31 @@
   width: 100%;
   text-align: left;
   display: block;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   text-decoration: none;
-  color: #e5c07b;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #014421;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .dropdownItem:hover {
-  background-color: #e5c07b;
-  color: black;
+  background-color: rgba(1, 68, 33, 0.05);
+  color: #d4af37;
 }
 
 /* Media Queries */
 @media (max-width: 768px) {
   .hamburger {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .navItem:hover {
+    color: #000;
   }
 
   .desktopNav {
@@ -151,10 +218,6 @@
 
   .desktopOnly {
     display: none;
-  }
-
-  .navbar {
-    padding: 1rem;
   }
 
   .iconsContainer {
