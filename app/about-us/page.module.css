@@ -1,7 +1,7 @@
 .aboutSection {
-  background-color: #1a1a1a;
+  background-color: #ffffff;
   padding: 4rem 2rem;
-  color: #fff;
+  color: #014421;
 }
 
 .container {
@@ -12,8 +12,21 @@
 .sectionTitle {
   text-align: center;
   font-size: 2.5rem;
-  color: #e5c07b;
+  color: #014421;
   margin-bottom: 3rem;
+  font-family: "Playfair Display", serif;
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: #d4af37;
 }
 
 .gridContainer {
@@ -25,9 +38,10 @@
 
 .imageContainer {
   position: relative;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(229, 192, 123, 0.3);
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
 }
 
 .aboutImage {
@@ -48,16 +62,18 @@
 }
 
 .subtitle {
-  color: #e5c07b;
+  color: #014421;
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
+  font-family: "Playfair Display", serif;
 }
 
 .description {
-  color: #fff;
+  color: #014421;
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
+  font-family: "Poppins", sans-serif;
 }
 
 .features {
@@ -68,22 +84,34 @@
 
 .feature {
   text-align: center;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
 }
 
 .icon {
-  color: #e5c07b;
+  color: #d4af37;
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 
 .feature h4 {
-  color: #e5c07b;
+  color: #014421;
   margin-bottom: 0.5rem;
+  font-family: "Playfair Display", serif;
 }
 
 .feature p {
-  color: #888;
+  color: #014421;
   font-size: 0.9rem;
+  font-family: "Poppins", sans-serif;
 }
 
 .statsContainer {
@@ -92,21 +120,33 @@
   gap: 2rem;
   margin-top: 4rem;
   padding-top: 4rem;
-  border-top: 1px solid rgba(229, 192, 123, 0.3);
+  border-top: 1px solid rgba(1, 68, 33, 0.1);
 }
 
 .stat {
   text-align: center;
+  padding: 2rem;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.stat:hover {
+  transform: translateY(-5px);
 }
 
 .stat h3 {
-  color: #e5c07b;
+  color: #d4af37;
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
+  font-family: "Playfair Display", serif;
 }
 
 .stat p {
-  color: #888;
+  color: #014421;
+  font-family: "Poppins", sans-serif;
 }
 
 @media (max-width: 768px) {

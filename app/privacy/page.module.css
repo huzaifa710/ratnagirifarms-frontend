@@ -129,9 +129,4 @@
   .section {
     padding: 1.5rem;
   }
-
-  .contactInfo {
-    flex-direction: column;
-    gap: 1rem;
-  }
 }

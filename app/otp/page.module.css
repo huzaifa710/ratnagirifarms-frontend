@@ -1,75 +1,134 @@
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(1, 68, 33, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #014421;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(1, 68, 33, 0.05);
+}
+
+.title {
+  font-family: "Playfair Display", serif;
+  color: #014421;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  position: relative;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: #d4af37;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  background-color: #ffffff;
+  color: #014421;
+  font-size: 1rem;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+}
+
+.submitButton {
+  background-color: #d4af37;
+  color: #ffffff;
+  padding: 1rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.submitButton:hover {
+  background-color: #014421;
+  transform: translateY(-2px);
+}
+
+.submitButton:disabled {
+  background-color: #f5f5dc;
+  color: #014421;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
   .modalContent {
-    background-color: #222;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-    border: 1px solid rgba(229, 192, 123, 0.3);
+    width: 95%;
+    padding: 1.5rem;
   }
-  
-  .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    color: #e5c07b;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
+
   .title {
-    color: #e5c07b;
-    text-align: center;
+    font-size: 1.25rem;
     margin-bottom: 1.5rem;
   }
-  
-  .inputGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .inputGroup input {
-    padding: 0.75rem;
-    border-radius: 4px;
-    border: 1px solid rgba(229, 192, 123, 0.3);
-    background-color: #333;
-    color: white;
-    font-size: 1rem;
-  }
-  
+
+  .inputGroup input,
   .submitButton {
-    background-color: #e5c07b;
-    color: #1a1a1a;
     padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
   }
-  
-  .submitButton:hover {
-    background-color: #d4af37;
-  }
-  
-  .submitButton:disabled {
-    background-color: #666;
-    cursor: not-allowed;
-  }
+}
