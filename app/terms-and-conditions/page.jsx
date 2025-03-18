@@ -35,9 +35,12 @@ export default function Terms() {
             <li>
               <Link href="/refund-returns">Refund and Return Policy</Link>
             </li>
-            <li>Privacy and Cookies Policy</li>
-            <li>Cancellation Policy</li>
-            <li>Shipping Policy</li>
+            <li>
+              <Link href="/privacy"> Privacy and Cookies Policy</Link>
+            </li>
+            <li>
+              <Link href="/privacy"> Shipping Policy</Link>
+            </li>
           </ul>
         </div>
 
