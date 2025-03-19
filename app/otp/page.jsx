@@ -3,8 +3,7 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import { toast } from "react-hot-toast";
 import api from "@/utils/axios";
-import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
-import { environment } from "@/environment";
+
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
   const [step, setStep] = useState("mobile"); // 'mobile' or 'otp'
   const [mobile, setMobile] = useState("");
@@ -25,8 +24,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
       });
       if (response.data.success) {
         toast.success("OTP sent successfully!");
-        setTestOtp(response.data.otp);
-        setOtp(response.data.otp); // Auto-popu
+        if (process.env.NEXT_PUBLIC_IS_PROD == "false") {
+          setTestOtp(response.data.otp);
+          setOtp(response.data.otp);
+        }
         setStep("otp");
       }
     } catch (error) {
@@ -51,7 +52,6 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
       if (response.data.success) {
         onSuccess(response.data);
         onClose();
-        // window.location.reload();
       } else {
         toast.error(response?.data?.message || "Invalid OTP");
         if (
@@ -118,7 +118,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
           </div>
         )}
         {/* Add this for development/testing only */}
-        {environment.IS_PROD == false && testOtp && (
+        {process.env.NEXT_PUBLIC_IS_PROD == "false" && testOtp && (
           <div className={styles.testOtp}>Test OTP: {testOtp}</div>
         )}
       </div>

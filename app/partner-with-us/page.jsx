@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { environment } from "@/environment";
-import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import styles from "./page.module.css";
 import api from "@/utils/axios";

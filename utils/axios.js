@@ -1,9 +1,8 @@
 import axios from "axios";
-import { environment } from "@/environment";
 import toast from "react-hot-toast";
 
 const api = axios.create({
-  baseURL: environment.API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -43,7 +42,7 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem("refreshToken");
 
         const response = await axios.post(
-          `${environment.API_URL}/users/sign-in-using-token`,
+          `${process.env.NEXT_PUBLIC_API_URL}/users/sign-in-using-token`,
           { accessToken, refreshToken }
         );
 

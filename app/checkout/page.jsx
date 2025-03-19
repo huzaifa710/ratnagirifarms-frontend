@@ -201,9 +201,8 @@ export default function Checkout() {
       });
 
       // Initialize Razorpay with appropriate details
-
       const options = {
-        key: "rzp_test_KHe9PXRSfLoVw5",
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: createOrderResponse.data.amount,
         currency: "INR",
         name: "Ratnagiri Farms",
