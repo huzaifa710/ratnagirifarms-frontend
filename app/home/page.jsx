@@ -13,6 +13,8 @@ export default function Home() {
 
   useEffect(() => {
     console.log("Razorpay key from env:", process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
+    console.log("API url key from env:", process.env.NEXT_PUBLIC_API_URL);
+    console.log("prod key from env:", process.env.NEXT_PUBLIC_IS_PROD);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
