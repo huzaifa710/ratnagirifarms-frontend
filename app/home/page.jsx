@@ -12,6 +12,7 @@ export default function Home() {
   const galleryRef = useRef(null);
 
   useEffect(() => {
+    console.log("Razorpay key from env:", process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
