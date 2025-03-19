@@ -120,7 +120,7 @@ export default function Orders() {
                     <p>{new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className={styles.orderAmount}>
-                    Total Amount: ₹{order.total_price}
+                    Total Amount: ₹{order.total_amount}
                   </div>
                 </div>
                 <div className="flex flex-col gap-2.5">

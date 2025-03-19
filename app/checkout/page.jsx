@@ -19,6 +19,9 @@ export default function Checkout() {
   const [editingAddress, setEditingAddress] = useState(null);
   const { guestCart, updateCartCount, addToGuestCart, removeFromGuestCart } =
     useCart();
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -54,6 +57,44 @@ export default function Checkout() {
       toast.error("Failed to fetch cart items");
       setLoading(false);
     }
+  };
+
+  // Add this function to handle coupon application
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast.error("Please enter a coupon code");
+      return;
+    }
+
+    try {
+      const response = await api.post("/coupons/apply", {
+        uuid,
+        code: couponCode,
+        order_total: cartItems.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0
+        ),
+      });
+
+      if (response.data.success) {
+        setDiscount(response.data.discount);
+        setAppliedCoupon(response.data.coupon);
+        toast.success(`Coupon applied! You saved ₹${response.data.discount}`);
+      } else {
+        toast.error(response.data.message || "Invalid coupon");
+      }
+    } catch (error) {
+      console.error("Coupon application error:", error);
+      toast.error(error.response?.data?.message || "Failed to apply coupon");
+    }
+  };
+
+  // Add this function to handle coupon removal
+  const handleRemoveCoupon = () => {
+    setCouponCode("");
+    setDiscount(0);
+    setAppliedCoupon(null);
+    toast.success("Coupon removed");
   };
 
   const fetchAddresses = async () => {
@@ -198,6 +239,7 @@ export default function Checkout() {
         uuid,
         cart_ids: cartItems.map((item) => item.id),
         user_address_id: selectedAddress.id,
+        coupon_id: appliedCoupon ? appliedCoupon.id : null,
       });
 
       // Initialize Razorpay with appropriate details
@@ -506,16 +548,48 @@ export default function Checkout() {
                 <span>Delivery Charges</span>
                 <span>₹0.00</span>
               </div>
+
+              {appliedCoupon ? (
+                <div className={styles.couponApplied}>
+                  <div className={styles.summaryRow}>
+                    <span>Coupon ({appliedCoupon.code})</span>
+                    <span>- ₹{discount.toFixed(2)}</span>
+                    <button
+                      onClick={handleRemoveCoupon}
+                      className={styles.removeCouponBtn}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.couponRow}>
+                  <input
+                    type="text"
+                    placeholder="Enter Coupon Code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className={styles.couponInput}
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    className={styles.applyCouponBtn}
+                  >
+                    Apply
+                  </button>
+                </div>
+              )}
+
               <div className={`${styles.summaryRow} ${styles.total}`}>
                 <span>Total</span>
                 <span>
                   ₹
-                  {cartItems
-                    .reduce(
+                  {(
+                    cartItems.reduce(
                       (total, item) => total + item.price * item.quantity,
                       0
-                    )
-                    .toFixed(2)}
+                    ) - discount
+                  ).toFixed(2)}
                 </span>
               </div>
             </div>

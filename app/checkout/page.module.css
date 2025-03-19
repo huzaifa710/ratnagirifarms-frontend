@@ -17,6 +17,53 @@
   position: relative;
 }
 
+.couponRow {
+  display: flex;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.couponInput {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid rgba(1, 68, 33, 0.2);
+  border-radius: 4px;
+  font-family: "Poppins", sans-serif;
+}
+
+.applyCouponBtn {
+  background-color: #014421;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  transition: background-color 0.3s;
+}
+
+.applyCouponBtn:hover {
+  background-color: #016d34;
+}
+
+.couponApplied {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(229, 192, 123, 0.1);
+  border-left: 3px solid #e5c07b;
+  border-radius: 4px;
+}
+
+.removeCouponBtn {
+  background: none;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  text-decoration: underline;
+}
+
 .title::after {
   content: "";
   position: absolute;
