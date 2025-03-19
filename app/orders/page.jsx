@@ -140,7 +140,7 @@ export default function Orders() {
                   </div>
                   <div className="flex justify-between items-center gap-2">
                     <div className="flex items-center gap-2">
-                      <span className>Order Status:</span>
+                      <span>Order Status:</span>
                       <span
                         className={styles.statusBadge}
                         style={{

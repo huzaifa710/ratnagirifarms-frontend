@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: { webpackMemoryOptimizations: true },
 };
 
 export default nextConfig;

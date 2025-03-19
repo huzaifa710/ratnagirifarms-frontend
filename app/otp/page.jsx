@@ -11,6 +11,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [testOtp, setTestOtp] = useState("");
+
   const handleSendOTP = async () => {
     if (!/^\d{10}$/.test(mobile)) {
       toast.error("Please enter a valid 10-digit mobile number");
@@ -47,11 +48,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         mobile_number: mobile,
         otp,
       });
-      debugger;
       if (response.data.success) {
         onSuccess(response.data);
         onClose();
-        window.location.reload();
+        // window.location.reload();
       } else {
         toast.error(response?.data?.message || "Invalid OTP");
         if (

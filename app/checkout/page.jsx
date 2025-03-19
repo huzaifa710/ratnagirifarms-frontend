@@ -10,7 +10,7 @@ import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 
 export default function Checkout() {
   const router = useRouter();
-  const { uuid, accessToken, setShowAuthModal } = useAuth();
+  const { uuid, accessToken, mobile_number, setShowAuthModal } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -201,17 +201,18 @@ export default function Checkout() {
       });
 
       // Initialize Razorpay with appropriate details
+
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: "rzp_test_KHe9PXRSfLoVw5",
         amount: createOrderResponse.data.amount,
         currency: "INR",
         name: "Ratnagiri Farms",
         description: "Order Payment",
         order_id: createOrderResponse.data.razorpay_order_id,
         prefill: {
-          name: addressForm.full_name,
-          email: addressForm.address.email,
-          contact: addressForm.mobile_number,
+          name: selectedAddress.full_name,
+          email: selectedAddress.email,
+          contact: mobile_number,
         },
         handler: async (response) => {
           try {
