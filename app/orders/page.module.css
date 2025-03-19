@@ -16,6 +16,73 @@
   position: relative;
 }
 
+.confirmationOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.confirmationModal {
+  background: #222;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid rgba(229, 192, 123, 0.2);
+}
+
+.confirmationTitle {
+  color: #e5c07b;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.confirmationMessage {
+  color: #888;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.confirmationButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.confirmButton {
+  background-color: #dc2626;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cancelModalButton {
+  background-color: #374151;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.confirmButton:disabled,
+.cancelModalButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .title::after {
   content: "";
   position: absolute;
