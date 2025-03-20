@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("uuid");
+      localStorage.removeItem("mobile");
     }
     window.location.reload();
     setUser(null);

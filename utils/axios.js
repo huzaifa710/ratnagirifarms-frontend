@@ -58,6 +58,7 @@ api.interceptors.response.use(
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("uuid");
+          localStorage.removeItem("mobile");
           toast.error("Session expired. Please login again.");
           // Instead of redirecting, show auth modal
           if (typeof window !== "undefined") {
@@ -71,8 +72,8 @@ api.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("uuid");
+        localStorage.removeItem("mobile");
         toast.error("Session expired. Please login again.");
-
       }
     }
     return Promise.reject(error);

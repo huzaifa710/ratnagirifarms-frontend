@@ -65,37 +65,44 @@ function SingleProduct({ product }) {
           alt={product.name}
           className={styles.productImage}
         />
-        <h2 className={styles.title}>{product.name}</h2>
-        <p className={styles.price}>₹{selectedVariant?.price}</p>
-        <p className={styles.piecesLabel}>No Of Pieces Per Box :</p>
-        <div className={styles.variantContainer}>
-          {sortedVariants.map((variant) => (
-            <button
-              key={variant.id}
-              className={
-                selectedVariant?.id === variant.id
-                  ? styles.variantSelected
-                  : styles.variantButton
-              }
-              onClick={() => handleVariantClick(variant)}
-            >
-              {variant.quantity_per_box}
-            </button>
-          ))}
+        
+        <div className={styles.productContentTop}>
+          <h2 className={styles.title}>{product.name}</h2>
+          <p className={styles.price}>{selectedVariant?.price}</p>
         </div>
-        {selectedVariant?.is_active ? (
-          <button
-            className={styles.addToCart}
-            onClick={() => handleAddToCart(selectedVariant)}
-          >
-            <FaShoppingCart /> Add To Cart
-          </button>
-        ) : (
-          <button className={styles.outOfStock}>
-            <FaShoppingCart />
-            Out Of Stock
-          </button>
-        )}
+        
+        <div className={styles.productContentBottom}>
+          <p className={styles.piecesLabel}>No Of Pieces Per Box :</p>
+          <div className={styles.variantContainer}>
+            {sortedVariants.map((variant) => (
+              <button
+                key={variant.id}
+                className={
+                  selectedVariant?.id === variant.id
+                    ? styles.variantSelected
+                    : styles.variantButton
+                }
+                onClick={() => handleVariantClick(variant)}
+              >
+                {variant.quantity_per_box}
+              </button>
+            ))}
+          </div>
+          
+          {selectedVariant?.is_active ? (
+            <button
+              className={styles.addToCart}
+              onClick={() => handleAddToCart(selectedVariant)}
+            >
+              <FaShoppingCart /> Add To Cart
+            </button>
+          ) : (
+            <button className={styles.outOfStock}>
+              <FaShoppingCart />
+              Out Of Stock
+            </button>
+          )}
+        </div>
       </div>
     </>
   );

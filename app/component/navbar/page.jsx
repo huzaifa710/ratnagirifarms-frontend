@@ -2,6 +2,7 @@
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Import Image
 import styles from "./page.module.css";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
@@ -75,7 +76,7 @@ const Navbar = () => {
         Partner With Us
       </Link>
       <Link
-        href="contact-us"
+        href="/contact-us"
         className={styles.navItem}
         onClick={handleDropdownItemClick}
       >
@@ -86,6 +87,19 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar}>
+      {/* Logo */}
+      <Link href="/">
+        <div className={styles.logo}>
+          <Image
+            src="/home/logo1.png" // Uses the SVG logo1 file
+            alt="Logo"
+            width={150}
+            height={50}
+            priority
+          />
+        </div>
+      </Link>
+
       {/* Hamburger Menu Button (Mobile Only) */}
       <button
         className={styles.hamburger}
@@ -117,7 +131,7 @@ const Navbar = () => {
         </Link>
 
         {/* User Dropdown (Desktop Only) */}
-        <div className={`${styles.userContainer}`} ref={dropdownRef}>
+        <div className={styles.userContainer} ref={dropdownRef}>
           <div
             onClick={() => setShowDropdown(!showDropdown)}
             className={styles.iconButton}
