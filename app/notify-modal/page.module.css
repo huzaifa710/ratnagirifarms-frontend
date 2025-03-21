@@ -1,0 +1,160 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Increased z-index to avoid conflicts */
+  backdrop-filter: blur(2px); /* Subtle blur effect */
+  isolation: isolate; /* Creates a new stacking context */
+  pointer-events: all; /* Ensures all pointer events are captured */
+}
+
+.notified {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 2; /* Ensure button is above other elements in modal */
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.description {
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.emailInput {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.submitButton {
+  padding: 0.5rem 1rem;
+  background-color: rgba(1, 68, 33, 0.8);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 100px;
+  align-self: flex-end;
+}
+.bellIcon {
+  font-size: 0.8rem;
+}
+
+.submitButton:hover {
+  background-color: rgba(1, 68, 33, 1);
+}
+
+.submitButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Mobile styles */
+@media screen and (max-width: 768px) {
+  .modalContent {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modalContent {
+    width: 90%;
+    padding: 1.5rem;
+    border-radius: 8px; /* Keep rounded corners on mobile */
+    max-width: 350px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0 auto; /* Center horizontally */
+  }
+
+  .closeButton {
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 1.5rem;
+    padding: 0.25rem;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    padding-right: 2rem;
+    position: relative;
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .emailInput {
+    padding: 0.85rem;
+    font-size: 1rem;
+  }
+
+  .submitButton {
+    padding: 0.85rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form {
+    gap: 0.8rem;
+  }
+
+  /* Keep the modal centered on mobile instead of at the bottom */
+  .modalOverlay {
+    align-items: center;
+  }
+}
