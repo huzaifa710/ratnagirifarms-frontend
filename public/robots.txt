@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://ratnagirifarms.com
+
+# Sitemaps
+Sitemap: https://ratnagirifarms.com/sitemap.xml
