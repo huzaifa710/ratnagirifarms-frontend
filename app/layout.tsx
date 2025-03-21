@@ -6,6 +6,7 @@ import Footer from "@/app/component/footer/page";
 import { CartProvider } from "@/app/cart-context/page";
 import { AuthProvider } from "@/app/auth-context/page";
 import { Toaster, toast } from "react-hot-toast"; // Import toast
+import BreadcrumbSchema from "@/app/component/breadcrumb-schema/page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,6 +82,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <BreadcrumbSchema />
         <AuthProvider>
           <CartProvider>
             <Navbar />
