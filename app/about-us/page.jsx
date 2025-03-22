@@ -12,7 +12,7 @@ export default function AboutUs() {
         <div className={styles.gridContainer}>
           <div className={styles.imageContainer}>
             <Image
-              src="/about/farm1.jpg"
+              src="/about/orchard.jpg"
               alt="Ratnagiri Farms"
               width={600}
               height={400}
