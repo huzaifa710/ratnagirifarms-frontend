@@ -157,7 +157,7 @@ function SingleProduct({ product }) {
     <>
       <div className={styles.card}>
         <img
-          src="/card/image2.png"
+          src="/card/image3.png"
           alt={product.name}
           className={styles.productImage}
         />
