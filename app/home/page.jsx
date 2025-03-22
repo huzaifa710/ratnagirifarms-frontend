@@ -121,7 +121,7 @@ export default function Home() {
         <div className={styles.whyUsContainer}>
           <div className={styles.whyUsImageContainer}>
             <Image
-              src="/home/orchard2.webp"
+              src="/home/orchard.webp"
               alt="Our Ratnagiri Orchards"
               fill
               className={styles.whyUsImage}
