@@ -51,11 +51,6 @@ export const metadata: Metadata = {
     description:
       "Experience the authentic taste of premium Alphonso mangoes delivered directly from our Ratnagiri orchards to your doorstep.",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   robots: {
     index: true,
     follow: true,
