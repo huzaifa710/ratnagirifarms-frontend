@@ -12,7 +12,7 @@ export default function AboutUs() {
         <div className={styles.gridContainer}>
           <div className={styles.imageContainer}>
             <Image
-              src="/about/farm.webp"
+              src="/about/farm.jpg"
               alt="Ratnagiri Farms"
               width={600}
               height={400}
