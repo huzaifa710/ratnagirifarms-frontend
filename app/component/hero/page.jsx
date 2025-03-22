@@ -8,7 +8,7 @@ export default function Hero() {
     <section className={styles.heroSection}>
       <div className={styles.heroBackground}>
         <Image
-          src="/home/hero-5.png"
+          src="/home/hero-5.webp"
           alt="Hero Image"
           fill
           style={{ objectFit: "cover" }}

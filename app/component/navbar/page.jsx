@@ -87,26 +87,23 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar}>
-      {/* Logo */}
-      <Link href="/">
-        <div className={styles.logo}>
+      <div className={styles.leftContainer}>
+        <button
+          className={styles.hamburger}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        </button>
+        <Link href="/" className={styles.logo}>
           <Image
             src="/home/logo1.png" // Uses the SVG logo1 file
-            alt="Logo"
+            alt="Ratnagiri Farms"
             width={150}
             height={50}
             priority
           />
-        </div>
-      </Link>
-
-      {/* Hamburger Menu Button (Mobile Only) */}
-      <button
-        className={styles.hamburger}
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-      </button>
+        </Link>
+      </div>
 
       {/* Desktop Navigation */}
       <div className={styles.desktopNav}>

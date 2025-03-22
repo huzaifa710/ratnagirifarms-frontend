@@ -166,15 +166,6 @@ export default function Home() {
       >
         <h2 className={styles.sectionTitle}>Our Heritage</h2>
         <Gallery />
-
-        <div className={styles.socialContainer}>
-          <p className={styles.socialText}>
-            Follow us on social media for updates, recipes and special offers
-          </p>
-          <div className={styles.socialIcons}>
-            {/* Add your social media icons here */}
-          </div>
-        </div>
       </section>
 
       {/* Call to Action Section */}
