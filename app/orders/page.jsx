@@ -11,6 +11,7 @@ import {
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/cart-context/page";
+import AuthModal from "@/app/otp/page";
 
 export default function Orders() {
   const { uuid, accessToken } = useAuth();
@@ -22,6 +23,7 @@ export default function Orders() {
   const router = useRouter();
   const { updateCartCount } = useCart();
   const [isCancelling, setIsCancelling] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     if (!uuid && !accessToken) {
