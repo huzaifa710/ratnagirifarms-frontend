@@ -13,7 +13,7 @@ export default function Footer() {
             <p className={styles.text}>
               We specialize in delivering premium Alphonso mangoes straight to
               your doorstep, ensuring the finest quality every time!
-            </p>
+            </p><br />
             <div className={styles.listContainer}>
               <div className={styles.contactInfo}>
                 <MapPin className={styles.icon} />
