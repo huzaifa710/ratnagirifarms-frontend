@@ -59,7 +59,7 @@ const Navbar = () => {
         className={styles.navItem}
         onClick={handleDropdownItemClick}
       >
-        Product
+        Products
       </Link>
       <Link
         href="/bulk-order"

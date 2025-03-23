@@ -114,7 +114,7 @@ export default function Home() {
       </section>
 
       {/* Why Us Section with Image */}
-      <section
+      {/* <section
         ref={whyUsRef}
         className={`${styles.whyUsSection} ${styles.section} ${styles.fadeIn}`}
       >
@@ -148,7 +148,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonial Section */}
       <section
@@ -164,7 +164,7 @@ export default function Home() {
         ref={galleryRef}
         className={`${styles.gallerySection} ${styles.section} ${styles.fadeIn} ${styles.delayLarge}`}
       >
-        <h2 className={styles.sectionTitle}>Our Heritage</h2>
+        <h2 className={styles.sectionTitle}>Gallery</h2>
         <Gallery />
       </section>
 
