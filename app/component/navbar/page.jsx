@@ -82,6 +82,13 @@ const Navbar = () => {
       >
         Contact Us
       </Link>
+      <Link
+        href="/about-us"
+        className={styles.navItem}
+        onClick={handleDropdownItemClick}
+      >
+        About Us
+      </Link>
     </>
   );
 

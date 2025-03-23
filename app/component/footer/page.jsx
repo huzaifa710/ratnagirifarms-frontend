@@ -43,15 +43,9 @@ export default function Footer() {
 
           {/* Links Wrapper for side-by-side sections */}
           <div className={styles.linksWrapper}>
-            {/* Important Links Section */}
-            <div>
+            {/* <div>
               <h3 className={styles.heading}>Important Links</h3>
               <ul className={styles.listContainer}>
-                {/* <li>
-                  <Link href="/blog" className={styles.link}>
-                    Blog
-                  </Link>
-                </li> */}
                 <li>
                   <Link href="/about-us" className={styles.link}>
                     About Us
@@ -67,13 +61,8 @@ export default function Footer() {
                     Contact Us
                   </Link>
                 </li>
-                {/* <li>
-                  <Link href="/faqs" className={styles.link}>
-                    FAQs
-                  </Link>
-                </li> */}
               </ul>
-            </div>
+            </div> */}
 
             {/* Business Policy Section */}
             <div>
