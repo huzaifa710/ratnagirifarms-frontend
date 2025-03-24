@@ -13,7 +13,8 @@ export default function Footer() {
             <p className={styles.text}>
               We specialize in delivering premium Alphonso mangoes straight to
               your doorstep, ensuring the finest quality every time!
-            </p><br />
+            </p>
+            <br />
             <div className={styles.listContainer}>
               <div className={styles.contactInfo}>
                 <MapPin className={styles.icon} />
@@ -38,6 +39,10 @@ export default function Footer() {
                 </a>
               </div> */}
               <p className={styles.text}>FSSAI: 21523025000167</p>
+              <p className={styles.text}>
+                © 2025 Ratnagiri Farms — A venture of{" "}
+                <strong>Ayaan Mango Trading</strong>
+              </p>
             </div>
           </div>
 
@@ -91,7 +96,6 @@ export default function Footer() {
               </ul>
             </div>
           </div>
-
           {/* Payment Section */}
           {/* <div className={styles.divider}>
             <div className={styles.paymentSection}>
