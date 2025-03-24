@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script"; // Add this import
 import "./globals.css";
 import Navbar from "@/app/component/navbar/page";
 import Footer from "@/app/component/footer/page";
@@ -100,6 +101,20 @@ export default function RootLayout({
           </CartProvider>
         </AuthProvider>
       </body>
+
+      {/* Google Analytics */}
+      <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-81NMNLEW5V"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-81NMNLEW5V');
+        `}
+      </Script>
     </html>
   );
 }
