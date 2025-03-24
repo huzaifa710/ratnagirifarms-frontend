@@ -1,70 +1,81 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { toast } from "react-hot-toast";
 import api from "@/utils/axios";
+import Script from "next/script";
 
 export default function AuthModal({ isOpen, onClose, onSuccess }) {
-  const [step, setStep] = useState("mobile"); // 'mobile' or 'otp'
-  const [mobile, setMobile] = useState("");
-  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [testOtp, setTestOtp] = useState("");
-
-  const handleSendOTP = async () => {
-    if (!/^\d{10}$/.test(mobile)) {
-      toast.error("Please enter a valid 10-digit mobile number");
-      return;
+  const msg91Config = useRef(null);
+  const scriptLoaded = useRef(false);
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [token, setToken] = useState("");
+  // Initialize MSG91 widget when modal opens
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined' && scriptLoaded.current) {
+      initializeMsg91Widget();
     }
 
-    setLoading(true);
-    try {
-      const response = await api.post(`/users/send-otp`, {
-        mobile_number: mobile,
-      });
-      if (response.data.success) {
-        toast.success("OTP sent successfully!");
-        if (process.env.NEXT_PUBLIC_IS_PROD == "false") {
-          setTestOtp(response.data.otp);
-          setOtp(response.data.otp);
-        }
-        setStep("otp");
+    // Clean up when component unmounts or modal closes
+    return () => {
+      if (typeof window !== 'undefined' && window.sendOTP && typeof window.sendOTP.destroy === 'function') {
+        window.sendOTP.destroy();
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to send OTP");
-    } finally {
-      setLoading(false);
+    };
+  }, [isOpen, scriptLoaded.current]);
+
+  const initializeMsg91Widget = () => {
+    // Clean up previous widget if it exists
+    if (window.sendOTP && typeof window.sendOTP.destroy === 'function') {
+      window.sendOTP.destroy();
+    }
+
+    // Create configuration for MSG91
+    msg91Config.current = {
+      widgetId: "356378653458333430393633", // Replace with your widget ID from .env
+      tokenAuth: process.env.NEXT_PUBLIC_MSG91_TOKEN_AUTH || "444589Tq8BMBtbF967defc31P1", // From your index.html
+      exposeMethods: false,
+      success: (data) => {
+        console.log('OTP verified successfully', data);
+        handleVerificationSuccess(data);
+
+      },
+      failure: (error) => {
+        console.log('OTP verification failed', error);
+        toast.error("Verification failed: " + (error.message || "Please try again"));
+      }
+    };
+
+    // Initialize the widget
+    if (window.initSendOTP) {
+      window.initSendOTP(msg91Config.current);
     }
   };
 
-  const handleVerifyOTP = async () => {
-    if (!/^\d{6}$/.test(otp)) {
-      toast.error("Please enter a valid 6-digit OTP");
-      return;
+  const handleScriptLoad = () => {
+    scriptLoaded.current = true;
+    if (isOpen) {
+      initializeMsg91Widget();
     }
+  };
 
+  const handleVerificationSuccess = async (data) => {
     setLoading(true);
     try {
-      const response = await api.post(`/users/verify-otp`, {
-        mobile_number: mobile,
-        otp,
+      // Call your backend to verify and authenticate the user
+      const response = await api.post(`/users/verify-msg91`, {
+        token: data.message // Pass the verification token from MSG91
       });
+      
       if (response.data.success) {
         onSuccess(response.data);
         onClose();
       } else {
-        toast.error(response?.data?.message || "Invalid OTP");
-        if (
-          response.data.message ===
-            "Too many failed attempts. Please request new OTP" ||
-          response.data.message === "Invalid or expired OTP"
-        ) {
-          toast.error(response.data.message);
-          setStep("mobile");
-        }
+        toast.error(response?.data?.message || "Verification failed");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Invalid OTP");
+      toast.error(error.response?.data?.message || "Authentication failed");
     } finally {
       setLoading(false);
     }
@@ -78,49 +89,17 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>
-        <h2 className={styles.title}>
-          {step === "mobile" ? "Enter Mobile Number" : "Enter OTP"}
-        </h2>
-
-        {step === "mobile" ? (
-          <div className={styles.inputGroup}>
-            <input
-              type="tel"
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
-              placeholder="Enter 10-digit mobile number"
-              maxLength={10}
-            />
-            <button
-              className={styles.submitButton}
-              onClick={handleSendOTP}
-              disabled={loading}
-            >
-              {loading ? "Sending..." : "Send OTP"}
-            </button>
-          </div>
-        ) : (
-          <div className={styles.inputGroup}>
-            <input
-              type="text"
-              value={otp} // Use otp state instead of actualOtp
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="Enter 6-digit OTP"
-              maxLength={6}
-            />
-            <button
-              className={styles.submitButton}
-              onClick={handleVerifyOTP}
-              disabled={loading}
-            >
-              {loading ? "Verifying..." : "Verify OTP"}
-            </button>
-          </div>
-        )}
-        {/* Add this for development/testing only */}
-        {process.env.NEXT_PUBLIC_IS_PROD == "false" && testOtp && (
-          <div className={styles.testOtp}>Test OTP: {testOtp}</div>
-        )}
+        <h2 className={styles.title}>Login / Sign Up</h2>
+        
+        {/* Container for MSG91 widget - it will render its UI here */}
+        <div id="msg91-widget-container" className={styles.msg91Container}></div>
+        
+        {/* Load MSG91 script */}
+        <Script
+          src="https://control.msg91.com/app/assets/otp-provider/otp-provider.js"
+          onLoad={handleScriptLoad}
+          strategy="lazyOnload"
+        />
       </div>
     </div>
   );
