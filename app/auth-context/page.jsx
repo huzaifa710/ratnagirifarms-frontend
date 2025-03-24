@@ -4,6 +4,7 @@ import api from "@/utils/axios";
 import AuthModal from "@/app/otp/page";
 const AuthContext = createContext();
 import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
+import toast from "react-hot-toast";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -48,7 +49,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem("uuid", user.uuid);
       localStorage.setItem("mobile", user.mobile_number);
     }
-
+    toast.success("Logged in successfully");
     setUser(user);
 
     // Transfer cart with new credentials
