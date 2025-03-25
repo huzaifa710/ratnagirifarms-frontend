@@ -103,7 +103,7 @@ const Navbar = () => {
         </button>
         <Link href="/" className={styles.logo}>
           <Image
-            src="/home/2.png" // Uses the SVG logo1 file
+            src="/home/ratnagiri1.png" // Uses the SVG logo1 file
             alt="Ratnagiri Farms"
             width={150}
             height={50}
