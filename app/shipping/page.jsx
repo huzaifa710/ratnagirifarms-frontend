@@ -18,10 +18,7 @@ export default function ShippingPolicy() {
 
         <div className={styles.section}>
           <h2>Shipping Locations</h2>
-          <p>
-            We are currently delivering in Mumbai and Pune, with plans to expand
-            across all of Maharashtra soon.
-          </p>
+          <p>Delivering all over Maharashtra.</p>
         </div>
 
         <div className={styles.section}>

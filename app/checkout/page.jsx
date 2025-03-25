@@ -235,6 +235,11 @@ export default function Checkout() {
       return;
     }
 
+    if (!acceptedTerms) {
+      toast.error("Please accept the Terms & Conditions to proceed");
+      return;
+    }
+
     try {
       // Create guest order or regular order based on checkout type
       const createOrderResponse = await api.post("orders/create", {
@@ -390,16 +395,17 @@ export default function Checkout() {
                 }
                 required
               />
-              <input
-                type="text"
-                placeholder="State"
+              <select
                 name="state"
                 value={addressForm.state}
                 onChange={(e) =>
                   setAddressForm({ ...addressForm, state: e.target.value })
                 }
                 required
-              />
+              >
+                <option value="">Select State</option>
+                <option value="Maharashtra">Maharashtra</option>
+              </select>
               <input
                 type="text"
                 placeholder="Pincode"
@@ -618,13 +624,28 @@ export default function Checkout() {
 
               <button
                 className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-200 
-                  ${
-                    !selectedAddress || !acceptedTerms
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#d4af37] hover:bg-[#014421]"
-                  }`}
-                onClick={handlePlaceOrder}
-                disabled={!selectedAddress || !acceptedTerms}
+              ${
+                !selectedAddress || !acceptedTerms
+                  ? "bg-gray-400"
+                  : "bg-[#d4af37] hover:bg-[#014421]"
+              }`}
+                onClick={() => {
+                  if (!selectedAddress && !acceptedTerms) {
+                    toast.error(
+                      "Please select a delivery address and accept the Terms & Conditions"
+                    );
+                  } else if (!selectedAddress) {
+                    toast.error(
+                      "Please select a delivery address or add a new one"
+                    );
+                  } else if (!acceptedTerms) {
+                    toast.error(
+                      "Please accept the Terms & Conditions to proceed"
+                    );
+                  } else {
+                    handlePlaceOrder();
+                  }
+                }}
               >
                 Place Order
               </button>
