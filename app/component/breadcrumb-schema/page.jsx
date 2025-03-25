@@ -16,7 +16,7 @@ export default function BreadcrumbSchema() {
       "/refund-returns": "Refund and Returns",
       "/shipping": "Shipping Policy",
       "/about-us": "About Us",
-      "/product": "Products",
+      "/products": "Products",
       "/cart": "Cart",
       "/checkout": "Checkout",
       "/orders": "My Orders",

@@ -168,7 +168,7 @@ function SingleProduct({ product }) {
         </div>
 
         <div className={styles.productContentBottom}>
-          <p className={styles.piecesLabel}>No Of Pieces Per Box :</p>
+          <p className={styles.piecesLabel}>No Of Pieces Per Box: </p>
           <div className={styles.variantContainer}>
             {sortedVariants.map((variant) => (
               <button

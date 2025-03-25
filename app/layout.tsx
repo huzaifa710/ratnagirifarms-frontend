@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     "direct from farm",
     "Mumbai mango delivery",
     "Pune mango delivery",
+    "Hapus mangoes",
+    "Ratnagiri mangoes online",
+    "Alphonso mangoes online",
   ],
   authors: [{ name: "Ratnagiri Farms" }],
   creator: "Ratnagiri Farms",
@@ -65,6 +68,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
+  },
+  alternates: {
+    canonical: "https://ratnagirifarms.com",
   },
 };
 

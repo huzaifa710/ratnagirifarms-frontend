@@ -64,7 +64,7 @@ export default function Home() {
         <ProductCard category={activeTab} />
 
         <div className={styles.viewAllContainer}>
-          <Link href="/product" className={styles.viewAllButton}>
+          <Link href="/products" className={styles.viewAllButton}>
             View All Products <FaArrowRight className={styles.arrowIcon} />
           </Link>
         </div>
@@ -176,7 +176,7 @@ export default function Home() {
             Order now and experience the authentic flavor of Ratnagiri directly
             from our orchards
           </p>
-          <Link href="/product" className={styles.ctaButton}>
+          <Link href="/products" className={styles.ctaButton}>
             Shop Now
           </Link>
         </div>

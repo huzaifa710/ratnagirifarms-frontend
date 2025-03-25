@@ -1,5 +1,5 @@
 .navbar {
-  background-color: #d4af37;
+  background-color: #fff;
   color: #014421;
   padding: 0.1rem 1rem;
   display: flex;
@@ -161,7 +161,7 @@
 
 .iconButton:hover {
   background-color: transparent;
-  color: #fff;
+  color: #d4af37;
 }
 
 /* User Dropdown */

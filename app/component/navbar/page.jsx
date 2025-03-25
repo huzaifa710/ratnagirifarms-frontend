@@ -55,7 +55,7 @@ const Navbar = () => {
         Home
       </Link>
       <Link
-        href="/product"
+        href="/products"
         className={styles.navItem}
         onClick={handleDropdownItemClick}
       >
@@ -103,7 +103,7 @@ const Navbar = () => {
         </button>
         <Link href="/" className={styles.logo}>
           <Image
-            src="/home/logo1.png" // Uses the SVG logo1 file
+            src="/home/2.png" // Uses the SVG logo1 file
             alt="Ratnagiri Farms"
             width={150}
             height={50}

@@ -405,14 +405,14 @@
 @media (max-width: 480px) {
   .container {
     gap: 0.75rem;
-    padding: 0.75rem;
+    padding: 0rem;
   }
   .card {
     padding: 0.75rem;
     border-radius: 12px;
   }
   .title {
-    height: 4rem;
+    height: 5rem;
     font-size: 0.95rem;
     line-height: 1.2;
   }
@@ -435,5 +435,11 @@
     font-size: 0.7rem;
     padding: 0.2rem 0;
     margin-bottom: 0.5rem;
+  }
+  .addToCart,
+  .outOfStock {
+    padding: 0.75rem;
+    font-size: 0.7rem;
+    height: 40px;
   }
 }

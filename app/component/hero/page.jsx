@@ -43,7 +43,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <Link href="/product">
+        <Link href="/products">
           <button className={styles.heroButton}>Order Now</button>
         </Link>
       </div>
