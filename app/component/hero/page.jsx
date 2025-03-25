@@ -25,9 +25,9 @@ export default function Hero() {
           Experience Premium Quality, Direct from Our Orchards
         </h2>
         <p className={styles.heroText}>
-          Handpicked, naturally ripened, and carefully delivered to ensure the perfect taste of authentic Ratnagiri Alphonso mangoes.
+          Handpicked, naturally ripened, and carefully delivered to ensure the
+          perfect taste of authentic Ratnagiri Alphonso mangoes.
         </p>
-
         <div className={styles.trustPoints}>
           <div className={styles.trustPoint}>
             <FaTruck className={styles.trustIcon} />
@@ -42,7 +42,10 @@ export default function Hero() {
             <span>Premium Quality</span>
           </div>
         </div>
-
+        <div className={styles.promoBar}>
+          Enjoy 5% Off on Your First Three Orders{" "}
+          <span className={styles.promoCoupon}>Use Code: RF5</span>
+        </div>
         <Link href="/products">
           <button className={styles.heroButton}>Order Now</button>
         </Link>
