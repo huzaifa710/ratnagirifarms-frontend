@@ -7,6 +7,7 @@ import api from "@/utils/axios";
 import { toast, Toaster } from "react-hot-toast";
 import styles from "./page.module.css";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Checkout() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -594,13 +596,39 @@ export default function Checkout() {
               </div>
             </div>
 
-            <button
-              className={styles.placeOrderBtn}
-              onClick={handlePlaceOrder}
-              disabled={!selectedAddress}
-            >
-              Place Order
-            </button>
+            <div className="flex flex-col gap-4 mt-4">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  className="w-4 h-4 text-green-800 border-gray-300 rounded focus:ring-green-800"
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                />
+                <label htmlFor="terms" className="text-sm text-gray-700">
+                  I agree to the{" "}
+                  <Link
+                    href="/terms-and-conditions"
+                    target="_blank"
+                    className="text-green-800 hover:text-green-900 underline"
+                  >
+                    Terms & Conditions
+                  </Link>
+                </label>
+              </div>
+
+              <button
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-200 
+                  ${
+                    !selectedAddress || !acceptedTerms
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#d4af37] hover:bg-[#014421]"
+                  }`}
+                onClick={handlePlaceOrder}
+                disabled={!selectedAddress || !acceptedTerms}
+              >
+                Place Order
+              </button>
+            </div>
           </div>
         </div>
       </div>
