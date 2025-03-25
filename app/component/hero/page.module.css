@@ -147,7 +147,20 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
+  .heroText {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .heroContent {
+    padding: 1.5rem;
+  }
+
+  .heroSection {
+    height: 95vh;
+  }
+
   .promoBar {
     font-size: 0.9rem;
     padding: 8px 12px;
@@ -155,19 +168,13 @@
   }
 
   .heroTitle {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
   }
 
   .heroSubtitle {
     font-size: 1.25rem;
   }
 
-  .heroText {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
   .trustPoints {
     flex-direction: column;
     gap: 1rem;
