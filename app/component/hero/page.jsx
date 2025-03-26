@@ -1,7 +1,13 @@
 import styles from "./page.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { FaTruck, FaLeaf, FaMedal } from "react-icons/fa";
+import {
+  FaTruck,
+  FaLeaf,
+  FaMedal,
+  FaFacebookF,
+  FaInstagram,
+} from "react-icons/fa";
 
 export default function Hero() {
   return (
@@ -49,6 +55,24 @@ export default function Hero() {
         <Link href="/products">
           <button className={styles.heroButton}>Order Now</button>
         </Link>
+        <div className={styles.socialIcons}>
+          <a
+            href="https://www.facebook.com/profile.php?id=61574768097999"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.socialIcon}
+          >
+            <FaFacebookF />
+          </a>
+          <a
+            href="https://www.instagram.com/ratnagirifarms?igsh=Z3k3Z2ZubjBkem05&utm_source=qr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.socialIcon}
+          >
+            <FaInstagram />
+          </a>
+        </div>
       </div>
     </section>
   );
