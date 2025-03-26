@@ -43,8 +43,8 @@ export default function Hero() {
           </div>
         </div>
         <div className={styles.promoBar}>
-          Enjoy 5% Off on Your First Three Orders{" "}
-          <span className={styles.promoCoupon}>Use Code: RF5</span>
+          Enjoy 10% Off on Your First Three Orders{" "}
+          <span className={styles.promoCoupon}>Use Code: RF10</span>
         </div>
         <Link href="/products">
           <button className={styles.heroButton}>Order Now</button>
