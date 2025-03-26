@@ -41,8 +41,8 @@ export default function ShippingPolicy() {
         <div className={styles.section}>
           <h2>Delivery Timeline</h2>
           <ul>
-            <li>Metropolitan Cities: Within one week</li>
-            <li>Tier 2 & 3 Cities: 1-2 Weeks</li>
+            <li>Metropolitan Cities: 2-3 Days</li>
+            <li>Tier 2 & 3 Cities: Within one week</li>
             <li>
               Delivery times may vary based on weather conditions and logistics
               partner availability
