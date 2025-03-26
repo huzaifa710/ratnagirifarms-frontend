@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import api from "@/utils/axios";
 import AuthModal from "@/app/otp/page";
 const AuthContext = createContext();
-import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
+import { getCartFromCookie, getCartUUID, setCartCookie } from "@/utils/cookies";
 import toast from "react-hot-toast";
 
 export function AuthProvider({ children }) {
@@ -24,12 +24,14 @@ export function AuthProvider({ children }) {
   const transferGuestCart = async (uuid, accessToken) => {
     try {
       const guestCart = getCartFromCookie();
+      const guestUUID = getCartUUID();
       if (guestCart && guestCart.length > 0) {
         const response = await api.post(
           "/carts/transfer",
           {
             uuid,
             cartItems: guestCart,
+            guestUUID,
           },
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );

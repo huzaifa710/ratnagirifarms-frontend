@@ -38,7 +38,6 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
       typeof window.sendOTP.destroy === "function"
     ) {
       try {
-        console.log("Destroying MSG91 widget");
         window.sendOTP.destroy();
       } catch (error) {
         console.error("Error cleaning up MSG91 widget:", error);
@@ -72,22 +71,18 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
       exposeMethods: false,
       containerId: "msg91-widget-container",
       success: (data) => {
-        console.log("OTP verified successfully", data);
         handleVerificationSuccess(data);
       },
       failure: (error) => {
-        console.log("OTP verification failed", error);
         toast.error(
           "Verification failed: " + (error.message || "Please try again")
         );
         handleSafeClose();
       },
       beforeClose: () => {
-        console.log("Widget about to close");
         return true;
       },
       afterClose: () => {
-        console.log("Widget closed");
         handleSafeClose();
       },
     };

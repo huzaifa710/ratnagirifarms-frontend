@@ -1,9 +1,9 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
-import { toast } from "react-hot-toast";
 import { useAuth } from "@/app/auth-context/page";
+import axios from "axios";
+import { getCartFromCookie, setCartCookie, getCartUUID } from "@/utils/cookies";
 import api from "@/utils/axios";
-import { getCartFromCookie, setCartCookie } from "@/utils/cookies";
 
 const CartContext = createContext();
 
@@ -55,6 +55,15 @@ export function CartProvider({ children }) {
     setGuestCart(updatedCart);
     setCartCookie(updatedCart);
     updateCartCount();
+
+    const uuid = getCartUUID();
+    if (uuid) {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/carts/guest/add`, {
+        uuid,
+        product_variant_id: product.product_variant_id,
+        quantity: 1,
+      });
+    }
   };
 
   const removeFromGuestCart = (product_variant_id, quantity = 1) => {
