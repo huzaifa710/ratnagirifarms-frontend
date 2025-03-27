@@ -84,8 +84,8 @@ export default function Checkout() {
 
   // Add this function to handle coupon application
   const handleApplyCoupon = async (code) => {
-    const couponCodeToApply = code || couponCode;
-    if (!couponCodeToApply.trim()) {
+    const couponCodeToApply = couponCode || code;
+    if (!couponCodeToApply || couponCodeToApply === "") {
       toast.error("Please enter a coupon code");
       return;
     }
@@ -600,12 +600,18 @@ export default function Checkout() {
                     onChange={(e) => setCouponCode(e.target.value)}
                     className={styles.couponInput}
                   />
-                  <button
-                    onClick={handleApplyCoupon}
-                    className={styles.applyCouponBtn}
-                  >
-                    Apply
-                  </button>
+                  {couponCode && (
+                    <button
+                      onClick={handleApplyCoupon}
+                      className={styles.applyCouponBtn}
+                    >
+                      Apply
+                    </button>
+                  )}
+
+                  {!couponCode && (
+                    <button className={styles.applyCouponBtn}>Apply</button>
+                  )}
                 </div>
               )}
 
@@ -689,7 +695,6 @@ export default function Checkout() {
                                 onClick={() => {
                                   setCouponCode(coupon.code);
                                   setShowCouponsModal(false);
-                                  // Optionally auto-apply the coupon
                                   handleApplyCoupon(coupon.code);
                                 }}
                                 className={styles.applyCouponCardBtn}
