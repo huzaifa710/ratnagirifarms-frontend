@@ -24,6 +24,8 @@ export default function Checkout() {
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [availableCoupons, setAvailableCoupons] = useState([]);
+  const [showCouponsModal, setShowCouponsModal] = useState(false);
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -50,6 +52,25 @@ export default function Checkout() {
     }
   }, [uuid, accessToken]);
 
+  const fetchAvailableCoupons = async () => {
+    try {
+      const response = await api.get(`/coupons/available/${uuid}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.data.success) {
+        setAvailableCoupons(response.data.coupons);
+      } else {
+        toast.error("Failed to load available coupons");
+      }
+    } catch (error) {
+      console.error("Error fetching coupons:", error);
+      toast.error("Failed to load available coupons");
+    }
+  };
+
   const fetchCartItems = async () => {
     try {
       const response = await api.get(`/carts/by-uuid/${uuid}`);
@@ -62,8 +83,9 @@ export default function Checkout() {
   };
 
   // Add this function to handle coupon application
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
+  const handleApplyCoupon = async (code) => {
+    const couponCodeToApply = code || couponCode;
+    if (!couponCodeToApply.trim()) {
       toast.error("Please enter a coupon code");
       return;
     }
@@ -71,7 +93,7 @@ export default function Checkout() {
     try {
       const response = await api.post("/coupons/apply", {
         uuid,
-        code: couponCode,
+        code: couponCodeToApply,
         order_total: cartItems.reduce(
           (total, item) => total + item.price * item.quantity,
           0
@@ -83,7 +105,7 @@ export default function Checkout() {
         setAppliedCoupon(response.data.coupon);
         toast.success(`Coupon applied! You saved ₹${response.data.discount}`);
       } else {
-        toast.error(response.data.message || "Invalid coupon");
+        toast.error(response.data.error || "Invalid coupon");
       }
     } catch (error) {
       console.error("Coupon application error:", error);
@@ -451,7 +473,14 @@ export default function Checkout() {
                 onClick={() => setSelectedAddress(address)}
               >
                 <div className={styles.addressInfo}>
-                  <p>{address.full_name}</p>
+                  <p>
+                    {address.full_name}
+                    {selectedAddress?.id === address.id && (
+                      <span className={styles.selectedBadge}>
+                        <span>Selected</span>
+                      </span>
+                    )}
+                  </p>
                   <p>{address.email}</p>
                   <p>{address.address}</p>
                   <p>
@@ -483,14 +512,6 @@ export default function Checkout() {
                     </div>
                   </div>
                 </div>
-                {/* <div className={styles.addressActions}>
-                  <button onClick={() => handleEditAddress(address)}>
-                    Edit
-                  </button>
-                  <button onClick={() => handleDeleteAddress(address.id)}>
-                    Delete
-                  </button>
-                </div> */}
               </div>
             ))}
           </div>
@@ -585,6 +606,112 @@ export default function Checkout() {
                   >
                     Apply
                   </button>
+                </div>
+              )}
+
+              {/* Add this available coupons CTA */}
+              <button
+                onClick={() => {
+                  fetchAvailableCoupons();
+                  setShowCouponsModal(true);
+                }}
+                className={styles.availableCouponsBtn}
+              >
+                View Available Coupons
+              </button>
+
+              {/* Coupons Modal with Mobile-Friendly Design */}
+              {showCouponsModal && (
+                <div className={styles.modalOverlay}>
+                  <div className={styles.modal}>
+                    <div className={styles.modalHeader}>
+                      <h3>Available Coupons</h3>
+                      <button
+                        onClick={() => setShowCouponsModal(false)}
+                        className={styles.closeButton}
+                        aria-label="Close"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div className={styles.modalBody}>
+                      {availableCoupons.length > 0 ? (
+                        <div className={styles.couponsList}>
+                          {availableCoupons.map((coupon) => (
+                            <div key={coupon.id} className={styles.couponCard}>
+                              <div className={styles.couponHeader}>
+                                <div className={styles.couponCode}>
+                                  {coupon.code}
+                                </div>
+                                <div className={styles.discountValue}>
+                                  {coupon.discount_type === "percentage"
+                                    ? `${coupon.discount_value}% OFF`
+                                    : `₹${coupon.discount_value} OFF`}
+                                </div>
+                              </div>
+                              <div className={styles.couponDetails}>
+                                {coupon.min_order_value > 0 && (
+                                  <p>
+                                    Min. Order:{" "}
+                                    <span className={styles.highlight}>
+                                      ₹{coupon.min_order_value}
+                                    </span>
+                                  </p>
+                                )}
+                                {coupon.max_discount_value > 0 &&
+                                  coupon.discount_type === "percentage" && (
+                                    <p>
+                                      Max Discount:{" "}
+                                      <span className={styles.highlight}>
+                                        ₹{coupon.max_discount_value}
+                                      </span>
+                                    </p>
+                                  )}
+                                <p>
+                                  <span className={styles.usageInfo}>
+                                    <span className={styles.remainingUses}>
+                                      {coupon.remaining_uses} uses left
+                                    </span>
+                                    {coupon.expiry_date && (
+                                      <span className={styles.expiryDate}>
+                                        Valid till:{" "}
+                                        {
+                                          new Date(coupon.expiry_date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </span>
+                                    )}
+                                  </span>
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  setCouponCode(coupon.code);
+                                  setShowCouponsModal(false);
+                                  // Optionally auto-apply the coupon
+                                  handleApplyCoupon(coupon.code);
+                                }}
+                                className={styles.applyCouponCardBtn}
+                              >
+                                Apply Coupon
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className={styles.noCoupons}>
+                          <p>No coupons available</p>
+                          <button
+                            onClick={() => setShowCouponsModal(false)}
+                            className={styles.backButton}
+                          >
+                            Back to Checkout
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 
