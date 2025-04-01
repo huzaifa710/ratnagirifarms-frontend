@@ -5,21 +5,21 @@ import { FaQuoteLeft, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 const testimonials = [
   {
     id: 1,
-    name: "Rajesh Kumar",
+    name: "Mihir Shah",
     location: "Mumbai",
-    text: "The mangoes from Ratnagiri Farms are absolutely delicious! The taste and quality are unmatched. Will definitely order again.",
+    text: "⭐ 5/5 Stars ⭐ If you're a mango lover, these are a must-try. Their perfect balance of sweetness, juiciness, and texture makes them some of the best mangoes out there. Whether eaten alone or used in recipes, they offer a true taste of summer with every bite. Would I buy them again? Absolutely! Thank you very much for this tasty and delicious Mangoes.",
   },
   {
     id: 2,
-    name: "Priya Shah",
+    name: "Rachana Shenoy",
     location: "Mumbai",
-    text: "Fresh, sweet, and perfectly ripened mangoes delivered right to my doorstep. Amazing service and product quality!",
+    text: "Best and premium mangoes straight from the land of mangoes Ratnagiri!Have been buying from them since last 3 years! Taste super yumm! Best service and supplies too",
   },
   {
     id: 3,
-    name: "Amit Patel",
-    location: "Pune",
-    text: "Best Alphonso mangoes I've ever had. The packaging was excellent and the fruits were in perfect condition.",
+    name: "Ayesha Anwari",
+    location: "Mumbai",
+    text: "The quality is excellent and the prices are very reasonable. Definitely worth ordering from!",
   },
 ];
 
@@ -30,7 +30,7 @@ export default function Testimonials() {
   // Fixed auto-scroll functionality
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
+      setCurrentIndex((prevIndex) =>
         prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000);
