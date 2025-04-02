@@ -21,6 +21,12 @@ const testimonials = [
     location: "Mumbai",
     text: "The quality is excellent and the prices are very reasonable. Definitely worth ordering from!",
   },
+  {
+    id: 4,
+    name: "Mahesh Chandra Bhatt",
+    location: "Pune",
+    text: "Absolutely Delicious! The Alphonso mangoes I got were incredibly sweet, juicy, and had the perfect texture. Their rich aroma and smooth, buttery flesh make them the best mangoes I’ve ever tasted. Truly the king of mangoes! Will definitely order again.",
+  },
 ];
 
 export default function Testimonials() {
