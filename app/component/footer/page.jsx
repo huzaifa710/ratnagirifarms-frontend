@@ -32,12 +32,12 @@ export default function Footer() {
                   support@ratnagirifarms.com
                 </a>
               </div>
-              {/* <div className={styles.contactInfo}>
+              <div className={styles.contactInfo}>
                 <Phone className={styles.icon} />
-                <a href="tel:+918554819692" className={styles.link}>
-                  +91 85548 19692
+                <a href="tel:+918459734158" className={styles.link}>
+                  +91 84597 34158
                 </a>
-              </div> */}
+              </div>
               <p className={styles.text}>FSSAI: 21523025000167</p>
               <p className={styles.text}>
                 © 2025 Ratnagiri Farms — A venture of{" "}

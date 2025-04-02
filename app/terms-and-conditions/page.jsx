@@ -94,7 +94,7 @@ export default function Terms() {
           </p>
           <div className={styles.contactInfo}>
             <p>Email: support@ratnagirifarms.com</p>
-            {/* <p>Phone: +91 85548 19692</p> */}
+            <p>Phone: +91 84597 34158</p>
             <p>
               Address: Bankot, Tal. Mandangad, District Ratnagiri, Maharashtra
               415208

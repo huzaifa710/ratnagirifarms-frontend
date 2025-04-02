@@ -19,7 +19,8 @@ export default function ContactUs() {
     const newErrors = {};
     if (!formData.full_name) newErrors.full_name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.mobile_number) newErrors.mobile_number = "Phone number is required";
+    if (!formData.mobile_number)
+      newErrors.mobile_number = "Phone number is required";
     if (!formData.message) newErrors.message = "Message is required";
 
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -80,11 +81,11 @@ export default function ContactUs() {
               <p>Bankot, Tal. Mandangad,</p>
               <p>District Ratnagiri, Maharashtra 415208.</p>
             </div>
-            {/* <div className={styles.infoCard}>
+            <div className={styles.infoCard}>
               <Phone className={styles.icon} />
               <h3>Phone Number</h3>
-              <p>+91 85548 19692</p>
-            </div> */}
+              <p>+91 84597 34158</p>
+            </div>
             <div className={styles.infoCard}>
               <Mail className={styles.icon} />
               <h3>Email Address</h3>
@@ -104,7 +105,9 @@ export default function ContactUs() {
                     onChange={handleChange}
                     className={styles.input}
                   />
-                  {errors.full_name && <p className={styles.error}>{errors.full_name}</p>}
+                  {errors.full_name && (
+                    <p className={styles.error}>{errors.full_name}</p>
+                  )}
                 </div>
 
                 <div>
