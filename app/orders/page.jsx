@@ -118,7 +118,7 @@ export default function Orders() {
               >
                 <div className="flex justify-between mb-3">
                   <div className={styles.orderIdDate}>
-                    <h2>Order #{order.id}</h2>
+                    <h2>Order ID: {order.order_id}</h2>
                     <p>{new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className={styles.orderAmount}>
