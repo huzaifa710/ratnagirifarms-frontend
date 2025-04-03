@@ -57,7 +57,7 @@ function SingleProduct({ product }) {
 
   // Sort variants when initializing the component
   const sortedVariants = [...product.product_variants].sort(
-    (a, b) => b.quantity_per_box - a.quantity_per_box
+    (a, b) => a.quantity_per_box - b.quantity_per_box
   );
 
   const [selectedVariant, setSelectedVariant] = useState(
