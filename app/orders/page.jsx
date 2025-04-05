@@ -180,7 +180,7 @@ export default function Orders() {
                             Price per unit: ₹{item.price_per_unit}
                           </p>
                           <p className="text-[#014421]/70">
-                            No Of Pieces Per Box : ₹{item.price_per_unit}
+                            No Of Pieces Per Box : {item.product_variant.quantity_per_box}
                           </p>
                         </div>
                         <div className={styles.itemTotal}>
