@@ -18,7 +18,7 @@ export default function ShippingPolicy() {
 
         <div className={styles.section}>
           <h2>Shipping Locations</h2>
-          <p>Delivering all over India.</p>
+          <p>Delivering all over Maharashtra.</p>
         </div>
 
         <div className={styles.section}>
