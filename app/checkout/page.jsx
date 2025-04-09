@@ -378,7 +378,7 @@ export default function Checkout() {
               <h3>{editingAddress ? "Edit Address" : "Add New Address"}</h3>
               <input
                 type="text"
-                placeholder="Full Name (First and Last Name"
+                placeholder="Full Name (First and Last Name)"
                 name="full_name"
                 value={addressForm.full_name}
                 onChange={(e) =>
