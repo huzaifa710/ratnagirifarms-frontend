@@ -414,6 +414,7 @@ export default function Checkout() {
                   })
                 }
                 required
+                maxLength={10}
               />
               <textarea
                 placeholder="Address"
