@@ -427,6 +427,7 @@ export default function Checkout() {
               >
                 <option value="">Select State</option>
                 <option value="Maharashtra">Maharashtra</option>
+                <option value="Gujarat">Gujarat</option>
               </select>
               <input
                 type="text"
