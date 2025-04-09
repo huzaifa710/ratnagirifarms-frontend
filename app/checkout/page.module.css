@@ -602,6 +602,7 @@
 
 .addressForm textarea,
 .addressForm input[type="text"],
+.addressForm input[type="tel"],
 .addressForm select {
   width: 100%;
   padding: 0.75rem;

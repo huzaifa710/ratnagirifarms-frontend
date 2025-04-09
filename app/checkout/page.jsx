@@ -30,6 +30,7 @@ export default function Checkout() {
   const [addressForm, setAddressForm] = useState({
     full_name: "",
     email: "",
+    mobile_number: "",
     address: "",
     city: "",
     state: "",
@@ -214,6 +215,7 @@ export default function Checkout() {
       setAddressForm({
         full_name: "",
         email: "",
+        mobile_number: "",
         address: "",
         city: "",
         state: "",
@@ -242,6 +244,7 @@ export default function Checkout() {
     setAddressForm({
       full_name: address.full_name,
       email: address.email,
+      mobile_number: address.mobile_number,
       address: address.address,
       city: address.city,
       state: address.state,
@@ -282,7 +285,7 @@ export default function Checkout() {
         prefill: {
           name: selectedAddress.full_name,
           email: selectedAddress.email,
-          contact: mobile_number,
+          contact: selectedAddress.mobile_number,
         },
         handler: async (response) => {
           try {
@@ -356,6 +359,7 @@ export default function Checkout() {
                 setAddressForm({
                   full_name: "",
                   email: "",
+                  mobile_number: "",
                   address: "",
                   city: "",
                   state: "",
@@ -394,6 +398,19 @@ export default function Checkout() {
                   setAddressForm({
                     ...addressForm,
                     email: e.target.value,
+                  })
+                }
+                required
+              />
+              <input
+                type="tel"
+                placeholder="Mobile Number"
+                name="mobile_number"
+                value={addressForm.mobile_number}
+                onChange={(e) =>
+                  setAddressForm({
+                    ...addressForm,
+                    mobile_number: e.target.value,
                   })
                 }
                 required
@@ -483,6 +500,7 @@ export default function Checkout() {
                     )}
                   </p>
                   <p>{address.email}</p>
+                  <p>{address.mobile_number}</p>
                   <p>{address.address}</p>
                   <p>
                     {address.city}, {address.state} - {address.pincode}
