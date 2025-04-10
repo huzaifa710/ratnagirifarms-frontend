@@ -48,10 +48,10 @@ export default function Hero() {
             <span>Premium Quality</span>
           </div>
         </div>
-        <div className={styles.promoBar}>
+        {/* <div className={styles.promoBar}>
           Enjoy 10% Off on Your First Three Orders{" "}
           <span className={styles.promoCoupon}>Use Code: RF10</span>
-        </div>
+        </div> */}
         <Link href="/products">
           <button className={styles.heroButton}>Order Now</button>
         </Link>
