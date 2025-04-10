@@ -158,12 +158,32 @@
   justify-content: center;
 }
 
+.originalPrice {
+  color: #014421;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: line-through;
+}
+
+.originalPrice::before {
+  content: "₹";
+  font-size: 1.2rem;
+  margin-right: 2px;
+  opacity: 0.8;
+}
+
 .price::before {
   content: "₹";
   font-size: 1.2rem;
   margin-right: 2px;
   opacity: 0.8;
 }
+
 
 .piecesLabel {
   font-family: "Poppins", sans-serif;
@@ -353,6 +373,10 @@
   }
   .title::after {
     width: 30px;
+  }
+  .originalPrice {
+    font-size: 0.8rem;
+    margin-bottom: 0rem;
   }
   .price {
     font-size: 1.25rem;

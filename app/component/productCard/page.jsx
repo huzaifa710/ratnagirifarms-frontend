@@ -160,6 +160,9 @@ function SingleProduct({ product }) {
 
         <div className={styles.productContentTop}>
           <h2 className={styles.title}>{product.name}</h2>
+          <p className={`${styles.originalPrice} text-gray-500`}>
+            <del>{selectedVariant?.original_price}</del>
+          </p>{" "}
           <p className={styles.price}>{selectedVariant?.price}</p>
         </div>
 
