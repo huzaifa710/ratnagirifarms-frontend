@@ -230,10 +230,77 @@ export default function ProductCard() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      {products.map((product) => (
-        <SingleProduct key={product.id} product={product} />
-      ))}
+    <div className={styles.pageContainer}>
+      {/* Buy More, Save More Section */}
+      <div className={styles.savingsPrompt}>
+        <h3 className={styles.savingsHeading}>Buy More, Save More!</h3>
+        <p className={styles.savingsSubtext}>
+          Enjoy exclusive discounts when you buy larger packs.
+        </p>
+        <div className={styles.savingsCardsWrapper}>
+          <div className={styles.savingsCard}>
+            <h4>Small Mango</h4>
+            <ul>
+              <li>1 Dozen – ₹899</li>
+              <li>
+                2 Dozen – ₹1599{" "}
+                <span className={styles.saveHighlight}>(Save ₹199)</span>
+              </li>
+              <li>
+                4 Dozen – ₹2999{" "}
+                <span className={styles.saveHighlight}>(Save ₹597)</span>
+              </li>
+            </ul>
+          </div>
+          <div className={styles.savingsCard}>
+            <h4>Regular Mango</h4>
+            <ul>
+              <li>1 Dozen – ₹1099</li>
+              <li>
+                2 Dozen – ₹1999{" "}
+                <span className={styles.saveHighlight}>(Save ₹199)</span>
+              </li>
+              <li>
+                4 Dozen – ₹3799{" "}
+                <span className={styles.saveHighlight}>(Save ₹597)</span>
+              </li>
+            </ul>
+          </div>
+          <div className={styles.savingsCard}>
+            <h4>Queen Mango</h4>
+            <ul>
+              <li>1 Dozen – ₹1399</li>
+              <li>
+                2 Dozen – ₹2599{" "}
+                <span className={styles.saveHighlight}>(Save ₹199)</span>
+              </li>
+              <li>
+                4 Dozen – ₹4999{" "}
+                <span className={styles.saveHighlight}>(Save ₹597)</span>
+              </li>
+            </ul>
+          </div>
+          <div className={styles.savingsCard}>
+            <h4>King Mango</h4>
+            <ul>
+              <li>1 Dozen – ₹1699</li>
+              <li>
+                2 Dozen – ₹3199{" "}
+                <span className={styles.saveHighlight}>(Save ₹199)</span>
+              </li>
+              <li>
+                4 Dozen – ₹6199{" "}
+                <span className={styles.saveHighlight}>(Save ₹597)</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div className={styles.container}>
+        {products.map((product) => (
+          <SingleProduct key={product.id} product={product} />
+        ))}
+      </div>
     </div>
   );
 }

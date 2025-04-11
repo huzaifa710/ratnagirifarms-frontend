@@ -29,6 +29,16 @@ const galleryImages = [
     src: "/gallery/gallery5.webp",
     alt: "Mango Harvesting",
   },
+  {
+    id:6,
+    src: "/gallery/gallery6.webp",
+    alt: "Mango Harvesting",
+  },
+  {
+    id: 7,
+    src: "/gallery/gallery7.webp",
+    alt: "Mango Harvesting",
+  },
 ];
 
 export default function Gallery() {

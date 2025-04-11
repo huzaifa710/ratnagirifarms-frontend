@@ -37,7 +37,7 @@ export default function Hero() {
         <div className={styles.trustPoints}>
           <div className={styles.trustPoint}>
             <FaTruck className={styles.trustIcon} />
-            <span>Free Shipping All Over Maharashtra & Gujarat</span>
+            <span>Free Shipping</span>
           </div>
           <div className={styles.trustPoint}>
             <FaLeaf className={styles.trustIcon} />

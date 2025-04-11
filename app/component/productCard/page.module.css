@@ -5,6 +5,59 @@
   width: 100%;
 }
 
+.savingsPrompt {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.savingsHeading {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.savingsSubtext {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.savingsCardsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.savingsCard {
+  background: #fffbe6;
+  padding: 1rem;
+  border: 1px solid #f7e399;
+  border-radius: 12px;
+  width: 250px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.savingsCard h4 {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  color: #a36d00;
+}
+
+.savingsCard ul {
+  list-style: none;
+  padding: 0;
+}
+
+.savingsCard li {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.saveHighlight {
+  color: green;
+  font-weight: bold;
+}
+
 .notifyButton {
   background: #f8f1d1;
   color: rgba(1, 68, 33, 0.8);
@@ -184,7 +237,6 @@
   opacity: 0.8;
 }
 
-
 .piecesLabel {
   font-family: "Poppins", sans-serif;
   font-size: 0.875rem;
@@ -347,6 +399,16 @@
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
+  .savingsCardsWrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .savingsCard {
+    width: 100%;
+    padding: 0.5rem;
+  }
+
   .container {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
