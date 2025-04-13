@@ -51,6 +51,7 @@
 .savingsCard li {
   margin: 0.5rem 0;
   font-size: 0.95rem;
+  color: #000;
 }
 
 .saveHighlight {
