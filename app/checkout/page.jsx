@@ -444,8 +444,9 @@ export default function Checkout() {
                 required
               >
                 <option value="">Select State</option>
-                <option value="Maharashtra">Maharashtra</option>
                 <option value="Gujarat">Gujarat</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
               </select>
               <input
                 type="text"
