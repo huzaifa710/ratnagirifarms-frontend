@@ -453,9 +453,9 @@ export default function Checkout() {
                 <option value="Gujarat">Gujarat</option>
                 {/* <option value="Haryana">Haryana</option>
                 <option value="Himachal Pradesh">Himachal Pradesh</option>
-                <option value="Jharkhand">Jharkhand</option>
+                <option value="Jharkhand">Jharkhand</option>*/}
                 <option value="Karnataka">Karnataka</option>
-                <option value="Kerala">Kerala</option> */}
+                {/* <option value="Kerala">Kerala</option>  */}
                 <option value="Madhya Pradesh">Madhya Pradesh</option>
                 <option value="Maharashtra">Maharashtra</option>
                 {/* <option value="Manipur">Manipur</option>
