@@ -10,7 +10,10 @@
 .section {
   padding: 4rem 2rem;
 }
-
+.couponsSection {
+  background-color: #f9f9f9;
+  padding: 4rem 2rem;
+}
 /* Section Title Styling */
 .sectionTitle {
   font-family: 'Playfair Display', serif;

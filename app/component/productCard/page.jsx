@@ -9,6 +9,7 @@ import api from "@/utils/axios";
 import NotifyModal from "@/app/notify-modal/page";
 import { BiSolidBellRing } from "react-icons/bi";
 import Cookies from "js-cookie";
+import AvailableCoupons from "@/app/component/availableCoupons/page";
 
 const getAllProducts = async () => {
   const response = await api.get(`/products/all`);
@@ -232,6 +233,12 @@ export default function ProductCard() {
   return (
     <div className={styles.pageContainer}>
       {/* Buy More, Save More Section */}
+      <section
+        className={`${styles.couponsSection} ${styles.section} ${styles.fadeIn}`}
+      >
+        <h2 className={styles.sectionTitle}>Special Offers</h2>
+        <AvailableCoupons />
+      </section>
       <div className={styles.savingsPrompt}>
         <h3 className={styles.savingsHeading}>Buy More, Save More!</h3>
         <p className={styles.savingsSubtext}>

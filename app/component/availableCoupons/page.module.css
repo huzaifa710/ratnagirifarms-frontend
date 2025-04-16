@@ -1,0 +1,138 @@
+.couponsContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+  }
+  
+  .couponsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  
+  .couponCard {
+    width: 280px;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    border: 2px dashed #d4af37;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .couponCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  .couponBadge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #d4af37;
+    color: white;
+    padding: 8px;
+    border-bottom-left-radius: 12px;
+  }
+  
+  .couponHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .couponCode {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #014421;
+    background: rgba(1, 68, 33, 0.08);
+    padding: 5px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+  
+  .copyButton {
+    background: none;
+    border: none;
+    color: #014421;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+  
+  .copyButton:hover {
+    background: rgba(1, 68, 33, 0.08);
+  }
+  
+  .discountValue {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #014421;
+    margin-bottom: 1rem;
+  }
+  
+  .couponDetails {
+    margin-bottom: 1rem;
+  }
+  
+  .couponDetails p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .couponFooter {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(212, 175, 55, 0.5);
+    font-size: 0.8rem;
+  }
+  
+  .expiryDate {
+    color: #000;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .couponCode {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+    }
+    
+    .couponBadge{
+      font-size: 0.6rem;
+      padding: 3px 10px;
+    }
+
+    .couponsList {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      width: 100%;
+      gap: 1rem;
+    }
+    
+    .couponCard {
+      width: calc(50% - 1rem);
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .couponCard {
+      width: 100%;
+    }
+  }

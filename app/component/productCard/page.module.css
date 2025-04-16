@@ -5,6 +5,20 @@
   width: 100%;
 }
 
+.couponsSection {
+  background-color: #f9f9f9;
+  padding: 4rem 2rem;
+}
+
+.sectionTitle {
+  font-family: "Playfair Display", serif;
+  text-align: center;
+  font-size: 2.5rem;
+  color: #014421;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
 .savingsPrompt {
   text-align: center;
   margin: 2rem 0;
@@ -401,6 +415,9 @@
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
+  .couponsSection{
+    padding: 0rem;
+  }
   .savingsCardsWrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
