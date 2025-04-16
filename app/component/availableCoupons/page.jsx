@@ -81,7 +81,7 @@ export default function AvailableCoupons() {
             <div className={styles.couponDetails}>
               {uuid && (
                 <p className={styles.usageInfo}>
-                  Remaing usage: {coupon.remaining_uses}
+                  Remaining usage: {coupon.remaining_uses}
                 </p>
               )}
             </div>
