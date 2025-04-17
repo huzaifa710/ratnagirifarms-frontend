@@ -13,7 +13,7 @@ export default function RefundPolicy() {
           <p>
             It is possible to cancel orders placed and processed through the
             website from your user account within the same day before the
-            dispatch of the order.
+            order is shipped.
           </p>
         </div>
 
