@@ -28,7 +28,7 @@ export default function Footer() {
               </div>
               <div className={styles.contactInfo}>
                 <Mail className={styles.icon} />
-                <a href="mailto:support@farm2you.in" className={styles.link}>
+                <a href="mailto:support@ratnagirifarms.com" className={styles.link}>
                   support@ratnagirifarms.com
                 </a>
               </div>
