@@ -6,6 +6,7 @@ import Image from "next/image"; // Import Image
 import styles from "./page.module.css";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -14,6 +15,7 @@ const Navbar = () => {
   const { accessToken, user, logout, setShowAuthModal } = useAuth();
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     updateCartCount();
@@ -92,6 +94,39 @@ const Navbar = () => {
     </>
   );
 
+  const adminNavigationLinks = (
+    <>
+      <Link
+        href="/admin/noob/home"
+        className={styles.navItem}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        Home
+      </Link>
+      <Link
+        href="/admin/noob/orders"
+        className={styles.navItem}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        Orders
+      </Link>
+      {/* <Link
+        href="/admin/noob/products"
+        className={styles.navItem}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        Products
+      </Link>
+      <Link
+        href="/admin/noob/coupons"
+        className={styles.navItem}
+        onClick={() => setIsMobileMenuOpen(false)}
+      > */}
+        {/* Coupons
+      </Link> */}
+    </>
+  );
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.leftContainer}>
@@ -114,7 +149,11 @@ const Navbar = () => {
 
       {/* Desktop Navigation */}
       <div className={styles.desktopNav}>
-        <div className={styles.navLinks}>{navigationLinks}</div>
+        {pathname.startsWith("/admin") ? (
+          <div className={styles.navLinks}>{adminNavigationLinks}</div>
+        ) : (
+          <div className={styles.navLinks}>{navigationLinks}</div>
+        )}
       </div>
 
       {/* Mobile Navigation */}
@@ -129,10 +168,12 @@ const Navbar = () => {
 
       {/* Cart & User Icons (Always Visible) */}
       <div className={styles.iconsContainer}>
-        <Link href="/cart" className={styles.iconButton}>
-          <FaShoppingCart size={20} />
-          <span className={styles.cartCount}>{cartCount}</span>
-        </Link>
+        {!pathname.startsWith("/admin") && (
+          <Link href="/cart" className={styles.iconButton}>
+            <FaShoppingCart size={20} />
+            <span className={styles.cartCount}>{cartCount}</span>
+          </Link>
+        )}
 
         {/* User Dropdown (Desktop Only) */}
         <div className={styles.userContainer} ref={dropdownRef}>
@@ -147,13 +188,16 @@ const Navbar = () => {
             <div className={styles.dropdown}>
               {accessToken ? (
                 <>
-                  <Link
-                    href="/orders"
-                    className={styles.dropdownItem}
-                    onClick={handleDropdownItemClick}
-                  >
-                    Orders
-                  </Link>
+                  {!pathname.startsWith("/admin") && (
+                    <Link
+                      href="/orders"
+                      className={styles.dropdownItem}
+                      onClick={handleDropdownItemClick}
+                    >
+                      Orders
+                    </Link>
+                  )}
+
                   <button
                     onClick={handleLogout}
                     className={styles.dropdownItem}
