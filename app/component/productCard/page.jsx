@@ -248,13 +248,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Small Mango</h4>
             <ul>
-              <li>1 Dozen – ₹899</li>
+              <li>1 Dozen – ₹799</li>
               <li>
-                2 Dozen – ₹1599{" "}
+                2 Dozen – ₹1399{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹2999{" "}
+                4 Dozen – ₹2599{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -262,13 +262,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Regular Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1099</li>
+              <li>1 Dozen – ₹999</li>
               <li>
-                2 Dozen – ₹1999{" "}
+                2 Dozen – ₹1799{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹3799{" "}
+                4 Dozen – ₹3399{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -276,13 +276,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Queen Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1399</li>
+              <li>1 Dozen – ₹1299</li>
               <li>
-                2 Dozen – ₹2599{" "}
+                2 Dozen – ₹2399{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹4999{" "}
+                4 Dozen – ₹4599{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -290,13 +290,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>King Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1699</li>
+              <li>1 Dozen – ₹1599</li>
               <li>
-                2 Dozen – ₹3199{" "}
+                2 Dozen – ₹2999{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹6199{" "}
+                4 Dozen – ₹5799{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
