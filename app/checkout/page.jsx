@@ -471,8 +471,8 @@ export default function Checkout() {
                 {/*<option value="Tripura">Tripura</option>*/}
                 <option value="Uttar Pradesh">Uttar Pradesh</option>
                 <option value="Uttarakhand">Uttarakhand</option>
-                {/*<option value="West Bengal">West Bengal</option>
-                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="West Bengal">West Bengal</option>
+                {/*<option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
                 <option value="Chandigarh">Chandigarh</option>
                 <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option> */}
                 <option value="Delhi">Delhi</option>
