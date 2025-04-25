@@ -314,7 +314,9 @@ export default function AdminOrders() {
                   </td>
                   <td>
                     <span
-                      className={`${styles.statusBadge} ${styles[order.payment_status]}`}
+                      className={`${styles.statusBadge} ${
+                        styles[order.payment_status]
+                      }`}
                     >
                       {order.payment_status.toUpperCase()}
                     </span>
@@ -325,7 +327,7 @@ export default function AdminOrders() {
                     <button
                       className={styles.viewButton}
                       onClick={() =>
-                        router.push(`/admin/noob/orders/${order.id}`)
+                        window.open(`/admin/noob/orders/${order.id}`, "_blank")
                       }
                     >
                       View Details
