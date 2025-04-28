@@ -444,8 +444,8 @@ export default function Checkout() {
                 required
               >
                 <option value="">Select State</option>
-                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                {/* <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                {/*<option value="Andhra Pradesh">Andhra Pradesh</option>
+                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                 <option value="Assam">Assam</option>
                 <option value="Bihar">Bihar</option>*/}
                 <option value="Chandigarh">Chandigarh</option>
@@ -491,6 +491,7 @@ export default function Checkout() {
                 }
                 required
                 maxLength={6}
+                minLength={6}
               />
               <label className={styles.checkboxLabel}>
                 <input
