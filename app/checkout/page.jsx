@@ -195,6 +195,11 @@ export default function Checkout() {
 
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
+    const patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
+    if (!patternEmail.test(addressForm.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
     try {
       if (editingAddress) {
         await api.put(`/user-address/update/${editingAddress.id}`, {
@@ -414,6 +419,7 @@ export default function Checkout() {
                   })
                 }
                 required
+                minLength={10}
                 maxLength={10}
               />
               <textarea
