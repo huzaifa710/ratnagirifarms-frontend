@@ -26,6 +26,11 @@ export default function Checkout() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCouponsModal, setShowCouponsModal] = useState(false);
+  const [pincodeStatus, setPincodeStatus] = useState({
+    isValid: false,
+    message: "",
+    city: "",
+  });
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -52,6 +57,40 @@ export default function Checkout() {
       fetchAddresses();
     }
   }, [uuid, accessToken]);
+
+  const checkPincodeServiceability = async (pincode) => {
+    try {
+      const response = await api.post("/delhivery/check-pincode", {
+        pincode: pincode,
+      });
+
+      if (response.data.success) {
+        setPincodeStatus({
+          isValid: true,
+          message: response.data.message,
+          city: response.data.city,
+        });
+        // Auto-fill city if pincode is valid
+        setAddressForm((prev) => ({
+          ...prev,
+          city: response.data.city,
+        }));
+      } else {
+        setPincodeStatus({
+          isValid: false,
+          message: response.data.message,
+          city: "",
+        });
+      }
+    } catch (error) {
+      setPincodeStatus({
+        isValid: false,
+        message: "Error checking pincode serviceability",
+        city: "",
+      });
+      toast.error("Error checking pincode serviceability");
+    }
+  };
 
   const fetchAvailableCoupons = async () => {
     try {
@@ -200,6 +239,12 @@ export default function Checkout() {
       toast.error("Please enter a valid email address");
       return;
     }
+
+    if (!pincodeStatus.isValid) {
+      toast.error("Please enter a valid serviceable pincode");
+      return;
+    }
+
     try {
       if (editingAddress) {
         await api.put(`/user-address/update/${editingAddress.id}`, {
@@ -432,16 +477,6 @@ export default function Checkout() {
                 }
                 required
               />
-              <input
-                type="text"
-                placeholder="City"
-                name="city"
-                value={addressForm.city}
-                onChange={(e) =>
-                  setAddressForm({ ...addressForm, city: e.target.value })
-                }
-                required
-              />
               <select
                 name="state"
                 value={addressForm.state}
@@ -488,17 +523,46 @@ export default function Checkout() {
                 <option value="Ladakh">Ladakh</option>
                 <option value="Lakshadweep">Lakshadweep</option>*/}
               </select>
+              <div className={styles.inputGroup}>
+                <input
+                  type="text"
+                  placeholder="Pincode"
+                  name="pincode"
+                  value={addressForm.pincode}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+                    setAddressForm({ ...addressForm, pincode: value });
+                    if (value.length === 6) {
+                      checkPincodeServiceability(value);
+                    } else {
+                      setPincodeStatus({
+                        isValid: false,
+                        message: "",
+                        city: "",
+                      });
+                    }
+                  }}
+                  required
+                  maxLength={6}
+                  minLength={6}
+                />
+                {addressForm.pincode.length === 6 && (
+                  <div
+                    className={`${styles.pincodeStatus} ${
+                      pincodeStatus.isValid ? styles.valid : styles.invalid
+                    }`}
+                  >
+                    {pincodeStatus.message}
+                  </div>
+                )}
+              </div>
               <input
                 type="text"
-                placeholder="Pincode"
-                name="pincode"
-                value={addressForm.pincode}
-                onChange={(e) =>
-                  setAddressForm({ ...addressForm, pincode: e.target.value })
-                }
+                placeholder="City"
+                name="city"
+                value={addressForm.city}
+                readOnly
                 required
-                maxLength={6}
-                minLength={6}
               />
               <label className={styles.checkboxLabel}>
                 <input
