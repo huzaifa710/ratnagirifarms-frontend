@@ -21,6 +21,7 @@ export default function AdminOrders() {
     name: "",
     start_date: "",
     end_date: "",
+    order_id: "",
   });
   const [appliedFilters, setAppliedFilters] = useState({
     order_status: "",
@@ -28,6 +29,7 @@ export default function AdminOrders() {
     name: "",
     start_date: "",
     end_date: "",
+    order_id: "",
   });
   const [editingOrder, setEditingOrder] = useState(null);
   const [awbNumber, setAwbNumber] = useState("");
@@ -72,6 +74,7 @@ export default function AdminOrders() {
       name: "",
       start_date: "",
       end_date: "",
+      order_id: "",
     };
     setFilters(clearedFilters);
     setAppliedFilters(clearedFilters);
@@ -176,8 +179,16 @@ export default function AdminOrders() {
           <input
             type="text"
             name="name"
-            placeholder="Search by customer name"
+            placeholder="Search by name"
             value={filters.name}
+            onChange={handleFilterChange}
+          />
+
+          <input
+            type="text"
+            name="order_id"
+            placeholder="Search by Order ID"
+            value={filters.order_id}
             onChange={handleFilterChange}
           />
 
