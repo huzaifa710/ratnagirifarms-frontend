@@ -488,8 +488,8 @@ export default function Checkout() {
                 <option value="">Select State</option>
                 {/*<option value="Andhra Pradesh">Andhra Pradesh</option>
                  <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                <option value="Assam">Assam</option>
-                <option value="Bihar">Bihar</option>*/}
+                <option value="Assam">Assam</option>*/}
+                <option value="Bihar">Bihar</option>
                 <option value="Chandigarh">Chandigarh</option>
                 <option value="Chhattisgarh">Chhattisgarh</option>
                 <option value="Delhi">Delhi</option>
