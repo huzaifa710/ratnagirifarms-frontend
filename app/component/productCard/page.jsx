@@ -149,12 +149,20 @@ function SingleProduct({ product }) {
 
   const isVariantNotified =
     selectedVariant && notifiedVariants.includes(selectedVariant.id);
+    
+  let imageScr = "/card/image3.png"
+
+  if(product.name === "Ratnagiri Alphonso Mango Pulp 850 Grams") {
+    imageScr = "/card/mango-pulp.jpg" // replace with your new image path
+  } else if(product.name === "Ratnagiri Premium Sun-Dried Mango Slices 1KG") {
+    imageScr = "/card/dry-mango.jpg"
+  }
 
   return (
     <>
       <div className={styles.card}>
         <img
-          src="/card/image3.png"
+          src={imageScr}
           alt={product.name}
           className={styles.productImage}
         />
