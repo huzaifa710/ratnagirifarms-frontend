@@ -270,13 +270,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Regular Mango</h4>
             <ul>
-              <li>1 Dozen – ₹999</li>
+              <li>1 Dozen – ₹899</li>
               <li>
-                2 Dozen – ₹1799{" "}
+                2 Dozen – ₹1599{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹3399{" "}
+                4 Dozen – ₹2999{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -284,13 +284,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Queen Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1199</li>
+              <li>1 Dozen – ₹1099</li>
               <li>
-                2 Dozen – ₹2199{" "}
+                2 Dozen – ₹1999{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹4199{" "}
+                4 Dozen – ₹3799{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -298,13 +298,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>King Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1499</li>
+              <li>1 Dozen – ₹1399</li>
               <li>
-                2 Dozen – ₹2799{" "}
+                2 Dozen – ₹2599{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹5399{" "}
+                4 Dozen – ₹4999{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
