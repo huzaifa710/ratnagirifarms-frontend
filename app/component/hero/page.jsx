@@ -41,7 +41,7 @@ export default function Hero() {
           </div>
           <div className={styles.trustPoint}>
             <FaLeaf className={styles.trustIcon} />
-            <span>100% Organic</span>
+            <span>Carbide Free Ripening</span>
           </div>
           <div className={styles.trustPoint}>
             <FaMedal className={styles.trustIcon} />

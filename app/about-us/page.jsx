@@ -30,7 +30,7 @@ export default function AboutUs() {
               <div className={styles.feature}>
                 <FaLeaf className={styles.icon} />
                 <h4>Natural Farming</h4>
-                <p>100% organic cultivation ensuring the purest taste</p>
+                <p>Carbide Free Ripening</p>
               </div>
               
               <div className={styles.feature}>
