@@ -104,6 +104,20 @@
 }
 
 /* Card structure with improved height consistency */
+.bestSellerBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff6b6b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .card {
   position: relative;
   background-color: #ffffff;
@@ -415,7 +429,14 @@
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
-  .couponsSection{
+  .bestSellerBadge {
+    top: 5px;
+    right: 5px;
+    padding: 3px 10px;
+    font-size: 12px;
+  }
+
+  .couponsSection {
     padding: 0rem;
   }
   .savingsCardsWrapper {
@@ -508,6 +529,13 @@
 
 /* Additional breakpoint for very small screens */
 @media (max-width: 480px) {
+  .bestSellerBadge {
+    top: 3px;
+    right: 3px;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
   .container {
     gap: 0.75rem;
     padding: 0rem;
