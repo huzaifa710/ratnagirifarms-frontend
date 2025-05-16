@@ -62,8 +62,8 @@ export default function ShippingPolicy() {
           <h2>Important Notes</h2>
           <ul>
             <li>
-              We use specialized packaging to ensure mangoes arrive in perfect
-              condition
+              For safety purposes, we ship raw mangoes using specialized
+              packaging to ensure they reach you in perfect condition.
             </li>
             <li>
               Deliveries are handled by professional courier partners
