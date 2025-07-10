@@ -244,11 +244,11 @@ export default function ProductCard() {
   return (
     <div className={styles.pageContainer}>
       {/* Buy More, Save More Section */}
-      <section
+      {/* <section
         className={`${styles.couponsSection} ${styles.section} ${styles.fadeIn}`}
       >
-        {/* <h2 className={styles.sectionTitle}>Special Offers</h2>
-        <AvailableCoupons /> */}
+        <h2 className={styles.sectionTitle}>Special Offers</h2>
+        <AvailableCoupons />
       </section>
       <div className={styles.savingsPrompt}>
         <h3 className={styles.savingsHeading}>Buy More, Save More!</h3>
@@ -313,7 +313,7 @@ export default function ProductCard() {
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className={styles.container}>
         {products.map((product) => (
           <SingleProduct key={product.id} product={product} />
