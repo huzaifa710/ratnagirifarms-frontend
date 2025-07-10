@@ -247,8 +247,8 @@ export default function ProductCard() {
       <section
         className={`${styles.couponsSection} ${styles.section} ${styles.fadeIn}`}
       >
-        <h2 className={styles.sectionTitle}>Special Offers</h2>
-        <AvailableCoupons />
+        {/* <h2 className={styles.sectionTitle}>Special Offers</h2>
+        <AvailableCoupons /> */}
       </section>
       <div className={styles.savingsPrompt}>
         <h3 className={styles.savingsHeading}>Buy More, Save More!</h3>
