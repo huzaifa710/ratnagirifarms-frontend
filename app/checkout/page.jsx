@@ -31,6 +31,8 @@ export default function Checkout() {
     message: "",
     city: "",
   });
+  const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' or 'cod'
+  const [handlingCharge, setHandlingCharge] = useState(0);
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -57,6 +59,10 @@ export default function Checkout() {
       fetchAddresses();
     }
   }, [uuid, accessToken]);
+
+  useEffect(() => {
+    setHandlingCharge(paymentMethod === "cod" ? 99 : 0);
+  }, [paymentMethod]);
 
   const checkPincodeServiceability = async (pincode) => {
     try {
@@ -317,14 +323,27 @@ export default function Checkout() {
 
     try {
       // Create guest order or regular order based on checkout type
-      const createOrderResponse = await api.post("orders/create", {
+      const createOrderPayload = {
         uuid,
         cart_ids: cartItems.map((item) => item.id),
         user_address_id: selectedAddress.id,
         coupon_id: appliedCoupon ? appliedCoupon.id : null,
-      });
+        payment_method: paymentMethod, // 'online' or 'cod'
+        handling_charge: paymentMethod === "cod" ? 99 : 0,
+      };
+      const createOrderResponse = await api.post("orders/create", createOrderPayload);
 
-      // Initialize Razorpay with appropriate details
+      if (paymentMethod === "cod") {
+        if (createOrderResponse.data.success) {
+          toast.success("Order placed successfully! Cash on Delivery selected.");
+          router.push("/orders");
+        } else {
+          toast.error(createOrderResponse.data.message || "Failed to place COD order");
+        }
+        return;
+      }
+
+      // Online payment flow (Razorpay)
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: createOrderResponse.data.amount,
@@ -690,6 +709,36 @@ export default function Checkout() {
 
           <div className={styles.orderSummary}>
             <h2>Order Summary</h2>
+            {/* Payment Method Selector */}
+            <div className={styles.paymentMethodSection}>
+              <div className={styles.paymentLabelCol}>
+                <span className={styles.paymentLabel}>Payment Method:</span>
+              </div>
+              <div className={styles.paymentOptionsCol}>
+                <label className={styles.paymentOptionRadio}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="online"
+                    checked={paymentMethod === "online"}
+                    onChange={() => setPaymentMethod("online")}
+                  />
+                  Online<br/>
+                  <span className={styles.paymentOptionDesc}>(UPI/Card/Netbanking)</span>
+                </label>
+                <label className={styles.paymentOptionRadio}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={paymentMethod === "cod"}
+                    onChange={() => setPaymentMethod("cod")}
+                  />
+                  Cash on Delivery<br/>
+                  <span className={styles.paymentOptionDesc}>(COD)</span>
+                </label>
+              </div>
+            </div>
             <div className={styles.summaryDetails}>
               <div className={styles.summaryRow}>
                 <span>Subtotal</span>
@@ -707,6 +756,12 @@ export default function Checkout() {
                 <span>Delivery Charges</span>
                 <span>₹0.00</span>
               </div>
+              {paymentMethod === "cod" && (
+                <div className={styles.summaryRow}>
+                  <span>Handling Charge (COD)</span>
+                  <span>₹{handlingCharge.toFixed(2)}</span>
+                </div>
+              )}
 
               {appliedCoupon ? (
                 <div className={styles.couponApplied}>
@@ -858,7 +913,7 @@ export default function Checkout() {
                     cartItems.reduce(
                       (total, item) => total + item.price * item.quantity,
                       0
-                    ) - discount
+                    ) - discount + handlingCharge
                   ).toFixed(2)}
                 </span>
               </div>
