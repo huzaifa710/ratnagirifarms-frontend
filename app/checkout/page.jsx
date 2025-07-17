@@ -61,7 +61,7 @@ export default function Checkout() {
   }, [uuid, accessToken]);
 
   useEffect(() => {
-    setHandlingCharge(paymentMethod === "cod" ? 99 : 0);
+    setHandlingCharge(paymentMethod === "cod" ? 49 : 0);
   }, [paymentMethod]);
 
   const checkPincodeServiceability = async (pincode) => {
@@ -329,7 +329,7 @@ export default function Checkout() {
         user_address_id: selectedAddress.id,
         coupon_id: appliedCoupon ? appliedCoupon.id : null,
         payment_method: paymentMethod, // 'online' or 'cod'
-        handling_charge: paymentMethod === "cod" ? 99 : 0,
+        handling_charge: paymentMethod === "cod" ? 49 : 0,
       };
       const createOrderResponse = await api.post("orders/create", createOrderPayload);
 
