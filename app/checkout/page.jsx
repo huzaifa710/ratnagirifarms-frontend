@@ -335,7 +335,7 @@ export default function Checkout() {
 
       if (paymentMethod === "cod") {
         if (createOrderResponse.data.success) {
-          toast.success("Order placed successfully! Cash on Delivery selected.");
+          toast.success("Order placed successfully!");
           router.push("/orders");
         } else {
           toast.error(createOrderResponse.data.message || "Failed to place COD order");

@@ -85,7 +85,7 @@ export default function Orders() {
       });
 
       if (response.data.success) {
-        toast.success("Order cancelled successfully. Refund initiated.");
+        toast.success(response.data.message);
         fetchOrders();
       } else {
         toast.error(response.data.message);
