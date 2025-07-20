@@ -10,6 +10,7 @@ import NotifyModal from "@/app/notify-modal/page";
 import { BiSolidBellRing } from "react-icons/bi";
 import Cookies from "js-cookie";
 import AvailableCoupons from "@/app/component/availableCoupons/page";
+import Link from "next/link";
 
 const getAllProducts = async () => {
   const response = await api.get(`/products/all`);
@@ -153,7 +154,7 @@ function SingleProduct({ product }) {
   let imageScr = "/card/image3.png";
 
   if (product.name === "Ratnagiri Alphonso Mango Pulp/Aamras 850 Grams") {
-    imageScr = "/card/mango-pulp.jpg"; // replace with your new image path
+    imageScr = "/pulp/mango-pulp.jpg"; // replace with your new image path
   } else if (product.name === "Ratnagiri Premium Sun-Dried Mango Slices 1KG") {
     imageScr = "/card/dry-mango.jpg";
   }
@@ -171,7 +172,9 @@ function SingleProduct({ product }) {
         />
 
         <div className={styles.productContentTop}>
-          <h2 className={styles.title}>{product.name}</h2>
+          <Link href={`/products/${product.id}`}>
+            <h2 className={styles.title}>{product.name}</h2>
+          </Link>
           <p className={`${styles.originalPrice} text-gray-500`}>
             <del>{selectedVariant?.original_price}</del>
           </p>{" "}

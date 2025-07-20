@@ -47,6 +47,10 @@ export default function Hero() {
             <FaMedal className={styles.trustIcon} />
             <span>Premium Quality</span>
           </div>
+          <div className={styles.trustPoint}>
+            <FaTruck className={styles.trustIcon} />
+            <span>COD Available</span>
+          </div>
         </div>
         {/* <div className={styles.promoBar}>
           Enjoy 10% Off on Your First Order{" "}

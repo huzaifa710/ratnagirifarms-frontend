@@ -1,0 +1,430 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+/* Image Carousel Styles */
+.imageSection {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(1, 68, 33, 0.1);
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
+}
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.6s ease;
+}
+
+.carouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.carouselButton:hover {
+  background: #014421;
+  color: white;
+}
+
+.prevButton {
+  left: 1rem;
+}
+
+.nextButton {
+  right: 1rem;
+}
+
+.thumbnailContainer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.thumbnailContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail:hover {
+  opacity: 0.8;
+}
+
+.activeThumbnail {
+  opacity: 1;
+  border: 2px solid #014421;
+}
+
+.detailsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.productTitle {
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
+  color: #014421;
+  margin-bottom: 1rem;
+}
+
+.descriptionHeader {
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
+  color: #014421;
+  /* margin-bottom: 1rem; */
+}
+
+.variantsContainer {
+  margin: 1rem 0;
+}
+
+.variantsTitle {
+  font-family: "Poppins", sans-serif;
+  color: #014421;
+  margin-bottom: 1rem;
+}
+
+.variantButtons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.variantButton,
+.variantSelected {
+  min-width: 70px;
+  height: 36px;
+  padding: 0 1rem;
+  border: 2px solid rgba(1, 68, 33, 0.6);
+  background: transparent;
+  color: #014421;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.variantButton:hover {
+  background: rgba(1, 68, 33, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(1, 68, 33, 0.1);
+}
+
+.variantSelected {
+  background: #014421;
+  color: #ffffff;
+  border-color: #014421;
+  box-shadow: 0 3px 8px rgba(1, 68, 33, 0.2);
+}
+
+.priceSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.originalPrice {
+  color: #014421;
+  font-size: 1.5rem;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.originalPrice::before,
+.price::before {
+  content: "₹";
+  margin-right: 2px;
+}
+
+.price {
+  color: #014421;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+}
+
+.addToCartSection {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(1, 68, 33, 0.2);
+  border-radius: 25px;
+}
+
+.quantityControl button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #d4af37;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.quantityControl button:hover:not(:disabled) {
+  background: #014421;
+  transform: translateY(-2px);
+}
+
+.quantityControl button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantityControl span {
+  font-size: 1.1rem;
+  color: #014421;
+  min-width: 40px;
+  text-align: center;
+}
+
+.addToCartButton {
+  flex: 1;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #d4af37 0%, #e9c955 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.addToCartButton:hover {
+  background: #014421;
+  transform: translateY(-2px);
+}
+
+.notifyButton {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: #f8f1d1;
+  color: rgba(1, 68, 33, 0.8);
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.notifyButton:hover {
+  background: rgba(1, 68, 33, 0.1);
+}
+
+.description {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(1, 68, 33, 0.1);
+}
+
+.description h3 {
+  font-family: "Playfair Display", serif;
+  color: #014421;
+  margin-bottom: 1rem;
+}
+
+.description p {
+  color: #014421;
+  line-height: 1.6;
+  font-family: "Poppins", sans-serif;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+  color: #014421;
+}
+
+.error {
+  color: #ff4d4d;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .detailsSection {
+    gap: 0rem;
+  }
+
+  .container {
+    padding: 0rem 1rem;
+    min-height: 100vh;
+  }
+
+  .productGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .carouselContainer {
+    height: 300px;
+  }
+
+  .thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+
+  .productTitle {
+    font-size: 1.5rem;
+    margin-bottom: 0rem;
+  }
+
+  .variantsContainer {
+    margin: 1rem 0;
+  }
+
+  .variantButtons {
+    gap: 0.5rem;
+  }
+
+  .variantButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .priceSection {
+    margin: 1rem 0;
+  }
+
+  .price {
+    font-size: 1.5rem;
+  }
+
+  .originalPrice {
+    font-size: 1.2rem;
+  }
+
+  .addToCartSection {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .quantityControl {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .addToCartButton,
+  .notifyButton {
+    width: 100%;
+  }
+
+  .description {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .descriptionHeader {
+    font-size: 1.5rem;
+  }
+}
+
+/* Small screen optimizations */
+@media (max-width: 480px) {
+  .carouselContainer {
+    height: 250px;
+  }
+
+  .carouselButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .thumbnail {
+    width: 40px;
+    height: 40px;
+  }
+
+  .productTitle {
+    font-size: 1.25rem;
+  }
+
+  .price {
+    font-size: 1.25rem;
+  }
+
+  .originalPrice {
+    font-size: 1rem;
+  }
+}
