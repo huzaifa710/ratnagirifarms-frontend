@@ -320,6 +320,12 @@
   color: #ff4d4d;
 }
 
+.description,
+.description * {
+  color: #014421 !important;   /* or your preferred dark color */
+  opacity: 1 !important;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .detailsSection {
