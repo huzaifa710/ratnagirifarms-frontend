@@ -18,7 +18,7 @@ export default function ShippingPolicy() {
 
         <div className={styles.section}>
           <h2>Shipping Locations</h2>
-          <p>Free Shipping all over Maharashtra & Gujarat.</p>
+          <p>Free Shipping all over India.</p>
         </div>
 
         <div className={styles.section}>
@@ -62,8 +62,8 @@ export default function ShippingPolicy() {
           <h2>Important Notes</h2>
           <ul>
             <li>
-              We use specialized packaging to ensure mangoes arrive in perfect
-              condition
+              For safety purposes, we ship raw mangoes using specialized
+              packaging to ensure they reach you in perfect condition.
             </li>
             <li>
               Deliveries are handled by professional courier partners

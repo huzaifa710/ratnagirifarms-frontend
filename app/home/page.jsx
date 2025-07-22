@@ -53,7 +53,6 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <Hero />
-
       {/* Featured Products Section with Tabs */}
       <section
         ref={productRef}
@@ -69,8 +68,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
-      {/* Benefits/Features Section */}
       <section
         ref={featureRef}
         className={`${styles.featureSection} ${styles.section} ${styles.fadeIn}`}
@@ -82,10 +79,10 @@ export default function Home() {
             <div className={styles.featureIconContainer}>
               <FaLeaf className={styles.featureIcon} />
             </div>
-            <h3>100% Organic</h3>
+            <h3>Carbide Free Ripening</h3>
             <p>
-              All our produce is grown using organic farming practices, free
-              from harmful chemicals and pesticides.
+              Our mangoes are naturally ripened without any artificial chemicals
+              or carbide, ensuring natural sweetness and flavor.
             </p>
           </div>
 
@@ -112,7 +109,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Why Us Section with Image */}
       {/* <section
         ref={whyUsRef}
@@ -149,7 +145,6 @@ export default function Home() {
           </div>
         </div>
       </section> */}
-
       {/* Testimonial Section */}
       <section
         ref={testimonialRef}
@@ -158,7 +153,6 @@ export default function Home() {
         <h2 className={styles.sectionTitle}>What Our Customers Say</h2>
         <Testimonials />
       </section>
-
       {/* Instagram/Social Gallery Section */}
       <section
         ref={galleryRef}
@@ -167,7 +161,6 @@ export default function Home() {
         <h2 className={styles.sectionTitle}>Gallery</h2>
         <Gallery />
       </section>
-
       {/* Call to Action Section */}
       <section className={`${styles.ctaSection} ${styles.section}`}>
         <div className={styles.ctaContainer}>

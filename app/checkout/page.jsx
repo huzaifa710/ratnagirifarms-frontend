@@ -26,6 +26,13 @@ export default function Checkout() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCouponsModal, setShowCouponsModal] = useState(false);
+  const [pincodeStatus, setPincodeStatus] = useState({
+    isValid: false,
+    message: "",
+    city: "",
+  });
+  const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' or 'cod'
+  const [handlingCharge, setHandlingCharge] = useState(0);
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -52,6 +59,44 @@ export default function Checkout() {
       fetchAddresses();
     }
   }, [uuid, accessToken]);
+
+  useEffect(() => {
+    setHandlingCharge(paymentMethod === "cod" ? 49 : 0);
+  }, [paymentMethod]);
+
+  const checkPincodeServiceability = async (pincode) => {
+    try {
+      const response = await api.post("/delhivery/check-pincode", {
+        pincode: pincode,
+      });
+
+      if (response.data.success) {
+        setPincodeStatus({
+          isValid: true,
+          message: response.data.message,
+          city: response.data.city,
+        });
+        // Auto-fill city if pincode is valid
+        setAddressForm((prev) => ({
+          ...prev,
+          city: response.data.city,
+        }));
+      } else {
+        setPincodeStatus({
+          isValid: false,
+          message: response.data.message,
+          city: "",
+        });
+      }
+    } catch (error) {
+      setPincodeStatus({
+        isValid: false,
+        message: "Error checking pincode serviceability",
+        city: "",
+      });
+      toast.error("Error checking pincode serviceability");
+    }
+  };
 
   const fetchAvailableCoupons = async () => {
     try {
@@ -200,6 +245,12 @@ export default function Checkout() {
       toast.error("Please enter a valid email address");
       return;
     }
+
+    if (!pincodeStatus.isValid) {
+      toast.error("Please enter a valid serviceable pincode");
+      return;
+    }
+
     try {
       if (editingAddress) {
         await api.put(`/user-address/update/${editingAddress.id}`, {
@@ -272,14 +323,27 @@ export default function Checkout() {
 
     try {
       // Create guest order or regular order based on checkout type
-      const createOrderResponse = await api.post("orders/create", {
+      const createOrderPayload = {
         uuid,
         cart_ids: cartItems.map((item) => item.id),
         user_address_id: selectedAddress.id,
         coupon_id: appliedCoupon ? appliedCoupon.id : null,
-      });
+        payment_method: paymentMethod, // 'online' or 'cod'
+        handling_charge: paymentMethod === "cod" ? 49 : 0,
+      };
+      const createOrderResponse = await api.post("orders/create", createOrderPayload);
 
-      // Initialize Razorpay with appropriate details
+      if (paymentMethod === "cod") {
+        if (createOrderResponse.data.success) {
+          toast.success("Order placed successfully!");
+          router.push("/orders");
+        } else {
+          toast.error(createOrderResponse.data.message || "Failed to place COD order");
+        }
+        return;
+      }
+
+      // Online payment flow (Razorpay)
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: createOrderResponse.data.amount,
@@ -432,16 +496,6 @@ export default function Checkout() {
                 }
                 required
               />
-              <input
-                type="text"
-                placeholder="City"
-                name="city"
-                value={addressForm.city}
-                onChange={(e) =>
-                  setAddressForm({ ...addressForm, city: e.target.value })
-                }
-                required
-              />
               <select
                 name="state"
                 value={addressForm.state}
@@ -451,18 +505,18 @@ export default function Checkout() {
                 required
               >
                 <option value="">Select State</option>
-                {/*<option value="Andhra Pradesh">Andhra Pradesh</option>
-                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                 <option value="Assam">Assam</option>
-                <option value="Bihar">Bihar</option>*/}
+                <option value="Bihar">Bihar</option>
                 <option value="Chandigarh">Chandigarh</option>
                 <option value="Chhattisgarh">Chhattisgarh</option>
                 <option value="Delhi">Delhi</option>
                 <option value="Goa">Goa</option>
                 <option value="Gujarat">Gujarat</option>
                 <option value="Haryana">Haryana</option>
-                {/*<option value="Himachal Pradesh">Himachal Pradesh</option>/*}
-                <option value="Jharkhand">Jharkhand</option>*/}
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
                 <option value="Karnataka">Karnataka</option>
                 <option value="Kerala">Kerala</option>
                 <option value="Madhya Pradesh">Madhya Pradesh</option>
@@ -474,7 +528,7 @@ export default function Checkout() {
                 <option value="Uttar Pradesh">Uttar Pradesh</option>
                 <option value="Uttarakhand">Uttarakhand</option>
                 <option value="West Bengal">West Bengal</option>
-                {/* <option value="Manipur">Manipur</option>
+                <option value="Manipur">Manipur</option>
                 <option value="Meghalaya">Meghalaya</option>
                 <option value="Mizoram">Mizoram</option>
                 <option value="Nagaland">Nagaland</option>
@@ -482,23 +536,56 @@ export default function Checkout() {
                 <option value="Sikkim">Sikkim</option>
                 <option value="Tamil Nadu">Tamil Nadu</option>
                 <option value="Tripura">Tripura</option>
-                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                <option value="Andaman and Nicobar Islands">
+                  Andaman and Nicobar Islands
+                </option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu">
+                  Dadra and Nagar Haveli and Daman and Diu
+                </option>
                 <option value="Jammu and Kashmir">Jammu and Kashmir</option>
                 <option value="Ladakh">Ladakh</option>
-                <option value="Lakshadweep">Lakshadweep</option>*/}
+                <option value="Lakshadweep">Lakshadweep</option>
               </select>
+              <div className={styles.inputGroup}>
+                <input
+                  type="text"
+                  placeholder="Pincode"
+                  name="pincode"
+                  value={addressForm.pincode}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+                    setAddressForm({ ...addressForm, pincode: value });
+                    if (value.length === 6) {
+                      checkPincodeServiceability(value);
+                    } else {
+                      setPincodeStatus({
+                        isValid: false,
+                        message: "",
+                        city: "",
+                      });
+                    }
+                  }}
+                  required
+                  maxLength={6}
+                  minLength={6}
+                />
+                {addressForm.pincode.length === 6 && (
+                  <div
+                    className={`${styles.pincodeStatus} ${
+                      pincodeStatus.isValid ? styles.valid : styles.invalid
+                    }`}
+                  >
+                    {pincodeStatus.message}
+                  </div>
+                )}
+              </div>
               <input
                 type="text"
-                placeholder="Pincode"
-                name="pincode"
-                value={addressForm.pincode}
-                onChange={(e) =>
-                  setAddressForm({ ...addressForm, pincode: e.target.value })
-                }
+                placeholder="City"
+                name="city"
+                value={addressForm.city}
+                readOnly
                 required
-                maxLength={6}
-                minLength={6}
               />
               <label className={styles.checkboxLabel}>
                 <input
@@ -622,6 +709,36 @@ export default function Checkout() {
 
           <div className={styles.orderSummary}>
             <h2>Order Summary</h2>
+            {/* Payment Method Selector */}
+            <div className={styles.paymentMethodSection}>
+              <div className={styles.paymentLabelCol}>
+                <span className={styles.paymentLabel}>Payment Method:</span>
+              </div>
+              <div className={styles.paymentOptionsCol}>
+                <label className={styles.paymentOptionRadio}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="online"
+                    checked={paymentMethod === "online"}
+                    onChange={() => setPaymentMethod("online")}
+                  />
+                  Online<br/>
+                  <span className={styles.paymentOptionDesc}>(UPI/Card/Netbanking)</span>
+                </label>
+                <label className={styles.paymentOptionRadio}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={paymentMethod === "cod"}
+                    onChange={() => setPaymentMethod("cod")}
+                  />
+                  Cash on Delivery<br/>
+                  <span className={styles.paymentOptionDesc}>(COD)</span>
+                </label>
+              </div>
+            </div>
             <div className={styles.summaryDetails}>
               <div className={styles.summaryRow}>
                 <span>Subtotal</span>
@@ -639,6 +756,12 @@ export default function Checkout() {
                 <span>Delivery Charges</span>
                 <span>₹0.00</span>
               </div>
+              {paymentMethod === "cod" && (
+                <div className={styles.summaryRow}>
+                  <span>Handling Charge (COD)</span>
+                  <span>₹{handlingCharge.toFixed(2)}</span>
+                </div>
+              )}
 
               {appliedCoupon ? (
                 <div className={styles.couponApplied}>
@@ -790,7 +913,7 @@ export default function Checkout() {
                     cartItems.reduce(
                       (total, item) => total + item.price * item.quantity,
                       0
-                    ) - discount
+                    ) - discount + handlingCharge
                   ).toFixed(2)}
                 </span>
               </div>

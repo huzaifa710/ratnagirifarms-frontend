@@ -10,6 +10,7 @@ import NotifyModal from "@/app/notify-modal/page";
 import { BiSolidBellRing } from "react-icons/bi";
 import Cookies from "js-cookie";
 import AvailableCoupons from "@/app/component/availableCoupons/page";
+import Link from "next/link";
 
 const getAllProducts = async () => {
   const response = await api.get(`/products/all`);
@@ -150,17 +151,30 @@ function SingleProduct({ product }) {
   const isVariantNotified =
     selectedVariant && notifiedVariants.includes(selectedVariant.id);
 
+  let imageScr = "/card/image3.png";
+
+  if (product.name === "Ratnagiri Alphonso Mango Pulp/Aamras 850 Grams") {
+    imageScr = "/pulp/mango-pulp.jpg"; // replace with your new image path
+  } else if (product.name === "Ratnagiri Premium Sun-Dried Mango Slices 1KG") {
+    imageScr = "/card/dry-mango.jpg";
+  }
+
   return (
     <>
       <div className={styles.card}>
+        {product.name === "Ratnagiri Alphonso King Mango (250-300g)" && (
+          <div className={styles.bestSellerBadge}>Best Seller</div>
+        )}
         <img
-          src="/card/image3.png"
+          src={imageScr}
           alt={product.name}
           className={styles.productImage}
         />
 
         <div className={styles.productContentTop}>
-          <h2 className={styles.title}>{product.name}</h2>
+          <Link href={`/products/${product.id}`}>
+            <h2 className={styles.title}>{product.name}</h2>
+          </Link>
           <p className={`${styles.originalPrice} text-gray-500`}>
             <del>{selectedVariant?.original_price}</del>
           </p>{" "}
@@ -233,7 +247,7 @@ export default function ProductCard() {
   return (
     <div className={styles.pageContainer}>
       {/* Buy More, Save More Section */}
-      <section
+      {/* <section
         className={`${styles.couponsSection} ${styles.section} ${styles.fadeIn}`}
       >
         <h2 className={styles.sectionTitle}>Special Offers</h2>
@@ -262,13 +276,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Regular Mango</h4>
             <ul>
-              <li>1 Dozen – ₹999</li>
+              <li>1 Dozen – ₹899</li>
               <li>
-                2 Dozen – ₹1799{" "}
+                2 Dozen – ₹1599{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹3399{" "}
+                4 Dozen – ₹2999{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -276,13 +290,13 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>Queen Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1299</li>
+              <li>1 Dozen – ₹1099</li>
               <li>
-                2 Dozen – ₹2399{" "}
+                2 Dozen – ₹1999{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹4599{" "}
+                4 Dozen – ₹3799{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
@@ -290,19 +304,19 @@ export default function ProductCard() {
           <div className={styles.savingsCard}>
             <h4>King Mango</h4>
             <ul>
-              <li>1 Dozen – ₹1599</li>
+              <li>1 Dozen – ₹1399</li>
               <li>
-                2 Dozen – ₹2999{" "}
+                2 Dozen – ₹2599{" "}
                 <span className={styles.saveHighlight}>(Save ₹199)</span>
               </li>
               <li>
-                4 Dozen – ₹5799{" "}
+                4 Dozen – ₹4999{" "}
                 <span className={styles.saveHighlight}>(Save ₹597)</span>
               </li>
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className={styles.container}>
         {products.map((product) => (
           <SingleProduct key={product.id} product={product} />
