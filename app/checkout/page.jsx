@@ -33,6 +33,7 @@ export default function Checkout() {
   });
   const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' or 'cod'
   const [handlingCharge, setHandlingCharge] = useState(0);
+  const [deliveryEstimate, setDeliveryEstimate] = useState("");
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -64,6 +65,12 @@ export default function Checkout() {
     setHandlingCharge(paymentMethod === "cod" ? 49 : 0);
   }, [paymentMethod]);
 
+  useEffect(() => {
+    if (selectedAddress) {
+      checkDeliveryEstimate(selectedAddress.pincode);
+    }
+  }, [selectedAddress?.id]);
+
   const checkPincodeServiceability = async (pincode) => {
     try {
       const response = await api.post("/delhivery/check-pincode", {
@@ -76,6 +83,7 @@ export default function Checkout() {
           message: response.data.message,
           city: response.data.city,
         });
+        setDeliveryEstimate(response.data.estimated_days);
         // Auto-fill city if pincode is valid
         setAddressForm((prev) => ({
           ...prev,
@@ -87,6 +95,7 @@ export default function Checkout() {
           message: response.data.message,
           city: "",
         });
+        setDeliveryEstimate("");
       }
     } catch (error) {
       setPincodeStatus({
@@ -94,7 +103,25 @@ export default function Checkout() {
         message: "Error checking pincode serviceability",
         city: "",
       });
+      setDeliveryEstimate("");
       toast.error("Error checking pincode serviceability");
+    }
+  };
+
+  const checkDeliveryEstimate = async (pincode) => {
+    try {
+      const response = await api.post("/delhivery/check-pincode", {
+        pincode: pincode,
+      });
+
+      if (response.data.success) {
+        setDeliveryEstimate(response.data.estimated_days);
+      } else {
+        setDeliveryEstimate("");
+      }
+    } catch (error) {
+      setDeliveryEstimate("");
+      console.error("Error checking delivery estimate:", error);
     }
   };
 
@@ -122,6 +149,9 @@ export default function Checkout() {
       const response = await api.get(`/carts/by-uuid/${uuid}`);
       setCartItems(response.data.cartItems);
       setLoading(false);
+      if(response.data.cartItems.length === 0){
+        router.push('/home');
+      }
     } catch (error) {
       toast.error("Failed to fetch cart items");
       setLoading(false);
@@ -180,7 +210,10 @@ export default function Checkout() {
         const defaultAddress = response.data.addresses.find(
           (addr) => addr.is_default
         );
-        if (defaultAddress) setSelectedAddress(defaultAddress);
+        if (defaultAddress) {
+          setSelectedAddress(defaultAddress);
+          checkDeliveryEstimate(defaultAddress.pincode);
+        }
       } else {
         setAddresses([]);
         setSelectedAddress(null);
@@ -257,15 +290,21 @@ export default function Checkout() {
           uuid,
           ...addressForm,
         });
+        if (selectedAddress?.id === editingAddress.id) {
+          checkDeliveryEstimate(addressForm.pincode);
+        }
         toast.success("Address updated successfully");
       } else {
-        await api.post("/user-address/create", {
+        const response = await api.post("/user-address/create", {
           uuid,
           ...addressForm,
         });
+        if (addressForm.is_default) {
+          checkDeliveryEstimate(addressForm.pincode);
+        }
         toast.success("Address added successfully");
       }
-      fetchAddresses();
+      await fetchAddresses();
       setShowAddressForm(false);
       setEditingAddress(null);
       setAddressForm({
@@ -288,6 +327,9 @@ export default function Checkout() {
       await api.delete(`/user-address/delete/${addressId}`, {
         data: { uuid },
       });
+      if (selectedAddress?.id === addressId) {
+        setSelectedAddress(null);
+      }
       toast.success("Address deleted successfully");
       fetchAddresses();
     } catch (error) {
@@ -331,14 +373,19 @@ export default function Checkout() {
         payment_method: paymentMethod, // 'online' or 'cod'
         handling_charge: paymentMethod === "cod" ? 49 : 0,
       };
-      const createOrderResponse = await api.post("orders/create", createOrderPayload);
+      const createOrderResponse = await api.post(
+        "orders/create",
+        createOrderPayload
+      );
 
       if (paymentMethod === "cod") {
         if (createOrderResponse.data.success) {
           toast.success("Order placed successfully!");
           router.push("/orders");
         } else {
-          toast.error(createOrderResponse.data.message || "Failed to place COD order");
+          toast.error(
+            createOrderResponse.data.message || "Failed to place COD order"
+          );
         }
         return;
       }
@@ -618,7 +665,10 @@ export default function Checkout() {
                 className={`${styles.addressCard} ${
                   selectedAddress?.id === address.id ? styles.selected : ""
                 }`}
-                onClick={() => setSelectedAddress(address)}
+                onClick={() => {
+                  setSelectedAddress(address);
+                  checkDeliveryEstimate(address.pincode);
+                }}
               >
                 <div className={styles.addressInfo}>
                   <p>
@@ -723,8 +773,11 @@ export default function Checkout() {
                     checked={paymentMethod === "online"}
                     onChange={() => setPaymentMethod("online")}
                   />
-                  Online<br/>
-                  <span className={styles.paymentOptionDesc}>(UPI/Card/Netbanking)</span>
+                  Online
+                  <br />
+                  <span className={styles.paymentOptionDesc}>
+                    (UPI/Card/Netbanking)
+                  </span>
                 </label>
                 <label className={styles.paymentOptionRadio}>
                   <input
@@ -734,7 +787,8 @@ export default function Checkout() {
                     checked={paymentMethod === "cod"}
                     onChange={() => setPaymentMethod("cod")}
                   />
-                  Cash on Delivery<br/>
+                  Cash on Delivery
+                  <br />
                   <span className={styles.paymentOptionDesc}>(COD)</span>
                 </label>
               </div>
@@ -762,7 +816,16 @@ export default function Checkout() {
                   <span>₹{handlingCharge.toFixed(2)}</span>
                 </div>
               )}
-
+              {selectedAddress && deliveryEstimate && (
+                <div className={styles.summaryRow}>
+                  <span>
+                    <strong>Estimated Delivery</strong>
+                  </span>
+                  <span>
+                    <strong>{deliveryEstimate}</strong>
+                  </span>
+                </div>
+              )}
               {appliedCoupon ? (
                 <div className={styles.couponApplied}>
                   <div className={styles.summaryRow}>
@@ -913,7 +976,9 @@ export default function Checkout() {
                     cartItems.reduce(
                       (total, item) => total + item.price * item.quantity,
                       0
-                    ) - discount + handlingCharge
+                    ) -
+                    discount +
+                    handlingCharge
                   ).toFixed(2)}
                 </span>
               </div>
