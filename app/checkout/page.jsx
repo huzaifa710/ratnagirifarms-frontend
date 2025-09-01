@@ -149,8 +149,8 @@ export default function Checkout() {
       const response = await api.get(`/carts/by-uuid/${uuid}`);
       setCartItems(response.data.cartItems);
       setLoading(false);
-      if(response.data.cartItems.length === 0){
-        router.push('/home');
+      if (response.data.cartItems.length === 0) {
+        router.push("/home");
       }
     } catch (error) {
       toast.error("Failed to fetch cart items");
@@ -279,7 +279,12 @@ export default function Checkout() {
       return;
     }
 
-    if (!pincodeStatus.isValid) {
+    // Only validate pincode if it's a new address or if pincode was changed during edit
+    if (
+      (!editingAddress ||
+        (editingAddress && editingAddress.pincode !== addressForm.pincode)) &&
+      !pincodeStatus.isValid
+    ) {
       toast.error("Please enter a valid serviceable pincode");
       return;
     }
