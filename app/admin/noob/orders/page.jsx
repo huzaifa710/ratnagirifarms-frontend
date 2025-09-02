@@ -56,7 +56,7 @@ export default function AdminOrders() {
 
   useEffect(() => {
     fetchOrders();
-  }, [pagination.current_page, appliedFilters]);
+  }, [pagination.current_page, pagination.per_page, appliedFilters]); // Added pagination.per_page
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -214,6 +214,28 @@ export default function AdminOrders() {
             Clear Filters
           </button>
         </div>
+      </div>
+
+      {/* Orders per page selector */}
+      <div className={styles.ordersPerPage}>
+        <label htmlFor="per_page">Orders per page: </label>
+        <select
+          id="per_page"
+          value={pagination.per_page}
+          onChange={(e) => {
+            setPagination({
+              ...pagination,
+              per_page: parseInt(e.target.value),
+              current_page: 1,
+            });
+          }}
+        >
+          <option value={10}>10</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={200}>200</option>
+          <option value={500}>500</option>
+        </select>
       </div>
 
       {/* Orders Table */}

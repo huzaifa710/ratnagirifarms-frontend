@@ -18,7 +18,9 @@ const Navbar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    updateCartCount();
+    if (!pathname.startsWith("/admin")) {
+      updateCartCount();
+    }
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -122,7 +124,7 @@ const Navbar = () => {
         className={styles.navItem}
         onClick={() => setIsMobileMenuOpen(false)}
       > */}
-        {/* Coupons
+      {/* Coupons
       </Link> */}
     </>
   );

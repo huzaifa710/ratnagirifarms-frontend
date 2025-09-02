@@ -172,7 +172,7 @@ export default function ProductDetail() {
           <div className={styles.priceSection}>
             {selectedVariant?.original_price && (
               <span className={styles.originalPrice}>
-                ₹{selectedVariant.original_price}
+                {selectedVariant.original_price}
               </span>
             )}
             <span className={styles.price}>{selectedVariant?.price}</span>
