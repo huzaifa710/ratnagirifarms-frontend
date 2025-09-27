@@ -108,7 +108,7 @@ const Navbar = () => {
         className={styles.navItem}
         onClick={() => setIsMobileMenuOpen(false)}
       >
-        Orders
+        My Orders
       </Link>
       {/* <Link
         href="/admin/noob/products"
@@ -194,7 +194,7 @@ const Navbar = () => {
                       className={styles.dropdownItem}
                       onClick={handleDropdownItemClick}
                     >
-                      Orders
+                      My Orders
                     </Link>
                   )}
 
