@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
@@ -9,7 +9,7 @@ import styles from "./page.module.css";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import Link from "next/link";
 
-export default function Checkout() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { uuid, accessToken, mobile_number, setShowAuthModal } = useAuth();
@@ -34,6 +34,7 @@ export default function Checkout() {
   });
   const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' or 'cod'
   const [handlingCharge, setHandlingCharge] = useState(0);
+  const [deliveryEstimate, setDeliveryEstimate] = useState("");
 
   const [addressForm, setAddressForm] = useState({
     full_name: "",
@@ -116,6 +117,23 @@ export default function Checkout() {
         city: "",
       });
       toast.error("Error checking pincode serviceability");
+    }
+  };
+
+  const checkDeliveryEstimate = async (pincode) => {
+    try {
+      const response = await api.post("/delhivery/check-pincode", {
+        pincode: pincode,
+      });
+
+      if (response.data.success) {
+        setDeliveryEstimate(response.data.message);
+      } else {
+        setDeliveryEstimate("");
+      }
+    } catch (error) {
+      console.error("Error checking delivery estimate:", error);
+      setDeliveryEstimate("Pincode Not Serviceable"); // Fallback estimate
     }
   };
 
@@ -819,5 +837,13 @@ export default function Checkout() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function Checkout() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

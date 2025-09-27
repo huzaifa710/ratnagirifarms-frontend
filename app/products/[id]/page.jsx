@@ -179,16 +179,16 @@ export default function ProductDetail() {
       {/* Feature Icons */}
       <div className={styles.featuresRow}>
         <div className={styles.featureItem}>
-          <span class="material-icons text-green-600">spa</span>
+          <span className="material-icons text-green-600">spa</span>
         </div>
         <div className={styles.featureItem}>
-          <span class="material-icons text-green-600">air</span>
+          <span className="material-icons text-green-600">air</span>
         </div>
         <div className={styles.featureItem}>
-          <span class="material-icons text-green-600">eco</span>
+          <span className="material-icons text-green-600">eco</span>
         </div>
         <div className={styles.featureItem}>
-          <span class="material-icons text-green-600">local_shipping</span>
+          <span className="material-icons text-green-600">local_shipping</span>
         </div>
       </div>
 

@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
 import { toast, Toaster } from "react-hot-toast";
 import styles from "./page.module.css";
 
-export default function SelectAddress() {
+function SelectAddressContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { uuid, accessToken } = useAuth();
@@ -105,7 +105,7 @@ export default function SelectAddress() {
       return;
     }
 
-    if (!pincodeStatus.isValid && !editingAddress) {
+    if (!pincodeStatus.isValid) {
       toast.error("Please enter a valid serviceable pincode");
       return;
     }
@@ -488,5 +488,13 @@ export default function SelectAddress() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SelectAddress() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SelectAddressContent />
+    </Suspense>
   );
 }
