@@ -87,7 +87,9 @@ export default function Testimonials() {
                 <div className={styles.quoteIcon}>
                   <FaQuoteLeft />
                 </div>
-                <p className={styles.testimonialText}>{testimonial.text}</p>
+                <p className={styles.testimonialText}>
+                  {testimonial.text}
+                </p>
                 <div className={styles.testimonialAuthor}>
                   <div className={styles.authorInfo}>
                     <h3>{testimonial.name}</h3>
