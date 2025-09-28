@@ -1322,62 +1322,78 @@
 @media (max-width: 480px) {
   .successModal {
     width: 95%;
-    margin: 20px;
+    margin: 16px;
     border-radius: 16px;
   }
 
   .successHeader {
-    padding: 32px 24px 20px;
+    padding: 24px 20px 16px;
     border-radius: 16px 16px 0 0;
   }
 
+  .successIconContainer {
+    margin-bottom: 12px;
+  }
+
   .successIcon {
-    font-size: 56px;
+    font-size: 48px;
   }
 
   .successHeader h2 {
-    font-size: 24px;
+    font-size: 22px;
+    margin-bottom: 6px;
   }
 
   .successSubtitle {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.3;
   }
 
   .successBody {
-    padding: 24px;
+    padding: 20px;
   }
 
   .orderDetailsBox {
-    padding: 20px;
+    padding: 16px;
+    border-radius: 12px;
   }
 
   .orderDetailRow {
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 12px;
+    gap: 2px;
+    margin-bottom: 10px;
     border-bottom: 1px solid rgba(232, 245, 232, 0.4);
+    padding: 6px 0;
+  }
+
+  .orderDetailRow:last-child {
+    margin-bottom: 0;
   }
 
   .orderDetailLabel {
     width: auto;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
   }
 
   .orderDetailValue {
     text-align: left;
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.3;
   }
 
   .successFooter {
-    padding: 20px 24px 28px;
+    padding: 16px 20px 24px;
     flex-direction: column;
+    gap: 10px;
   }
 
   .primaryBtn,
   .secondaryBtn {
     max-width: none;
-    padding: 16px;
-    font-size: 16px;
-    min-height: 52px;
+    padding: 14px;
+    font-size: 15px;
+    min-height: 48px;
+    border-radius: 12px;
   }
 }
