@@ -34,7 +34,12 @@ function SelectAddressContent() {
 
   useEffect(() => {
     if (!uuid && !accessToken) {
-      router.push("/checkout");
+      const couponParam = searchParams.get("coupon");
+      let url = "/checkout";
+      if (couponParam) {
+        url += `?coupon=${couponParam}`;
+      }
+      router.push(url);
       return;
     }
     fetchAddresses();
@@ -204,7 +209,12 @@ function SelectAddressContent() {
     }
 
     // Navigate back to checkout with selected address
-    router.push(`/checkout?addressId=${selectedAddress.id}`);
+    const couponParam = searchParams.get("coupon");
+    let url = `/checkout?addressId=${selectedAddress.id}`;
+    if (couponParam) {
+      url += `&coupon=${couponParam}`;
+    }
+    router.push(url);
   };
 
   if (loading) {

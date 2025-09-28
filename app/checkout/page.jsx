@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
@@ -7,6 +7,7 @@ import api from "@/utils/axios";
 import { toast, Toaster } from "react-hot-toast";
 import styles from "./page.module.css";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
+import React from "react";
 import Link from "next/link";
 
 function CheckoutContent() {
@@ -27,6 +28,10 @@ function CheckoutContent() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCouponsModal, setShowCouponsModal] = useState(false);
+  const [couponsLoading, setCouponsLoading] = useState(false);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const justRemovedCoupon = useRef(false);
   const [pincodeStatus, setPincodeStatus] = useState({
     isValid: false,
     message: "",
@@ -59,6 +64,7 @@ function CheckoutContent() {
     } else {
       fetchCartItems();
       fetchAddresses();
+      fetchAvailableCoupons(); // Pre-load available coupons
     }
   }, [uuid, accessToken]);
 
@@ -86,39 +92,19 @@ function CheckoutContent() {
     }
   }, [addresses, searchParams]);
 
-  const checkPincodeServiceability = async (pincode) => {
-    try {
-      const response = await api.post("/delhivery/check-pincode", {
-        pincode: pincode,
-      });
-
-      if (response.data.success) {
-        setPincodeStatus({
-          isValid: true,
-          message: response.data.message,
-          city: response.data.city,
-        });
-        // Auto-fill city if pincode is valid
-        setAddressForm((prev) => ({
-          ...prev,
-          city: response.data.city,
-        }));
-      } else {
-        setPincodeStatus({
-          isValid: false,
-          message: response.data.message,
-          city: "",
-        });
-      }
-    } catch (error) {
-      setPincodeStatus({
-        isValid: false,
-        message: "Error checking pincode serviceability",
-        city: "",
-      });
-      toast.error("Error checking pincode serviceability");
+  useEffect(() => {
+    // Handle coupon code from URL parameters
+    const urlCouponCode = searchParams.get("coupon");
+    if (
+      urlCouponCode &&
+      !appliedCoupon &&
+      cartItems.length > 0 &&
+      !justRemovedCoupon.current
+    ) {
+      setCouponCode(urlCouponCode);
+      handleApplyCoupon(urlCouponCode, false); // Don't show toast when auto-applying from URL
     }
-  };
+  }, [searchParams, cartItems, appliedCoupon]);
 
   const checkDeliveryEstimate = async (pincode) => {
     try {
@@ -138,6 +124,8 @@ function CheckoutContent() {
   };
 
   const fetchAvailableCoupons = async () => {
+    setCouponsLoading(true);
+    setAvailableCoupons([]); // Clear previous coupons
     try {
       const response = await api.get(`/coupons/available/${uuid}`, {
         headers: {
@@ -153,6 +141,8 @@ function CheckoutContent() {
     } catch (error) {
       console.error("Error fetching coupons:", error);
       toast.error("Failed to load available coupons");
+    } finally {
+      setCouponsLoading(false);
     }
   };
 
@@ -168,13 +158,14 @@ function CheckoutContent() {
   };
 
   // Add this function to handle coupon application
-  const handleApplyCoupon = async (code) => {
+  const handleApplyCoupon = async (code, showToast = true) => {
     const couponCodeToApply = couponCode || code;
     if (!couponCodeToApply || couponCodeToApply === "") {
-      toast.error("Please enter a coupon code");
+      if (showToast) toast.error("Please enter a coupon code");
       return;
     }
 
+    setCouponLoading(true);
     try {
       const response = await api.post("/coupons/apply", {
         uuid,
@@ -188,13 +179,25 @@ function CheckoutContent() {
       if (response.data.success) {
         setDiscount(response.data.discount);
         setAppliedCoupon(response.data.coupon);
-        toast.success(`Coupon applied! You saved ₹${response.data.discount}`);
+        if (showToast) {
+          toast.success(`Coupon applied! You saved ₹${response.data.discount}`);
+        }
+
+        // Add coupon code to URL parameters
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set("coupon", couponCodeToApply);
+        router.replace(`/checkout?${newSearchParams.toString()}`, {
+          scroll: false,
+        });
       } else {
-        toast.error(response.data.error || "Invalid coupon");
+        if (showToast) toast.error(response.data.error || "Invalid coupon");
       }
     } catch (error) {
       console.error("Coupon application error:", error);
-      toast.error(error.response?.data?.message || "Failed to apply coupon");
+      if (showToast)
+        toast.error(error.response?.data?.message || "Failed to apply coupon");
+    } finally {
+      setCouponLoading(false);
     }
   };
 
@@ -203,6 +206,21 @@ function CheckoutContent() {
     setCouponCode("");
     setDiscount(0);
     setAppliedCoupon(null);
+    justRemovedCoupon.current = true; // Flag to prevent reapplication
+
+    // Remove coupon parameter from URL
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("coupon");
+    const newUrl = newSearchParams.toString()
+      ? `/checkout?${newSearchParams.toString()}`
+      : "/checkout";
+    router.replace(newUrl, { scroll: false });
+
+    // Reset the flag after a short delay
+    setTimeout(() => {
+      justRemovedCoupon.current = false;
+    }, 1000);
+
     toast.success("Coupon removed");
   };
 
@@ -230,18 +248,31 @@ function CheckoutContent() {
   };
 
   const handleAddToCart = async (product_variant_id) => {
+    let prevCart = [...cartItems];
+    let updatedCart;
     if (!uuid || !accessToken) {
       const product = cartItems.find(
         (item) => item.product_variant_id === product_variant_id
       );
       if (product) {
         addToGuestCart(product);
-        await fetchCartItems();
+        updatedCart = prevCart.map((item) =>
+          item.product_variant_id === product_variant_id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+        setCartItems(updatedCart);
         toast.success("Added to cart");
       }
       return;
     }
-
+    // Optimistically update UI
+    updatedCart = prevCart.map((item) =>
+      item.product_variant_id === product_variant_id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    );
+    setCartItems(updatedCart);
     try {
       await api.post(`/carts/add`, {
         uuid,
@@ -252,20 +283,36 @@ function CheckoutContent() {
       await fetchCartItems();
       await updateCartCount();
     } catch (error) {
-      toast.error("Failed to add to cart");
-      console.error(error);
+      setCartItems(prevCart); // Rollback
+      toast.error("Failed to add to cart. Retry?");
     }
   };
 
   const removeFromCart = async (product_variant_id, quantity) => {
+    let prevCart = [...cartItems];
+    let updatedCart;
     if (!uuid && !accessToken) {
       removeFromGuestCart(product_variant_id, quantity);
-      await fetchCartItems();
-      await updateCartCount();
+      updatedCart = prevCart
+        .map((item) =>
+          item.product_variant_id === product_variant_id
+            ? { ...item, quantity: item.quantity - quantity }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+      setCartItems(updatedCart);
       toast.success("Item removed from cart");
       return;
     }
-
+    // Optimistically update UI
+    updatedCart = prevCart
+      .map((item) =>
+        item.product_variant_id === product_variant_id
+          ? { ...item, quantity: item.quantity - quantity }
+          : item
+      )
+      .filter((item) => item.quantity > 0);
+    setCartItems(updatedCart);
     try {
       const payload = { uuid, product_variant_id, quantity };
       await api.post(`/carts/remove`, payload);
@@ -273,80 +320,9 @@ function CheckoutContent() {
       await fetchCartItems();
       await updateCartCount();
     } catch (error) {
-      toast.error("Failed to remove item");
+      setCartItems(prevCart); // Rollback
+      toast.error("Failed to remove item. Retry?");
     }
-  };
-
-  const handleAddressSubmit = async (e) => {
-    e.preventDefault();
-    const patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
-    if (!patternEmail.test(addressForm.email)) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-
-    if (!pincodeStatus.isValid) {
-      toast.error("Please enter a valid serviceable pincode");
-      return;
-    }
-
-    try {
-      if (editingAddress) {
-        await api.put(`/user-address/update/${editingAddress.id}`, {
-          uuid,
-          ...addressForm,
-        });
-        toast.success("Address updated successfully");
-      } else {
-        await api.post("/user-address/create", {
-          uuid,
-          ...addressForm,
-        });
-        toast.success("Address added successfully");
-      }
-      fetchAddresses();
-      setShowAddressForm(false);
-      setEditingAddress(null);
-      setAddressForm({
-        full_name: "",
-        email: "",
-        mobile_number: "",
-        address: "",
-        city: "",
-        state: "",
-        pincode: "",
-        is_default: false,
-      });
-    } catch (error) {
-      toast.error("Failed to save address");
-    }
-  };
-
-  const handleDeleteAddress = async (addressId) => {
-    try {
-      await api.delete(`/user-address/delete/${addressId}`, {
-        data: { uuid },
-      });
-      toast.success("Address deleted successfully");
-      fetchAddresses();
-    } catch (error) {
-      toast.error("Failed to delete address");
-    }
-  };
-
-  const handleEditAddress = (address) => {
-    setEditingAddress(address);
-    setAddressForm({
-      full_name: address.full_name,
-      email: address.email,
-      mobile_number: address.mobile_number,
-      address: address.address,
-      city: address.city,
-      state: address.state,
-      pincode: address.pincode,
-      is_default: address.is_default,
-    });
-    setShowAddressForm(true);
   };
 
   const handlePlaceOrder = async () => {
@@ -360,6 +336,7 @@ function CheckoutContent() {
       return;
     }
 
+    setOrderLoading(true);
     try {
       // Create guest order or regular order based on checkout type
       const createOrderPayload = {
@@ -370,14 +347,24 @@ function CheckoutContent() {
         payment_method: paymentMethod, // 'online' or 'cod'
         handling_charge: paymentMethod === "cod" ? 49 : 0,
       };
-      const createOrderResponse = await api.post("orders/create", createOrderPayload);
+      const createOrderResponse = await api.post(
+        "orders/create",
+        createOrderPayload
+      );
 
       if (paymentMethod === "cod") {
         if (createOrderResponse.data.success) {
           toast.success("Order placed successfully!");
-          router.push("/orders");
+          // Keep overlay until redirect
+          setTimeout(() => {
+            setOrderLoading(false);
+            router.push("/orders");
+          }, 1200); // 1.2s delay for smoother UX
         } else {
-          toast.error(createOrderResponse.data.message || "Failed to place COD order");
+          toast.error(
+            createOrderResponse.data.message || "Failed to place COD order"
+          );
+          setOrderLoading(false);
         }
         return;
       }
@@ -410,10 +397,17 @@ function CheckoutContent() {
             }
           } catch (error) {
             toast.error("Payment verification failed");
+          } finally {
+            setOrderLoading(false);
           }
         },
         theme: {
           color: "#e5c07b",
+        },
+        modal: {
+          ondismiss: () => {
+            setOrderLoading(false);
+          },
         },
       };
       // Load Razorpay script
@@ -437,6 +431,7 @@ function CheckoutContent() {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
+      setOrderLoading(false);
       toast.error("Failed to create order");
       console.error(error);
     }
@@ -444,16 +439,36 @@ function CheckoutContent() {
 
   const handleChangeAddress = () => {
     const currentAddressId = selectedAddress?.id || "";
-    router.push(`/checkout/select-address?current=${currentAddressId}`);
+    const couponParam = searchParams.get("coupon");
+    let url = `/checkout/select-address?current=${currentAddressId}`;
+    if (couponParam) {
+      url += `&coupon=${couponParam}`;
+    }
+    router.push(url);
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles.loadingOverlay}>
+        <div className={styles.loadingOverlayContent}>
+          <div className={styles.spinner}></div>
+          <p>Loading checkout...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className={styles.checkoutContainer}>
       <Toaster position="top-center" />
+      {orderLoading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingOverlayContent}>
+            <div className={styles.spinner}></div>
+            <p>Placing your order...</p>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div className="relative flex items-center justify-center mb-6 bg-white p-4 rounded-xl shadow-md min-h-[56px]">
@@ -502,7 +517,14 @@ function CheckoutContent() {
               Please add new address to proceed with the order
             </h2>
             <button
-              onClick={() => router.push("/checkout/select-address")}
+              onClick={() => {
+                const couponParam = searchParams.get("coupon");
+                let url = "/checkout/select-address";
+                if (couponParam) {
+                  url += `?coupon=${couponParam}`;
+                }
+                router.push(url);
+              }}
               className={styles.addAddressBtn}
             >
               Add New Address
@@ -541,36 +563,12 @@ function CheckoutContent() {
       <div className={styles.orderSummarySection}>
         <h2 className={styles.sectionTitle}>Order Summary</h2>
         {cartItems.map((item) => (
-          <div key={item.product_variant_id} className={styles.productCard}>
-            <div className={styles.productImage}>
-              <img src={item.image_url} alt={item.name} />
-            </div>
-            <div className={styles.productDetails}>
-              <h3 className={styles.productName}>{item.name}</h3>
-              <p className={styles.productWeight}>
-                No Of Pieces Per Box:{item.quantity_per_box}
-              </p>
-              <div className={styles.quantityControls}>
-                <button
-                  onClick={() => removeFromCart(item.product_variant_id, 1)}
-                  disabled={item.quantity <= 1}
-                  className={styles.quantityBtn}
-                >
-                  <FaMinus />
-                </button>
-                <span className={styles.quantity}>{item.quantity}</span>
-                <button
-                  onClick={() => handleAddToCart(item.product_variant_id)}
-                  className={styles.quantityBtn}
-                >
-                  <FaPlus />
-                </button>
-              </div>
-            </div>
-            <div className={styles.productPrice}>
-              ₹{(item.price * item.quantity).toFixed(2)}
-            </div>
-          </div>
+          <CartItem
+            key={item.product_variant_id}
+            item={item}
+            onAdd={handleAddToCart}
+            onRemove={removeFromCart}
+          />
         ))}
       </div>
 
@@ -583,15 +581,39 @@ function CheckoutContent() {
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             className={styles.couponInput}
+            disabled={appliedCoupon !== null}
           />
-          <button onClick={handleApplyCoupon} className={styles.applyButton}>
-            Apply
-          </button>
+          {appliedCoupon ? (
+            <button
+              onClick={handleRemoveCoupon}
+              className={styles.removeButton}
+            >
+              Remove
+            </button>
+          ) : (
+            <button
+              onClick={handleApplyCoupon}
+              className={styles.applyButton}
+              disabled={couponLoading}
+            >
+              {couponLoading ? (
+                <>
+                  <div className={styles.buttonSpinner}></div>
+                  Applying...
+                </>
+              ) : (
+                "Apply"
+              )}
+            </button>
+          )}
         </div>
         <button
           onClick={() => {
-            fetchAvailableCoupons();
             setShowCouponsModal(true);
+            // Coupons are already pre-loaded, but refresh if empty or show loading if still loading
+            if (availableCoupons.length === 0 && !couponsLoading) {
+              fetchAvailableCoupons();
+            }
           }}
           className={styles.viewCouponsButton}
         >
@@ -692,12 +714,6 @@ function CheckoutContent() {
           <div className={styles.billRow}>
             <span>Coupon ({appliedCoupon.code})</span>
             <span>- ₹{discount.toFixed(2)}</span>
-            <button
-              onClick={handleRemoveCoupon}
-              className={styles.removeCouponBtn}
-            >
-              Remove
-            </button>
           </div>
         )}
         <div className={styles.totalRow}>
@@ -739,9 +755,16 @@ function CheckoutContent() {
         <button
           className={styles.placeOrderButton}
           onClick={handlePlaceOrder}
-          disabled={!selectedAddress || !acceptedTerms}
+          disabled={!selectedAddress || !acceptedTerms || orderLoading}
         >
-          Place Order →
+          {orderLoading ? (
+            <>
+              <div className={styles.buttonSpinner}></div>
+              Placing your order...
+            </>
+          ) : (
+            <>Place Order →</>
+          )}
         </button>
       </div>
 
@@ -760,7 +783,12 @@ function CheckoutContent() {
               </button>
             </div>
             <div className={styles.modalBody}>
-              {availableCoupons.length > 0 ? (
+              {couponsLoading ? (
+                <div className={styles.loadingCoupons}>
+                  <div className={styles.spinner}></div>
+                  <p>Loading available coupons...</p>
+                </div>
+              ) : availableCoupons.length > 0 ? (
                 <div className={styles.couponsList}>
                   {availableCoupons.map((coupon) => (
                     <div key={coupon.id} className={styles.couponCard}>
@@ -839,6 +867,42 @@ function CheckoutContent() {
     </div>
   );
 }
+
+// Memoized cart item component
+const CartItem = React.memo(function CartItem({ item, onAdd, onRemove }) {
+  return (
+    <div className={styles.productCard}>
+      <div className={styles.productImage}>
+        <img src={item.image_url} alt={item.name} />
+      </div>
+      <div className={styles.productDetails}>
+        <h3 className={styles.productName}>{item.name}</h3>
+        <p className={styles.productWeight}>
+          No Of Pieces Per Box:{item.quantity_per_box}
+        </p>
+        <div className={styles.quantityControls}>
+          <button
+            onClick={() => onRemove(item.product_variant_id, 1)}
+            disabled={item.quantity <= 1}
+            className={styles.quantityBtn}
+          >
+            <FaMinus />
+          </button>
+          <span className={styles.quantity}>{item.quantity}</span>
+          <button
+            onClick={() => onAdd(item.product_variant_id)}
+            className={styles.quantityBtn}
+          >
+            <FaPlus />
+          </button>
+        </div>
+      </div>
+      <div className={styles.productPrice}>
+        ₹{(item.price * item.quantity).toFixed(2)}
+      </div>
+    </div>
+  );
+});
 
 export default function Checkout() {
   return (
