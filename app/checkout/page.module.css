@@ -5,7 +5,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -30,20 +30,6 @@
     sans-serif;
 }
 
-/* Header */
-.header {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-bottom: 24px;
-  background: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: fixe;
-  min-height: 56px;
-}
-
 /* Back Button - Modal/Section (not header) */
 .backButton {
   background: #f0f0f0;
@@ -59,28 +45,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   transition: background 0.2s;
 }
 .backButton:hover {
   background: #e0e0e0;
-}
-
-.title {
-  font-size: 24px !important;
-  font-weight: 600 !important;
-  color: #333 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  text-align: center !important;
-  line-height: 24px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 48px !important;
-  border: none !important;
-  background: none !important;
-  vertical-align: baseline !important;
 }
 
 /* Delivery Address Section */
@@ -296,12 +265,6 @@
   color: #333;
   min-width: 20px;
   text-align: center;
-}
-
-.productPrice {
-  font-size: 16px;
-  font-weight: 700;
-  color: #333;
 }
 
 /* Coupon Section */
@@ -523,16 +486,6 @@
   margin-top: 8px;
 }
 
-.removeCouponBtn {
-  background: none;
-  border: none;
-  color: #ff4444;
-  font-size: 12px;
-  cursor: pointer;
-  text-decoration: underline;
-  margin-left: 8px;
-}
-
 /* Checkout Footer */
 .checkoutFooter {
   background: white;
@@ -628,174 +581,6 @@
 
 .addAddressBtn:hover {
   background: #e6840d;
-}
-
-.addressForm {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.addressForm h3 {
-  margin: 0 0 16px 0;
-  color: #333;
-  font-size: 18px;
-}
-
-.addressForm input,
-.addressForm textarea,
-.addressForm select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-}
-
-.addressForm textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.inputGroup {
-  position: relative;
-  margin-bottom: 12px;
-}
-
-.pincodeStatus {
-  font-size: 12px;
-  margin-top: 4px;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.valid {
-  background: #d4edda;
-  color: #155724;
-}
-
-.invalid {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  color: #666;
-}
-
-.formButtons {
-  display: flex;
-  gap: 12px;
-}
-
-.formButtons button {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.formButtons button:first-child {
-  background: #4caf50;
-  color: white;
-}
-
-.formButtons button:last-child {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.addressList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.addressCard {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.addressCard:hover {
-  background: #f8f8f8;
-}
-
-.addressCard.selected {
-  border-color: #ff9500;
-  background: #fff9e6;
-}
-
-.addressInfo p {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #666;
-}
-
-.addressActions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.defaultBadge {
-  background: #e3f2fd;
-  color: #1976d2;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.selectedBadge {
-  background: #fff3e0;
-  color: #ff9500;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: 8px;
-}
-
-.actionButtons {
-  display: flex;
-  gap: 8px;
-}
-
-.editBtn,
-.deleteBtn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.editBtn {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.deleteBtn {
-  background: #ffebee;
-  color: #d32f2f;
 }
 
 /* Modal Styles */
@@ -1190,20 +975,20 @@
     font-size: 16px;
   }
 
-    .placeOrderButton {
-      padding: 14px;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
+  .placeOrderButton {
+    padding: 14px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
 
-    .placeOrderButton:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
+  .placeOrderButton:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 }
 
 /* Loading Coupons Styles */
@@ -1233,8 +1018,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Button Spinner for Apply/Remove buttons */

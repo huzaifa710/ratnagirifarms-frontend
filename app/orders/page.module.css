@@ -1,5 +1,4 @@
 .ordersContainer {
-.ordersContainer {
   background-color: #fbf9f6; /* updated softer background */
   min-height: 100vh;
   padding: 2rem;
@@ -61,8 +60,7 @@
   gap: 0.5rem;
   align-items: center;
 }
-  border-radius: 12px;
-  padding: 2rem;
+
 .actionBtn {
   display: inline-flex;
   align-items: center;
@@ -77,8 +75,7 @@
   background: #f5f5f5;
   color: #374151;
 }
-  color: #888;
-  text-align: center;
+
 .reorderBtn {
   background: #f39c00; /* brighter orange */
   color: #fff;
@@ -87,8 +84,7 @@
 .reorderBtn:hover {
   background: #d88500;
 }
-  gap: 1rem;
-}
+
 .trackBtn {
   background: #008b5e; /* deeper green */
   color: #ffffff;
