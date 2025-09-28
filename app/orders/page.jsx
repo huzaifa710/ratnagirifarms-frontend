@@ -214,15 +214,24 @@ export default function Orders() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
+                    gap: "1rem",
                   }}
                 >
-                  <span className={`${styles.statusBadgeBase} ${meta.cls}`}>
-                    <span className={styles.materialIcon}>{meta.icon}</span>
-                    {meta.label}
-                  </span>
-                  <span className={`${styles.statusBadgeBase} ${paymentMeta.cls}`}>
-                    {paymentMeta.label}
-                  </span>
+                  <div className={styles.statusGroup}>
+                    <span className={styles.statusLabel}>Order Status:</span>
+                    <span className={`${styles.statusBadgeBase} ${meta.cls}`}>
+                      <span className={styles.materialIcon}>{meta.icon}</span>
+                      {meta.label}
+                    </span>
+                  </div>
+                  
+                  <div className={styles.statusGroup}>
+                    <span className={styles.statusLabel}>Payment:</span>
+                    <span className={`${styles.statusBadgeBase} ${paymentMeta.cls}`}>
+                      {paymentMeta.label}
+                    </span>
+                  </div>
+                  
                   <span
                     className={styles.materialIcon}
                     style={{ color: "#6b7280" }}

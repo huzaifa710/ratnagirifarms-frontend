@@ -447,6 +447,22 @@
   padding: 0 1rem 0.75rem 1rem;
 }
 
+.statusGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.statusLabel {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
 .statusBadgeBase {
   display: inline-flex;
   align-items: center;
@@ -670,6 +686,15 @@
   .statusBadge {
     padding: 0.375rem 0.75rem;
     font-size: 0.75rem;
+  }
+
+  .statusGroup {
+    align-items: center;
+    text-align: center;
+  }
+
+  .statusLabel {
+    font-size: 0.6rem;
   }
 
   .orderDetails {
