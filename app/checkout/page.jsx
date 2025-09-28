@@ -52,21 +52,23 @@ function CheckoutContent() {
     is_default: false,
   });
 
+  // Initialize checkout state depending on auth status.
+  // If user not logged in, immediately show auth modal and expose guest cart without blocking overlay.
   useEffect(() => {
     if (!uuid && !accessToken) {
       setShowAuthModal(true);
-      return;
+      setCartItems(guestCart || []);
+      setLoading(false); // Remove loading overlay so login widget is clickable
+      return; // Stop further fetching
     }
 
-    if (!uuid && !accessToken) {
-      setCartItems(guestCart);
-      setLoading(false);
-    } else {
+    // Logged in: fetch required data
+    if (uuid && accessToken) {
       fetchCartItems();
       fetchAddresses();
       fetchAvailableCoupons(); // Pre-load available coupons
     }
-  }, [uuid, accessToken]);
+  }, [uuid, accessToken, guestCart]);
 
   useEffect(() => {
     setHandlingCharge(paymentMethod === "cod" ? 49 : 0);
@@ -159,6 +161,12 @@ function CheckoutContent() {
 
   // Add this function to handle coupon application
   const handleApplyCoupon = async (code, showToast = true) => {
+    // Prevent guests from attempting server coupon application
+    if (!uuid && !accessToken) {
+      if (showToast) toast.error("Please login to apply a coupon");
+      setShowAuthModal(true);
+      return;
+    }
     const couponCodeToApply = couponCode || code;
     if (!couponCodeToApply || couponCodeToApply === "") {
       if (showToast) toast.error("Please enter a coupon code");
@@ -454,6 +462,30 @@ function CheckoutContent() {
           <div className={styles.spinner}></div>
           <p>Loading checkout...</p>
         </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show a focused login required screen (guest flow already triggered auth modal)
+  if (!uuid && !accessToken) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Login Required</h1>
+        <p className="text-gray-600 max-w-md">
+          Please login or create an account to continue with checkout. Your cart items are saved.
+        </p>
+        <button
+          onClick={() => setShowAuthModal(true)}
+          className="px-6 py-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium shadow transition"
+        >
+          Open Login
+        </button>
+        <button
+          onClick={() => router.push('/cart')}
+          className="text-sm text-gray-500 hover:text-gray-700 underline"
+        >
+          Return to Cart
+        </button>
       </div>
     );
   }
