@@ -51,6 +51,109 @@ img {
   content-visibility: auto; /* Optimize image loading */
 }
 
+/* Common Utility Classes */
+/* Page title pattern used across multiple pages */
+.page-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #014421;
+  position: relative;
+}
+
+.page-title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: #d4af37;
+}
+
+/* Section title pattern used in components */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+  font-size: 2.5rem;
+  color: #014421;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: #D4AF37;
+}
+
+/* Common button patterns */
+.primary-button {
+  background: #014421;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-button:hover {
+  background: #012e17;
+  transform: translateY(-2px);
+}
+
+.secondary-button {
+  background: #d4af37;
+  color: #014421;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondary-button:hover {
+  background: #c19c2b;
+}
+
+/* Common container patterns */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Content wrapper for policy pages */
+.content-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Common section styling */
+.content-section {
+  margin-bottom: 2.5rem;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(1, 68, 33, 0.08);
+}
+
 /* Remove unused CSS */
 * {
   text-rendering: optimizeLegibility;

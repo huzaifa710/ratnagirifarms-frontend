@@ -6,7 +6,7 @@ export default function Terms() {
   return (
     <div className={styles.termsContainer}>
       <div className={styles.content}>
-        <h1 className={styles.title}>Terms and Conditions</h1>
+        <h1 className="page-title">Terms and Conditions</h1>
 
         <div className={styles.section}>
           <p className={styles.intro}>

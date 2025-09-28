@@ -117,7 +117,7 @@ export default function BulkOrder() {
   return (
     <div className={styles.bulkOrderContainer}>
       <Toaster position="top-center" />
-      <h1 className={styles.title}>Bulk Order</h1>
+      <h1 className="page-title">Bulk Order</h1>
 
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit}>

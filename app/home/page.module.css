@@ -14,27 +14,6 @@
   background-color: #f9f9f9;
   padding: 4rem 2rem;
 }
-/* Section Title Styling */
-.sectionTitle {
-  font-family: 'Playfair Display', serif;
-  text-align: center;
-  font-size: 2.5rem;
-  color: #014421;
-  margin-bottom: 3rem;
-  position: relative;
-}
-
-.sectionTitle::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
-  background-color: #D4AF37;
-}
-
 /* Fade in animation classes */
 .fadeIn {
   opacity: 0;

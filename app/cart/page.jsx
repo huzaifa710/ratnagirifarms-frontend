@@ -114,7 +114,7 @@ export default function Cart() {
 
   return (
     <div className={styles.cartContainer}>
-      <h1 className={styles.title}>Shopping Cart</h1>
+      <h1 className="page-title">Shopping Cart</h1>
       {loading ? (
         <p>Loading...</p>
       ) : cartItems.length == 0 ? (

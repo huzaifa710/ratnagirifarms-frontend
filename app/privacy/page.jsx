@@ -3,17 +3,17 @@ import { Mail } from "lucide-react";
 
 export default function PrivacyPolicy() {
   return (
-    <div className={styles.policyContainer}>
-      <div className={styles.content}>
-        <h1 className={styles.title}>Privacy Policy</h1>
+    <div className="page-container">
+      <div className="content-wrapper">
+        <h1 className="page-title">Privacy Policy</h1>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <p className={styles.intro}>
             This Privacy Policy describes our policies and procedures on the collection, use and disclosure of your information when you use our service and tells you about your privacy rights and how the law protects you.
           </p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Information Collection</h2>
           <p>We collect several different types of information for various purposes to provide and improve our service to you:</p>
           <ul>
@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Use of Your Information</h2>
           <p>We use the collected data for various purposes:</p>
           <ul>
@@ -36,17 +36,17 @@ export default function PrivacyPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Data Security</h2>
           <p>The security of your data is important to us. While we strive to use commercially acceptable means to protect your personal data, we cannot guarantee its absolute security.</p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Cookies Usage</h2>
           <p>We use cookies and similar tracking technologies to track activity on our service and hold certain information. Cookies are files with small amount of data which may include an anonymous unique identifier.</p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Third-Party Services</h2>
           <ul>
             <li>Payment processing services</li>
@@ -56,12 +56,12 @@ export default function PrivacyPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Children's Privacy</h2>
           <p>Our service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13.</p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Changes to Privacy Policy</h2>
           <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
         </div>

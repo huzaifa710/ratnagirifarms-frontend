@@ -66,10 +66,6 @@
   background: #e0e0e0;
 }
 
-.backButton:hover {
-  background-color: #f0f0f0;
-}
-
 .title {
   font-size: 24px !important;
   font-weight: 600 !important;

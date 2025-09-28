@@ -10,28 +10,6 @@
 }
 
 /* Title/Header */
-.title {
-  font-family: "Playfair Display", serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #014421;
-  position: relative;
-}
-
-.title::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
-  background-color: #d4af37;
-  transition: width 0.3s ease;
-}
-
 /* Empty Cart Message */
 .emptyCart {
   text-align: center;

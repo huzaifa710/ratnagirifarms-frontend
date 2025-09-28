@@ -58,7 +58,7 @@ export default function Home() {
         ref={productRef}
         className={`${styles.productSection} ${styles.section} ${styles.fadeIn} ${styles.delaySmall}`}
       >
-        <h2 className={styles.sectionTitle}>Our Premium Offerings</h2>
+        <h2 className="section-title">Our Premium Offerings</h2>
 
         <ProductCard category={activeTab} />
 
@@ -72,7 +72,7 @@ export default function Home() {
         ref={featureRef}
         className={`${styles.featureSection} ${styles.section} ${styles.fadeIn}`}
       >
-        <h2 className={styles.sectionTitle}>Why Choose Ratnagiri Farms</h2>
+        <h2 className="section-title">Why Choose Ratnagiri Farms</h2>
 
         <div className={styles.featuresGrid}>
           <div className={styles.featureCard}>
@@ -150,7 +150,7 @@ export default function Home() {
         ref={testimonialRef}
         className={`${styles.testimonialSection} ${styles.section} ${styles.fadeIn} ${styles.delayMedium}`}
       >
-        <h2 className={styles.sectionTitle}>What Our Customers Say</h2>
+        <h2 className="section-title">What Our Customers Say</h2>
         <Testimonials />
       </section>
       {/* Instagram/Social Gallery Section */}
@@ -158,7 +158,7 @@ export default function Home() {
         ref={galleryRef}
         className={`${styles.gallerySection} ${styles.section} ${styles.fadeIn} ${styles.delayLarge}`}
       >
-        <h2 className={styles.sectionTitle}>Gallery</h2>
+        <h2 className="section-title">Gallery</h2>
         <Gallery />
       </section>
       {/* Call to Action Section */}
