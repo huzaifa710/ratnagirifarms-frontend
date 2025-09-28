@@ -15,6 +15,10 @@ function SelectAddressContent() {
   const [loading, setLoading] = useState(true);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
+
+  // Check if user is coming from checkout flow
+  const isCheckoutFlow =
+    searchParams.get("coupon") !== null || searchParams.get("current") !== null;
   const [pincodeStatus, setPincodeStatus] = useState({
     isValid: false,
     message: "",
@@ -222,7 +226,11 @@ function SelectAddressContent() {
   }
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${styles.container} ${
+        isCheckoutFlow ? styles.containerWithStickyFooter : ""
+      }`}
+    >
       <Toaster position="top-center" />
 
       {/* Header */}
@@ -238,6 +246,7 @@ function SelectAddressContent() {
       </div>
 
       {/* Add New Address Button */}
+
       <div className={styles.addAddressSection}>
         <button
           onClick={() => {
@@ -425,9 +434,11 @@ function SelectAddressContent() {
             <div
               key={address.id}
               className={`${styles.addressCard} ${
-                selectedAddress?.id === address.id ? styles.selected : ""
+                isCheckoutFlow && selectedAddress?.id === address.id
+                  ? styles.selected
+                  : ""
               }`}
-              onClick={() => setSelectedAddress(address)}
+              onClick={() => isCheckoutFlow && setSelectedAddress(address)}
             >
               <div className={styles.addressInfo}>
                 <div className={styles.addressHeader}>
@@ -435,7 +446,7 @@ function SelectAddressContent() {
                   {address.is_default && (
                     <span className={styles.defaultBadge}>Default</span>
                   )}
-                  {selectedAddress?.id === address.id && (
+                  {isCheckoutFlow && selectedAddress?.id === address.id && (
                     <span className={styles.selectedBadge}>Selected</span>
                   )}
                 </div>
@@ -486,8 +497,8 @@ function SelectAddressContent() {
           </div>
         )}
       </div>
-      {addresses.length > 0 && (
-        <div className={styles.footer}>
+      {addresses.length > 0 && isCheckoutFlow && (
+        <div className={styles.stickyConfirmFooter}>
           <button
             onClick={handleConfirmAddress}
             className={styles.confirmButton}

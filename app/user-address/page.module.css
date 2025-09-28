@@ -3,7 +3,13 @@
   margin: 0 auto;
   padding: 16px;
   background: #f5f5f5;
-  min-height: 10vh;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+}
+
+.containerWithStickyFooter {
+  padding-bottom: 0; /* No extra padding needed with sticky */
 }
 
 .header {
@@ -199,6 +205,17 @@
   padding: 16px;
   border-top: 1px solid #e0e0e0;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stickyConfirmFooter {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: auto;
+  z-index: 100;
 }
 
 .confirmButton {

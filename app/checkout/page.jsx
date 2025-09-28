@@ -454,7 +454,7 @@ function CheckoutContent() {
   const handleChangeAddress = () => {
     const currentAddressId = selectedAddress?.id || "";
     const couponParam = searchParams.get("coupon");
-    let url = `/checkout/select-address?current=${currentAddressId}`;
+    let url = `user-address?current=${currentAddressId}`;
     if (couponParam) {
       url += `&coupon=${couponParam}`;
     }
@@ -558,7 +558,7 @@ function CheckoutContent() {
             <button
               onClick={() => {
                 const couponParam = searchParams.get("coupon");
-                let url = "/checkout/select-address";
+                let url = "/user-address";
                 if (couponParam) {
                   url += `?coupon=${couponParam}`;
                 }
