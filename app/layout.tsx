@@ -98,8 +98,14 @@ export default function RootLayout({
               position="top-center"
               reverseOrder={false}
               gutter={8}
+              containerStyle={{
+                zIndex: 10000,
+              }}
               toastOptions={{
                 className: "toast",
+                style: {
+                  zIndex: 10000,
+                },
                 success: {
                   className: "successToast",
                 },

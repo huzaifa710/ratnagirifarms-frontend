@@ -23,6 +23,17 @@
 .errorToast {
   background: red !important;
 }
+
+/* Ensure toasts appear above modals */
+.toast {
+  z-index: 10000 !important;
+}
+
+/* Specific styling for react-hot-toast container */
+[data-react-hot-toast] {
+  z-index: 10000 !important;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
