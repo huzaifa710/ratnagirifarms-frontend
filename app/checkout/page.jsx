@@ -951,15 +951,6 @@ function CheckoutContent() {
             </div>
             <div className={styles.successFooter}>
               <button
-                className={styles.secondaryBtn}
-                onClick={() => {
-                  setShowOrderSuccess(false);
-                  router.push("/");
-                }}
-              >
-                Return to Home
-              </button>
-              <button
                 className={styles.primaryBtn}
                 onClick={() => {
                   setShowOrderSuccess(false);
@@ -967,6 +958,15 @@ function CheckoutContent() {
                 }}
               >
                 Go to My Orders
+              </button>
+              <button
+                className={styles.secondaryBtn}
+                onClick={() => {
+                  setShowOrderSuccess(false);
+                  router.push("/");
+                }}
+              >
+                Return to Home
               </button>
             </div>
           </div>
