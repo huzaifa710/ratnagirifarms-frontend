@@ -11,6 +11,10 @@ import React from "react";
 import Link from "next/link";
 
 function CheckoutContent() {
+  // Success Modal State
+  const [showOrderSuccess, setShowOrderSuccess] = useState(false);
+  const [orderSuccessDetails, setOrderSuccessDetails] = useState(null);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const { uuid, accessToken, mobile_number, setShowAuthModal } = useAuth();
@@ -362,18 +366,16 @@ function CheckoutContent() {
 
       if (paymentMethod === "cod") {
         if (createOrderResponse.data.success) {
-          toast.success("Order placed successfully!");
-          // Keep overlay until redirect
-          setTimeout(() => {
-            setOrderLoading(false);
-            router.push("/orders");
-          }, 1200); // 1.2s delay for smoother UX
+          setOrderSuccessDetails({
+            id: createOrderResponse.data.order_id,
+          });
+          setShowOrderSuccess(true);
         } else {
           toast.error(
             createOrderResponse.data.message || "Failed to place COD order"
           );
-          setOrderLoading(false);
         }
+        setOrderLoading(false);
         return;
       }
 
@@ -400,8 +402,12 @@ function CheckoutContent() {
             });
 
             if (verifyResponse.data.success) {
-              toast.success("Payment successful!");
-              router.push("/orders");
+              setOrderSuccessDetails({
+                id: verifyResponse.data.order_id,
+              });
+              setShowOrderSuccess(true);
+            } else {
+              toast.error("Payment verification failed");
             }
           } catch (error) {
             toast.error("Payment verification failed");
@@ -472,7 +478,8 @@ function CheckoutContent() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">
         <h1 className="text-2xl font-semibold text-gray-800">Login Required</h1>
         <p className="text-gray-600 max-w-md">
-          Please login or create an account to continue with checkout. Your cart items are saved.
+          Please login or create an account to continue with checkout. Your cart
+          items are saved.
         </p>
         <button
           onClick={() => setShowAuthModal(true)}
@@ -481,7 +488,7 @@ function CheckoutContent() {
           Open Login
         </button>
         <button
-          onClick={() => router.push('/cart')}
+          onClick={() => router.push("/cart")}
           className="text-sm text-gray-500 hover:text-gray-700 underline"
         >
           Return to Cart
@@ -892,6 +899,75 @@ function CheckoutContent() {
                   </button>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order Success Modal */}
+      {showOrderSuccess && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.successModal}>
+            <div className={styles.successHeader}>
+              <div className={styles.successIconContainer}>
+                <span className={styles.successIcon}>🎉</span>
+              </div>
+              <h2>Order Placed Successfully!</h2>
+              <p className={styles.successSubtitle}>
+                Thank you for your purchase. Your order has been placed and is
+                being processed.
+              </p>
+            </div>
+            <div className={styles.successBody}>
+              {orderSuccessDetails && (
+                <div className={styles.orderDetailsBox}>
+                  <div className={styles.orderDetailRow}>
+                    <span className={styles.orderDetailLabel}>
+                      <strong>Order ID:</strong>
+                    </span>
+                    <span className={styles.orderDetailValue}>
+                      {orderSuccessDetails.id}
+                    </span>
+                  </div>
+                  <div className={styles.orderDetailRow}>
+                    <span className={styles.orderDetailLabel}>
+                      <strong>Delivery to:</strong>
+                    </span>
+                    <span className={styles.orderDetailValue}>
+                      {selectedAddress.full_name}
+                      <br />
+                      {selectedAddress.address}, {selectedAddress.city},{" "}
+                      {selectedAddress.state} - {selectedAddress.pincode}
+                    </span>
+                  </div>
+                  <div className={styles.orderDetailRow}>
+                    <span className={styles.orderDetailLabel}></span>
+                    <span className={styles.orderDetailValue}>
+                      <strong>{deliveryEstimate || "2-3 business days"}</strong>
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={styles.successFooter}>
+              <button
+                className={styles.secondaryBtn}
+                onClick={() => {
+                  setShowOrderSuccess(false);
+                  router.push("/");
+                }}
+              >
+                Return to Home
+              </button>
+              <button
+                className={styles.primaryBtn}
+                onClick={() => {
+                  setShowOrderSuccess(false);
+                  router.push("/orders");
+                }}
+              >
+                Go to My Orders
+              </button>
             </div>
           </div>
         </div>
