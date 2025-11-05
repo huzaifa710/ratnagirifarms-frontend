@@ -18,7 +18,9 @@ function SelectAddressContent() {
 
   // Check if user is coming from checkout flow
   const isCheckoutFlow =
-    searchParams.get("coupon") !== null || searchParams.get("current") !== null;
+    searchParams.get("coupon") !== null ||
+    searchParams.get("current") !== null ||
+    searchParams.get("checkout") === "true";
   const [pincodeStatus, setPincodeStatus] = useState({
     isValid: false,
     message: "",

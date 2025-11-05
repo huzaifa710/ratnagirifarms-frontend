@@ -99,6 +99,8 @@ export default function PartnerWithUs() {
                     value={formData.mobile_number}
                     onChange={handleChange}
                     className={styles.input}
+                    minLength={10}
+                    maxLength={10}
                   />
                   {errors.mobile_number && (
                     <p className={styles.error}>{errors.mobile_number}</p>

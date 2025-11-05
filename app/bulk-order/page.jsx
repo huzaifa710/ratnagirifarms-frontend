@@ -21,7 +21,7 @@ export default function BulkOrder() {
   const createBulkOrder = async (bulkOrderDate) => {
     try {
       const response = await api.post(
-        `/forms/bulk-orders/create`,
+        `/forms/bulk-order/create`,
         bulkOrderDate
       );
       return response;
@@ -144,6 +144,8 @@ export default function BulkOrder() {
                 value={formData.phone}
                 onChange={handleChange}
                 className={styles.input}
+                minLength={10}
+                maxLength={10}
               />
               {errors.phone && <p className={styles.error}>{errors.phone}</p>}
             </div>
