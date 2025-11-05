@@ -81,6 +81,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -92,8 +98,14 @@ export default function RootLayout({
               position="top-center"
               reverseOrder={false}
               gutter={8}
+              containerStyle={{
+                zIndex: 10000,
+              }}
               toastOptions={{
                 className: "toast",
+                style: {
+                  zIndex: 10000,
+                },
                 success: {
                   className: "successToast",
                 },

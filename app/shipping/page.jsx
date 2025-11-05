@@ -3,11 +3,11 @@ import { Mail } from "lucide-react";
 
 export default function ShippingPolicy() {
   return (
-    <div className={styles.policyContainer}>
-      <div className={styles.content}>
-        <h1 className={styles.title}>Shipping Policy</h1>
+    <div className="page-container">
+      <div className="content-wrapper">
+        <h1 className="page-title">Shipping Policy</h1>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <p className={styles.intro}>
             Thank you for choosing Ratnagiri Farms! We are committed to
             delivering fresh, premium Alphonso mangoes directly to your
@@ -16,12 +16,12 @@ export default function ShippingPolicy() {
           </p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Shipping Locations</h2>
           <p>Free Shipping all over India.</p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Order Processing</h2>
           <ul>
             <li>
@@ -38,7 +38,7 @@ export default function ShippingPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Delivery Timeline</h2>
           <ul>
             <li>Metropolitan Cities: 2-3 Days</li>
@@ -50,7 +50,7 @@ export default function ShippingPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Order Tracking</h2>
           <p>
             Once your order is dispatched, you will receive a tracking link via
@@ -58,7 +58,7 @@ export default function ShippingPolicy() {
           </p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Important Notes</h2>
           <ul>
             <li>

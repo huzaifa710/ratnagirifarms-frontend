@@ -1,5 +1,5 @@
 .ordersContainer {
-  background-color: #ffffff;
+  background-color: #fbf9f6; /* updated softer background */
   min-height: 100vh;
   padding: 2rem;
   color: #014421;
@@ -20,51 +20,87 @@
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease-out;
 }
 
-.confirmationModal {
-  background: #222;
-  border-radius: 12px;
-  padding: 2rem;
-  width: 90%;
-  max-width: 400px;
-  border: 1px solid rgba(229, 192, 123, 0.2);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.confirmationTitle {
-  color: #e5c07b;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  text-align: center;
+.titleBar {
+  width: 120px; /* narrower underline */
+  height: 4px;
+  background: #e59d09; /* warmer tone */
+  margin: 0.25rem auto 2rem;
+  border-radius: 2px;
 }
-
-.confirmationMessage {
-  color: #888;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.confirmationButtons {
+.actionsRow {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem 1rem 1rem;
   gap: 1rem;
 }
 
-.confirmButton {
-  background-color: #dc2626;
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 6px;
+.leftActions, .rightActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  font-weight: 500;
+  border-radius: 12px;
+  padding: 12px 18px;
+  transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+  line-height: 1;
+  background: #f5f5f5;
+  color: #374151;
+}
+
+.reorderBtn {
+  background: #f39c00; /* brighter orange */
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(243, 156, 0, 0.3);
+}
+.reorderBtn:hover {
+  background: #d88500;
+}
+
+.trackBtn {
+  background: #008b5e; /* deeper green */
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(0, 139, 94, 0.3);
+}
+.trackBtn:hover {
+  background: #01724c;
+}
+
+.cancelBtn {
+  background: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.3);
+}
+.cancelBtn:hover {
+  background: #b91c1c;
 }
 
 .cancelModalButton {
@@ -81,6 +117,8 @@
 .cancelModalButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .title::after {
@@ -175,6 +213,20 @@
   color: #ffffff;
 }
 
+.paymentStatusBadge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: #f3f1ed;
+  color: #8a8060;
+  border: 1px solid #e5e7eb;
+  vertical-align: middle;
+  letter-spacing: 0.2px;
+}
+
 .orderDetails {
   padding: 2rem;
   border-top: 1px solid rgba(1, 68, 33, 0.1);
@@ -232,40 +284,365 @@
 
 .confirmationModal {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 2.5rem;
+  border-radius: 20px;
+  padding: 2rem;
   width: 90%;
-  max-width: 400px;
+  max-width: 420px;
   border: 1px solid rgba(1, 68, 33, 0.1);
-  box-shadow: 0 4px 30px rgba(1, 68, 33, 0.15);
+  box-shadow: 0 20px 40px rgba(1, 68, 33, 0.15);
+  animation: modalSlideIn 0.3s ease-out;
+  position: relative;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.warningIcon {
+  color: #e59d09;
+  font-size: 1.5rem;
+}
+
+.confirmationTitle {
+  color: #014421;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: "Playfair Display", serif;
+  margin: 0;
+}
+
+.confirmationMessage {
+  color: #5b6166;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 1.5rem 0;
+  text-align: left;
+}
+
+.confirmationButtons {
+  display: flex;
+  gap: 0.75rem;
+  flex-direction: column;
 }
 
 .confirmButton,
 .cancelModalButton {
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .confirmButton {
-  background: #d4af37;
+  background: #dc2626;
   color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.confirmButton:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
 }
 
 .cancelModalButton {
-  background: #f5f5dc;
+  background: #f5f3f0;
+  color: #014421;
+  border: 1px solid rgba(1, 68, 33, 0.2);
+}
+
+.cancelModalButton:hover:not(:disabled) {
+  background: #e8e5e0;
+  transform: translateY(-1px);
+}
+
+.titleNew {
+  font-family: "Playfair Display", serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: #014421;
+  margin: 0 0 0.5rem 0;
+}
+
+.titleBar {
+  width: 190px;
+  height: 4px;
+  background: #d4af37;
+  margin: 0 auto 2rem;
+  border-radius: 2px;
+}
+
+.cardsStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.orderCardNew {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(1, 68, 33, 0.06);
+  overflow: hidden;
+  border: 1px solid #f3f1ed;
+}
+
+.cardTop {
+  padding: 1rem 1rem 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.orderIdLine {
+  font-size: 0.9rem;
+  color: #5b6166;
+  margin: 0 0 0.25rem 0;
+}
+
+.orderIdValue {
+  font-weight: 600;
+  color: #222b32;
+}
+
+.orderDateLine {
+  font-size: 0.9rem;
+  color: #5b6166;
+  margin: 0;
+}
+
+.amountBlock {
+  text-align: right;
+}
+
+.amountValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #d48806;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.statusRow {
+  padding: 0 1rem 0.75rem 1rem;
+}
+
+.statusGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.statusLabel {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.statusBadgeBase {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+
+.materialIcon,
+.materialIconSmall {
+  font-family: "Material Icons";
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.materialIconSmall {
+  font-size: 18px;
+  margin-right: 2px;
+}
+
+.badgeDelivered {
+  background: #d1f5e3;
+  color: #006c3b;
+}
+
+.badgeShipped {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badgeProcessing,
+.badgeApproved {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badgeCancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.itemsSection {
+  border-top: 1px solid #f3f3f3;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: expandDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding: 0 1rem;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    padding: 1rem;
+  }
+}
+
+.cardTop:hover,
+.statusRow:hover {
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+}
+
+.itemImage {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-right: 1rem;
+  background: #f5f5f5;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #222b32;
+  margin: 0 0 2px 0;
+}
+
+.itemQty {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0 0 2px 0;
+}
+
+.itemPrice {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #222b32;
+  margin: 0;
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem 1rem 1rem;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: background 0.25s, color 0.25s;
+  line-height: 1;
+  background: #f5f5f5;
+  color: #374151;
+}
+
+.viewBtn {
+  background: transparent;
+  color: #4b5563;
+  padding: 0; /* text style */
+  box-shadow: none;
+}
+
+.viewBtn:hover {
+  background: transparent;
   color: #014421;
 }
 
-.confirmButton:hover,
-.cancelModalButton:hover {
-  transform: translateY(-2px);
+.reorderBtn {
+  background: #d48806;
+  color: #fff;
 }
 
-/* ...existing code until media queries... */
+.reorderBtn:hover {
+  background: #b87405;
+}
+
+.trackBtn {
+  background: #007d52;
+  color: #ffffff;
+}
+
+.trackBtn:hover {
+  background: #016243;
+}
+
+.paymentPaid {
+  background: #d1f5e3;
+  color: #006c3b;
+}
+.paymentUnpaid {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.paymentRefunded {
+  background: #fef3c7;
+  color: #92400e;
+}
 
 @media (max-width: 768px) {
   .ordersContainer {
@@ -311,6 +688,15 @@
     font-size: 0.75rem;
   }
 
+  .statusGroup {
+    align-items: center;
+    text-align: center;
+  }
+
+  .statusLabel {
+    font-size: 0.6rem;
+  }
+
   .orderDetails {
     padding: 1rem;
   }
@@ -340,14 +726,22 @@
   .confirmationModal {
     padding: 1.5rem;
     width: 95%;
+    max-width: 350px;
+  }
+
+  .confirmationTitle {
+    font-size: 1.125rem;
+  }
+
+  .confirmationMessage {
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
   }
 
   .confirmButton,
   .cancelModalButton {
-    padding: 0.625rem 1rem;
+    padding: 0.75rem 1rem;
     font-size: 0.875rem;
-    width: 100%;
-    margin-top: 0.5rem;
   }
 }
 

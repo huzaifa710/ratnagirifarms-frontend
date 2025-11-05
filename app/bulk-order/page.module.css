@@ -7,27 +7,6 @@
   margin: 0 auto;
 }
 
-.title {
-  font-family: "Playfair Display", serif;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #014421;
-  position: relative;
-}
-
-.title::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
-  background-color: #d4af37;
-}
-
 .formContainer {
   background: #ffffff;
   padding: 2rem;

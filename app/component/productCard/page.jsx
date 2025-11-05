@@ -151,13 +151,13 @@ function SingleProduct({ product }) {
   const isVariantNotified =
     selectedVariant && notifiedVariants.includes(selectedVariant.id);
 
-  let imageScr = "/card/image3.png";
+  // let imageScr = "/card/image3.png";
 
-  if (product.name === "Ratnagiri Alphonso Mango Pulp/Aamras 850 Grams") {
-    imageScr = "/pulp/mango-pulp.jpg"; // replace with your new image path
-  } else if (product.name === "Ratnagiri Premium Sun-Dried Mango Slices 1KG") {
-    imageScr = "/card/dry-mango.jpg";
-  }
+  // if (product.name === "Ratnagiri Alphonso Mango Pulp/Aamras 850 Grams") {
+  //   imageScr = "/pulp/mango-pulp.jpg"; // replace with your new image path
+  // } else if (product.name === "Ratnagiri Premium Sun-Dried Mango Slices 1KG") {
+  //   imageScr = "/card/dry-mango.jpg";
+  // }
 
   return (
     <>
@@ -166,7 +166,7 @@ function SingleProduct({ product }) {
           <div className={styles.bestSellerBadge}>Best Seller</div>
         )}
         <img
-          src={imageScr}
+          src={product.image_url}
           alt={product.name}
           className={styles.productImage}
         />

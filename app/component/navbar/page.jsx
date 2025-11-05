@@ -110,7 +110,7 @@ const Navbar = () => {
         className={styles.navItem}
         onClick={() => setIsMobileMenuOpen(false)}
       >
-        Orders
+        My Orders
       </Link>
       {/* <Link
         href="/admin/noob/products"
@@ -191,13 +191,22 @@ const Navbar = () => {
               {accessToken ? (
                 <>
                   {!pathname.startsWith("/admin") && (
-                    <Link
-                      href="/orders"
-                      className={styles.dropdownItem}
-                      onClick={handleDropdownItemClick}
-                    >
-                      Orders
-                    </Link>
+                    <>
+                      <Link
+                        href="/user-address"
+                        className={styles.dropdownItem}
+                        onClick={handleDropdownItemClick}
+                      >
+                        My Address
+                      </Link>
+                      <Link
+                        href="/orders"
+                        className={styles.dropdownItem}
+                        onClick={handleDropdownItemClick}
+                      >
+                        My Orders
+                      </Link>
+                    </>
                   )}
 
                   <button

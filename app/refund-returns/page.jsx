@@ -4,11 +4,11 @@ import { Mail, Phone } from "lucide-react";
 
 export default function RefundPolicy() {
   return (
-    <div className={styles.policyContainer}>
-      <div className={styles.content}>
-        <h1 className={styles.title}>Refund & Return Policy</h1>
+    <div className="page-container">
+      <div className="content-wrapper">
+        <h1 className="page-title">Refund & Returns Policy</h1>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Order Cancellation</h2>
           <p>
             It is possible to cancel orders placed and processed through the
@@ -17,7 +17,7 @@ export default function RefundPolicy() {
           </p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Delivery & Returns</h2>
           <ul>
             <li>
@@ -35,7 +35,7 @@ export default function RefundPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Damage Claims</h2>
           <p>
             Contact us immediately if the mangoes were damaged, pressed,
@@ -45,7 +45,7 @@ export default function RefundPolicy() {
           </p>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Refund Process</h2>
           <ul>
             <li>
@@ -63,7 +63,7 @@ export default function RefundPolicy() {
           </ul>
         </div>
 
-        <div className={styles.section}>
+        <div className="content-section">
           <h2>Important Notes</h2>
           <ul>
             <li>

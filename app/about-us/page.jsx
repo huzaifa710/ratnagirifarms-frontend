@@ -7,7 +7,7 @@ export default function AboutUs() {
   return (
     <section className={styles.aboutSection}>
       <div className={styles.container}>
-        <h2 className={styles.sectionTitle}>About Ratnagiri Farms</h2>
+        <h2 className="section-title">About Ratnagiri Farms</h2>
 
         <div className={styles.gridContainer}>
           <div className={styles.imageContainer}>

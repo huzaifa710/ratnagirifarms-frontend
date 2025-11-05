@@ -1,16 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/app/cart-context/page";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
 import { toast, Toaster } from "react-hot-toast";
 import styles from "./page.module.css";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
+import React from "react";
 import Link from "next/link";
 
-export default function Checkout() {
+function CheckoutContent() {
+  // Success Modal State
+  const [showOrderSuccess, setShowOrderSuccess] = useState(false);
+  const [orderSuccessDetails, setOrderSuccessDetails] = useState(null);
+
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { uuid, accessToken, mobile_number, setShowAuthModal } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -26,6 +32,10 @@ export default function Checkout() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCouponsModal, setShowCouponsModal] = useState(false);
+  const [couponsLoading, setCouponsLoading] = useState(false);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const justRemovedCoupon = useRef(false);
   const [pincodeStatus, setPincodeStatus] = useState({
     isValid: false,
     message: "",
@@ -46,20 +56,23 @@ export default function Checkout() {
     is_default: false,
   });
 
+  // Initialize checkout state depending on auth status.
+  // If user not logged in, immediately show auth modal and expose guest cart without blocking overlay.
   useEffect(() => {
     if (!uuid && !accessToken) {
       setShowAuthModal(true);
-      return;
+      setCartItems(guestCart || []);
+      setLoading(false); // Remove loading overlay so login widget is clickable
+      return; // Stop further fetching
     }
 
-    if (!uuid && !accessToken) {
-      setCartItems(guestCart);
-      setLoading(false);
-    } else {
+    // Logged in: fetch required data
+    if (uuid && accessToken) {
       fetchCartItems();
       fetchAddresses();
+      fetchAvailableCoupons(); // Pre-load available coupons
     }
-  }, [uuid, accessToken]);
+  }, [uuid, accessToken, guestCart]);
 
   useEffect(() => {
     setHandlingCharge(paymentMethod === "cod" ? 49 : 0);
@@ -71,42 +84,33 @@ export default function Checkout() {
     }
   }, [selectedAddress?.id]);
 
-  const checkPincodeServiceability = async (pincode) => {
-    try {
-      const response = await api.post("/delhivery/check-pincode", {
-        pincode: pincode,
-      });
-
-      if (response.data.success) {
-        setPincodeStatus({
-          isValid: true,
-          message: response.data.message,
-          city: response.data.city,
-        });
-        setDeliveryEstimate(response.data.estimated_days);
-        // Auto-fill city if pincode is valid
-        setAddressForm((prev) => ({
-          ...prev,
-          city: response.data.city,
-        }));
-      } else {
-        setPincodeStatus({
-          isValid: false,
-          message: response.data.message,
-          city: "",
-        });
-        setDeliveryEstimate("");
+  useEffect(() => {
+    // Handle address selection from address page
+    const addressId = searchParams.get("addressId");
+    if (addressId && addresses.length > 0) {
+      const selectedAddr = addresses.find(
+        (addr) => addr.id === parseInt(addressId)
+      );
+      if (selectedAddr) {
+        setSelectedAddress(selectedAddr);
+        checkDeliveryEstimate(selectedAddr.pincode);
       }
-    } catch (error) {
-      setPincodeStatus({
-        isValid: false,
-        message: "Error checking pincode serviceability",
-        city: "",
-      });
-      setDeliveryEstimate("");
-      toast.error("Error checking pincode serviceability");
     }
-  };
+  }, [addresses, searchParams]);
+
+  useEffect(() => {
+    // Handle coupon code from URL parameters
+    const urlCouponCode = searchParams.get("coupon");
+    if (
+      urlCouponCode &&
+      !appliedCoupon &&
+      cartItems.length > 0 &&
+      !justRemovedCoupon.current
+    ) {
+      setCouponCode(urlCouponCode);
+      handleApplyCoupon(urlCouponCode, false); // Don't show toast when auto-applying from URL
+    }
+  }, [searchParams, cartItems, appliedCoupon]);
 
   const checkDeliveryEstimate = async (pincode) => {
     try {
@@ -126,6 +130,8 @@ export default function Checkout() {
   };
 
   const fetchAvailableCoupons = async () => {
+    setCouponsLoading(true);
+    setAvailableCoupons([]); // Clear previous coupons
     try {
       const response = await api.get(`/coupons/available/${uuid}`, {
         headers: {
@@ -141,6 +147,8 @@ export default function Checkout() {
     } catch (error) {
       console.error("Error fetching coupons:", error);
       toast.error("Failed to load available coupons");
+    } finally {
+      setCouponsLoading(false);
     }
   };
 
@@ -159,13 +167,20 @@ export default function Checkout() {
   };
 
   // Add this function to handle coupon application
-  const handleApplyCoupon = async (code) => {
+  const handleApplyCoupon = async (code, showToast = true) => {
+    // Prevent guests from attempting server coupon application
+    if (!uuid && !accessToken) {
+      if (showToast) toast.error("Please login to apply a coupon");
+      setShowAuthModal(true);
+      return;
+    }
     const couponCodeToApply = couponCode || code;
     if (!couponCodeToApply || couponCodeToApply === "") {
-      toast.error("Please enter a coupon code");
+      if (showToast) toast.error("Please enter a coupon code");
       return;
     }
 
+    setCouponLoading(true);
     try {
       const response = await api.post("/coupons/apply", {
         uuid,
@@ -179,13 +194,25 @@ export default function Checkout() {
       if (response.data.success) {
         setDiscount(response.data.discount);
         setAppliedCoupon(response.data.coupon);
-        toast.success(`Coupon applied! You saved ₹${response.data.discount}`);
+        if (showToast) {
+          toast.success(`Coupon applied! You saved ₹${response.data.discount}`);
+        }
+
+        // Add coupon code to URL parameters
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set("coupon", couponCodeToApply);
+        router.replace(`/checkout?${newSearchParams.toString()}`, {
+          scroll: false,
+        });
       } else {
-        toast.error(response.data.error || "Invalid coupon");
+        if (showToast) toast.error(response.data.error || "Invalid coupon");
       }
     } catch (error) {
       console.error("Coupon application error:", error);
-      toast.error(error.response?.data?.message || "Failed to apply coupon");
+      if (showToast)
+        toast.error(error.response?.data?.message || "Failed to apply coupon");
+    } finally {
+      setCouponLoading(false);
     }
   };
 
@@ -194,6 +221,21 @@ export default function Checkout() {
     setCouponCode("");
     setDiscount(0);
     setAppliedCoupon(null);
+    justRemovedCoupon.current = true; // Flag to prevent reapplication
+
+    // Remove coupon parameter from URL
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("coupon");
+    const newUrl = newSearchParams.toString()
+      ? `/checkout?${newSearchParams.toString()}`
+      : "/checkout";
+    router.replace(newUrl, { scroll: false });
+
+    // Reset the flag after a short delay
+    setTimeout(() => {
+      justRemovedCoupon.current = false;
+    }, 1000);
+
     toast.success("Coupon removed");
   };
 
@@ -224,18 +266,31 @@ export default function Checkout() {
   };
 
   const handleAddToCart = async (product_variant_id) => {
+    let prevCart = [...cartItems];
+    let updatedCart;
     if (!uuid || !accessToken) {
       const product = cartItems.find(
         (item) => item.product_variant_id === product_variant_id
       );
       if (product) {
         addToGuestCart(product);
-        await fetchCartItems();
+        updatedCart = prevCart.map((item) =>
+          item.product_variant_id === product_variant_id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+        setCartItems(updatedCart);
         toast.success("Added to cart");
       }
       return;
     }
-
+    // Optimistically update UI
+    updatedCart = prevCart.map((item) =>
+      item.product_variant_id === product_variant_id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    );
+    setCartItems(updatedCart);
     try {
       await api.post(`/carts/add`, {
         uuid,
@@ -246,20 +301,36 @@ export default function Checkout() {
       await fetchCartItems();
       await updateCartCount();
     } catch (error) {
-      toast.error("Failed to add to cart");
-      console.error(error);
+      setCartItems(prevCart); // Rollback
+      toast.error("Failed to add to cart. Retry?");
     }
   };
 
   const removeFromCart = async (product_variant_id, quantity) => {
+    let prevCart = [...cartItems];
+    let updatedCart;
     if (!uuid && !accessToken) {
       removeFromGuestCart(product_variant_id, quantity);
-      await fetchCartItems();
-      await updateCartCount();
+      updatedCart = prevCart
+        .map((item) =>
+          item.product_variant_id === product_variant_id
+            ? { ...item, quantity: item.quantity - quantity }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+      setCartItems(updatedCart);
       toast.success("Item removed from cart");
       return;
     }
-
+    // Optimistically update UI
+    updatedCart = prevCart
+      .map((item) =>
+        item.product_variant_id === product_variant_id
+          ? { ...item, quantity: item.quantity - quantity }
+          : item
+      )
+      .filter((item) => item.quantity > 0);
+    setCartItems(updatedCart);
     try {
       const payload = { uuid, product_variant_id, quantity };
       await api.post(`/carts/remove`, payload);
@@ -267,94 +338,9 @@ export default function Checkout() {
       await fetchCartItems();
       await updateCartCount();
     } catch (error) {
-      toast.error("Failed to remove item");
+      setCartItems(prevCart); // Rollback
+      toast.error("Failed to remove item. Retry?");
     }
-  };
-
-  const handleAddressSubmit = async (e) => {
-    e.preventDefault();
-    const patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
-    if (!patternEmail.test(addressForm.email)) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-
-    // Only validate pincode if it's a new address or if pincode was changed during edit
-    if (
-      (!editingAddress ||
-        (editingAddress && editingAddress.pincode !== addressForm.pincode)) &&
-      !pincodeStatus.isValid
-    ) {
-      toast.error("Please enter a valid serviceable pincode");
-      return;
-    }
-
-    try {
-      if (editingAddress) {
-        await api.put(`/user-address/update/${editingAddress.id}`, {
-          uuid,
-          ...addressForm,
-        });
-        if (selectedAddress?.id === editingAddress.id) {
-          checkDeliveryEstimate(addressForm.pincode);
-        }
-        toast.success("Address updated successfully");
-      } else {
-        const response = await api.post("/user-address/create", {
-          uuid,
-          ...addressForm,
-        });
-        if (addressForm.is_default) {
-          checkDeliveryEstimate(addressForm.pincode);
-        }
-        toast.success("Address added successfully");
-      }
-      await fetchAddresses();
-      setShowAddressForm(false);
-      setEditingAddress(null);
-      setAddressForm({
-        full_name: "",
-        email: "",
-        mobile_number: "",
-        address: "",
-        city: "",
-        state: "",
-        pincode: "",
-        is_default: false,
-      });
-    } catch (error) {
-      toast.error("Failed to save address");
-    }
-  };
-
-  const handleDeleteAddress = async (addressId) => {
-    try {
-      await api.delete(`/user-address/delete/${addressId}`, {
-        data: { uuid },
-      });
-      if (selectedAddress?.id === addressId) {
-        setSelectedAddress(null);
-      }
-      toast.success("Address deleted successfully");
-      fetchAddresses();
-    } catch (error) {
-      toast.error("Failed to delete address");
-    }
-  };
-
-  const handleEditAddress = (address) => {
-    setEditingAddress(address);
-    setAddressForm({
-      full_name: address.full_name,
-      email: address.email,
-      mobile_number: address.mobile_number,
-      address: address.address,
-      city: address.city,
-      state: address.state,
-      pincode: address.pincode,
-      is_default: address.is_default,
-    });
-    setShowAddressForm(true);
   };
 
   const handlePlaceOrder = async () => {
@@ -368,6 +354,7 @@ export default function Checkout() {
       return;
     }
 
+    setOrderLoading(true);
     try {
       // Create guest order or regular order based on checkout type
       const createOrderPayload = {
@@ -385,13 +372,16 @@ export default function Checkout() {
 
       if (paymentMethod === "cod") {
         if (createOrderResponse.data.success) {
-          toast.success("Order placed successfully!");
-          router.push("/orders");
+          setOrderSuccessDetails({
+            id: createOrderResponse.data.order_id,
+          });
+          setShowOrderSuccess(true);
         } else {
           toast.error(
             createOrderResponse.data.message || "Failed to place COD order"
           );
         }
+        setOrderLoading(false);
         return;
       }
 
@@ -418,15 +408,26 @@ export default function Checkout() {
             });
 
             if (verifyResponse.data.success) {
-              toast.success("Payment successful!");
-              router.push("/orders");
+              setOrderSuccessDetails({
+                id: verifyResponse.data.order_id,
+              });
+              setShowOrderSuccess(true);
+            } else {
+              toast.error("Payment verification failed");
             }
           } catch (error) {
             toast.error("Payment verification failed");
+          } finally {
+            setOrderLoading(false);
           }
         },
         theme: {
           color: "#e5c07b",
+        },
+        modal: {
+          ondismiss: () => {
+            setOrderLoading(false);
+          },
         },
       };
       // Load Razorpay script
@@ -450,596 +451,577 @@ export default function Checkout() {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
+      setOrderLoading(false);
       toast.error("Failed to create order");
       console.error(error);
     }
   };
 
+  const handleChangeAddress = () => {
+    const currentAddressId = selectedAddress?.id || "";
+    const couponParam = searchParams.get("coupon");
+    let url = `user-address?current=${currentAddressId}&checkout=true`;
+    if (couponParam) {
+      url += `&coupon=${couponParam}`;
+    }
+    router.push(url);
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles.loadingOverlay}>
+        <div className={styles.loadingOverlayContent}>
+          <div className={styles.spinner}></div>
+          <p>Loading checkout...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show a focused login required screen (guest flow already triggered auth modal)
+  if (!uuid && !accessToken) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Login Required</h1>
+        <p className="text-gray-600 max-w-md">
+          Please login or create an account to continue with checkout. Your cart
+          items are saved.
+        </p>
+        <button
+          onClick={() => setShowAuthModal(true)}
+          className="px-6 py-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium shadow transition"
+        >
+          Open Login
+        </button>
+        <button
+          onClick={() => router.push("/cart")}
+          className="text-sm text-gray-500 hover:text-gray-700 underline"
+        >
+          Return to Cart
+        </button>
+      </div>
+    );
   }
 
   return (
     <div className={styles.checkoutContainer}>
       <Toaster position="top-center" />
-      <h1 className={styles.title}>Checkout</h1>
-      <div className={styles.checkoutContent}>
+      {orderLoading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingOverlayContent}>
+            <div className={styles.spinner}></div>
+            <p>Placing your order...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="relative flex items-center justify-center mb-6 bg-white p-4 rounded-xl shadow-md min-h-[56px]">
+        <button
+          onClick={() => router.push("/cart")}
+          className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 text-2xl text-gray-800 rounded-xl hover:bg-gray-100 transition"
+          aria-label="Back"
+        >
+          ←
+        </button>
+        <h1 className="text-2xl font-semibold text-gray-800 m-0 p-0 text-center leading-[1.2] flex items-center justify-center h-12">
+          Checkout
+        </h1>
+      </div>
+
+      {/* Delivery Address Section */}
+      {selectedAddress ? (
+        <div className={styles.deliveryAddressSection}>
+          <h2 className={styles.sectionTitle}>Delivery Address</h2>
+          <div className={styles.selectedAddressCard}>
+            <div className={styles.addressDetails}>
+              <h3 className={styles.addressName}>
+                {selectedAddress.full_name}
+              </h3>
+              <p className={styles.addressText}>
+                {selectedAddress.address}, {selectedAddress.city},{" "}
+                {selectedAddress.state} - {selectedAddress.pincode}
+              </p>
+              <p className={styles.addressEmail}>{selectedAddress.email}</p>
+              <p className={styles.addressPhone}>
+                {selectedAddress.mobile_number}
+              </p>
+            </div>
+            <button
+              onClick={handleChangeAddress}
+              className={styles.changeButton}
+            >
+              Change
+            </button>
+          </div>
+        </div>
+      ) : (
         <div className={styles.addressSection}>
           <div className={styles.addressHeader}>
-            {addresses.length == 0 ? (
-              <h2 className={styles.Message}>
-                {" "}
-                Please add new address to proceed with the order
-              </h2>
-            ) : (
-              <h2 className={styles.Message}> Delivery Address</h2>
-            )}
+            <h2 className={styles.Message}>
+              Please add new address to proceed with the order
+            </h2>
             <button
               onClick={() => {
-                setShowAddressForm(true);
-                setEditingAddress(null);
-                setAddressForm({
-                  full_name: "",
-                  email: "",
-                  mobile_number: "",
-                  address: "",
-                  city: "",
-                  state: "",
-                  pincode: "",
-                  is_default: false,
-                });
+                const couponParam = searchParams.get("coupon");
+                let url = "/user-address?checkout=true";
+                if (couponParam) {
+                  url += `&coupon=${couponParam}`;
+                }
+                router.push(url);
               }}
               className={styles.addAddressBtn}
             >
               Add New Address
             </button>
           </div>
+        </div>
+      )}
 
-          {showAddressForm && (
-            <form onSubmit={handleAddressSubmit} className={styles.addressForm}>
-              <h3>{editingAddress ? "Edit Address" : "Add New Address"}</h3>
-              <input
-                type="text"
-                placeholder="Full Name (First and Last Name)"
-                name="full_name"
-                value={addressForm.full_name}
-                onChange={(e) =>
-                  setAddressForm({
-                    ...addressForm,
-                    full_name: e.target.value,
-                  })
-                }
-                required
-              />
-              <input
-                type="text"
-                placeholder="Email"
-                name="email"
-                value={addressForm.email}
-                onChange={(e) =>
-                  setAddressForm({
-                    ...addressForm,
-                    email: e.target.value,
-                  })
-                }
-                required
-              />
-              <input
-                type="tel"
-                placeholder="Mobile Number"
-                name="mobile_number"
-                value={addressForm.mobile_number}
-                onChange={(e) =>
-                  setAddressForm({
-                    ...addressForm,
-                    mobile_number: e.target.value,
-                  })
-                }
-                required
-                minLength={10}
-                maxLength={10}
-              />
-              <textarea
-                placeholder="Address"
-                name="address"
-                value={addressForm.address}
-                onChange={(e) =>
-                  setAddressForm({ ...addressForm, address: e.target.value })
-                }
-                required
-              />
-              <select
-                name="state"
-                value={addressForm.state}
-                onChange={(e) =>
-                  setAddressForm({ ...addressForm, state: e.target.value })
-                }
-                required
-              >
-                <option value="">Select State</option>
-                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                <option value="Assam">Assam</option>
-                <option value="Bihar">Bihar</option>
-                <option value="Chandigarh">Chandigarh</option>
-                <option value="Chhattisgarh">Chhattisgarh</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Goa">Goa</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Himachal Pradesh">Himachal Pradesh</option>
-                <option value="Jharkhand">Jharkhand</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Kerala">Kerala</option>
-                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Puducherry">Puducherry</option>
-                <option value="Punjab">Punjab</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Telangana">Telangana</option>
-                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                <option value="Uttarakhand">Uttarakhand</option>
-                <option value="West Bengal">West Bengal</option>
-                <option value="Manipur">Manipur</option>
-                <option value="Meghalaya">Meghalaya</option>
-                <option value="Mizoram">Mizoram</option>
-                <option value="Nagaland">Nagaland</option>
-                <option value="Odisha">Odisha</option>
-                <option value="Sikkim">Sikkim</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Tripura">Tripura</option>
-                <option value="Andaman and Nicobar Islands">
-                  Andaman and Nicobar Islands
-                </option>
-                <option value="Dadra and Nagar Haveli and Daman and Diu">
-                  Dadra and Nagar Haveli and Daman and Diu
-                </option>
-                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                <option value="Ladakh">Ladakh</option>
-                <option value="Lakshadweep">Lakshadweep</option>
-              </select>
-              <div className={styles.inputGroup}>
-                <input
-                  type="text"
-                  placeholder="Pincode"
-                  name="pincode"
-                  value={addressForm.pincode}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
-                    setAddressForm({ ...addressForm, pincode: value });
-                    if (value.length === 6) {
-                      checkPincodeServiceability(value);
-                    } else {
-                      setPincodeStatus({
-                        isValid: false,
-                        message: "",
-                        city: "",
-                      });
-                    }
-                  }}
-                  required
-                  maxLength={6}
-                  minLength={6}
-                />
-                {addressForm.pincode.length === 6 && (
-                  <div
-                    className={`${styles.pincodeStatus} ${
-                      pincodeStatus.isValid ? styles.valid : styles.invalid
-                    }`}
-                  >
-                    {pincodeStatus.message}
-                  </div>
-                )}
+      {/* Remove the existing address form and address list JSX since it's now in the separate page */}
+
+      {/* Estimated Delivery Section */}
+      {selectedAddress && deliveryEstimate && (
+        <div className={styles.deliveryEstimateSection}>
+          <h2 className={styles.sectionTitle}>Estimated Delivery</h2>
+          <div className={styles.deliveryEstimateCard}>
+            <div className={styles.deliveryInfo}>
+              <div className={styles.deliveryIcon}>📦</div>
+              <div className={styles.deliveryDetails}>
+                <p className={styles.deliveryText}>
+                  Your order will be delivered in{" "}
+                  <span className={styles.deliveryDays}>
+                    {deliveryEstimate}
+                  </span>
+                </p>
+                <p className={styles.deliveryLocation}>
+                  to {selectedAddress.city}, {selectedAddress.state} -{" "}
+                  {selectedAddress.pincode}
+                </p>
               </div>
-              <input
-                type="text"
-                placeholder="City"
-                name="city"
-                value={addressForm.city}
-                readOnly
-                required
-              />
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={addressForm.is_default}
-                  onChange={(e) =>
-                    setAddressForm({
-                      ...addressForm,
-                      is_default: e.target.checked,
-                    })
-                  }
-                />
-                Set as default address
-              </label>
-              <div className={styles.formButtons}>
-                <button type="submit">
-                  {editingAddress ? "Update" : "Add"} Address
-                </button>
-                <button type="button" onClick={() => setShowAddressForm(false)}>
-                  Cancel
-                </button>
-              </div>
-            </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order Summary Section */}
+      <div className={styles.orderSummarySection}>
+        <h2 className={styles.sectionTitle}>Order Summary</h2>
+        {cartItems.map((item) => (
+          <CartItem
+            key={item.product_variant_id}
+            item={item}
+            onAdd={handleAddToCart}
+            onRemove={removeFromCart}
+          />
+        ))}
+      </div>
+
+      {/* Coupon Section */}
+      <div className={styles.couponSection}>
+        <div className={styles.couponInputContainer}>
+          <input
+            type="text"
+            placeholder="Enter Coupon Code"
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value)}
+            className={styles.couponInput}
+            disabled={appliedCoupon !== null}
+          />
+          {appliedCoupon ? (
+            <button
+              onClick={handleRemoveCoupon}
+              className={styles.removeButton}
+            >
+              Remove
+            </button>
+          ) : (
+            <button
+              onClick={handleApplyCoupon}
+              className={styles.applyButton}
+              disabled={couponLoading}
+            >
+              {couponLoading ? (
+                <>
+                  <div className={styles.buttonSpinner}></div>
+                  Applying...
+                </>
+              ) : (
+                "Apply"
+              )}
+            </button>
           )}
+        </div>
+        <button
+          onClick={() => {
+            setShowCouponsModal(true);
+            // Coupons are already pre-loaded, but refresh if empty or show loading if still loading
+            if (availableCoupons.length === 0 && !couponsLoading) {
+              fetchAvailableCoupons();
+            }
+          }}
+          className={styles.viewCouponsButton}
+        >
+          View Available Coupons
+        </button>
+      </div>
 
-          <div className={styles.addressList}>
-            {addresses.map((address) => (
-              <div
-                key={address.id}
-                className={`${styles.addressCard} ${
-                  selectedAddress?.id === address.id ? styles.selected : ""
-                }`}
-                onClick={() => {
-                  setSelectedAddress(address);
-                  checkDeliveryEstimate(address.pincode);
-                }}
-              >
-                <div className={styles.addressInfo}>
-                  <p>
-                    {address.full_name}
-                    {selectedAddress?.id === address.id && (
-                      <span className={styles.selectedBadge}>
-                        <span>Selected</span>
-                      </span>
-                    )}
-                  </p>
-                  <p>{address.email}</p>
-                  <p>{address.mobile_number}</p>
-                  <p>{address.address}</p>
-                  <p>
-                    {address.city}, {address.state} - {address.pincode}
-                  </p>
-                  <div className={styles.addressActions}>
-                    {address.is_default && (
-                      <span className={styles.defaultBadge}>Default</span>
-                    )}
-                    <div className={styles.actionButtons}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditAddress(address);
-                        }}
-                        className={styles.editBtn}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteAddress(address.id);
-                        }}
-                        className={styles.deleteBtn}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Payment Method Section */}
+      <div className={styles.paymentMethodContainer}>
+        <h2 className={styles.sectionTitle}>Payment Method</h2>
+        <div className={styles.paymentOptionsCard}>
+          <div className={styles.paymentOptionWrapper}>
+            <label className={styles.paymentOptionLabel} htmlFor="online">
+              <span className={styles.paymentOptionText}>
+                Online (UPI/Card/Netbanking)
+              </span>
+              <input
+                type="radio"
+                id="online"
+                name="paymentMethod"
+                value="online"
+                checked={paymentMethod === "online"}
+                onChange={() => setPaymentMethod("online")}
+                className={styles.radioInput}
+              />
+            </label>
+          </div>
+          <div className={styles.paymentOptionWrapper}>
+            <label className={styles.paymentOptionLabel} htmlFor="cod">
+              <span className={styles.paymentOptionText}>Cash on Delivery</span>
+              <input
+                type="radio"
+                id="cod"
+                name="paymentMethod"
+                value="cod"
+                checked={paymentMethod === "cod"}
+                onChange={() => setPaymentMethod("cod")}
+                className={styles.radioInput}
+              />
+            </label>
           </div>
         </div>
 
-        <div className={styles.productSummaryContainer}>
-          <div className={styles.itemsList}>
-            {cartItems.map((item) => (
-              <div key={item.product_variant_id} className={styles.orderItem}>
-                <div className={styles.itemInfo}>
-                  <h3>{item.name}</h3>
-                  <p>No Of Pieces Per Box : {item.quantity_per_box}</p>
-                  <div className={styles.quantityControl}>
-                    <button
-                      onClick={() => removeFromCart(item.product_variant_id, 1)}
-                      disabled={item.quantity <= 1}
-                      className={styles.quantityBtn}
-                    >
-                      <FaMinus />
-                    </button>
-                    <span>{item.quantity}</span>
-                    <button
-                      onClick={() => handleAddToCart(item.product_variant_id)}
-                      className={styles.quantityBtn}
-                    >
-                      <FaPlus />
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.itemActions}>
-                  <div className={styles.itemPrice}>
-                    ₹{(item.price * item.quantity).toFixed(2)}
-                  </div>
-                  <button
-                    onClick={() =>
-                      removeFromCart(item.product_variant_id, item.quantity)
-                    }
-                    className={styles.removeBtn}
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </div>
-            ))}
+        <div className={styles.securePayments}>
+          <div className={styles.securePaymentsHeader}>
+            <span className={styles.secureIcon}>✓</span>
+            <span className={styles.secureText}>100% Secure Payments</span>
           </div>
+        </div>
 
-          <div className={styles.orderSummary}>
-            <h2>Order Summary</h2>
-            {/* Payment Method Selector */}
-            <div className={styles.paymentMethodSection}>
-              <div className={styles.paymentLabelCol}>
-                <span className={styles.paymentLabel}>Payment Method:</span>
-              </div>
-              <div className={styles.paymentOptionsCol}>
-                <label className={styles.paymentOptionRadio}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="online"
-                    checked={paymentMethod === "online"}
-                    onChange={() => setPaymentMethod("online")}
-                  />
-                  Online
-                  <br />
-                  <span className={styles.paymentOptionDesc}>
-                    (UPI/Card/Netbanking)
-                  </span>
-                </label>
-                <label className={styles.paymentOptionRadio}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={paymentMethod === "cod"}
-                    onChange={() => setPaymentMethod("cod")}
-                  />
-                  Cash on Delivery
-                  <br />
-                  <span className={styles.paymentOptionDesc}>(COD)</span>
-                </label>
-              </div>
-            </div>
-            <div className={styles.summaryDetails}>
-              <div className={styles.summaryRow}>
-                <span>Subtotal</span>
-                <span>
-                  ₹
-                  {cartItems
-                    .reduce(
-                      (total, item) => total + item.price * item.quantity,
-                      0
-                    )
-                    .toFixed(2)}
-                </span>
-              </div>
-              <div className={styles.summaryRow}>
-                <span>Delivery Charges</span>
-                <span>₹0.00</span>
-              </div>
-              {paymentMethod === "cod" && (
-                <div className={styles.summaryRow}>
-                  <span>Handling Charge (COD)</span>
-                  <span>₹{handlingCharge.toFixed(2)}</span>
-                </div>
-              )}
-              {selectedAddress && deliveryEstimate && (
-                <div className={styles.summaryRow}>
-                  <span>
-                    <strong>Estimated Delivery</strong>
-                  </span>
-                  <span>
-                    <strong>{deliveryEstimate}</strong>
-                  </span>
-                </div>
-              )}
-              {appliedCoupon ? (
-                <div className={styles.couponApplied}>
-                  <div className={styles.summaryRow}>
-                    <span>Coupon ({appliedCoupon.code})</span>
-                    <span>- ₹{discount.toFixed(2)}</span>
-                    <button
-                      onClick={handleRemoveCoupon}
-                      className={styles.removeCouponBtn}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.couponRow}>
-                  <input
-                    type="text"
-                    placeholder="Enter Coupon Code"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    className={styles.couponInput}
-                  />
-                  {couponCode && (
-                    <button
-                      onClick={handleApplyCoupon}
-                      className={styles.applyCouponBtn}
-                    >
-                      Apply
-                    </button>
-                  )}
-
-                  {!couponCode && (
-                    <button className={styles.applyCouponBtn}>Apply</button>
-                  )}
-                </div>
-              )}
-
-              {/* Add this available coupons CTA */}
-              <button
-                onClick={() => {
-                  fetchAvailableCoupons();
-                  setShowCouponsModal(true);
-                }}
-                className={styles.availableCouponsBtn}
-              >
-                View Available Coupons
-              </button>
-
-              {/* Coupons Modal with Mobile-Friendly Design */}
-              {showCouponsModal && (
-                <div className={styles.modalOverlay}>
-                  <div className={styles.modal}>
-                    <div className={styles.modalHeader}>
-                      <h3>Available Coupons</h3>
-                      <button
-                        onClick={() => setShowCouponsModal(false)}
-                        className={styles.closeButton}
-                        aria-label="Close"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <div className={styles.modalBody}>
-                      {availableCoupons.length > 0 ? (
-                        <div className={styles.couponsList}>
-                          {availableCoupons.map((coupon) => (
-                            <div key={coupon.id} className={styles.couponCard}>
-                              <div className={styles.couponHeader}>
-                                <div className={styles.couponCode}>
-                                  {coupon.code}
-                                </div>
-                                <div className={styles.discountValue}>
-                                  {coupon.discount_type === "percentage"
-                                    ? `${coupon.discount_value}% OFF`
-                                    : `₹${coupon.discount_value} OFF`}
-                                </div>
-                              </div>
-                              <div className={styles.couponDetails}>
-                                {coupon.min_order_value > 0 && (
-                                  <p>
-                                    Min. Order:{" "}
-                                    <span className={styles.highlight}>
-                                      ₹{coupon.min_order_value}
-                                    </span>
-                                  </p>
-                                )}
-                                {coupon.max_discount_value > 0 &&
-                                  coupon.discount_type === "percentage" && (
-                                    <p>
-                                      Max Discount:{" "}
-                                      <span className={styles.highlight}>
-                                        ₹{coupon.max_discount_value}
-                                      </span>
-                                    </p>
-                                  )}
-                                <p>
-                                  <span className={styles.usageInfo}>
-                                    <span className={styles.remainingUses}>
-                                      {coupon.remaining_uses} uses left
-                                    </span>
-                                    {coupon.expiry_date && (
-                                      <span className={styles.expiryDate}>
-                                        Valid till:{" "}
-                                        {
-                                          new Date(coupon.expiry_date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </span>
-                                    )}
-                                  </span>
-                                </p>
-                              </div>
-                              <button
-                                onClick={() => {
-                                  setCouponCode(coupon.code);
-                                  setShowCouponsModal(false);
-                                  handleApplyCoupon(coupon.code);
-                                }}
-                                className={styles.applyCouponCardBtn}
-                              >
-                                Apply Coupon
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className={styles.noCoupons}>
-                          <p>No coupons available</p>
-                          <button
-                            onClick={() => setShowCouponsModal(false)}
-                            className={styles.backButton}
-                          >
-                            Back to Checkout
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className={`${styles.summaryRow} ${styles.total}`}>
-                <span>Total</span>
-                <span>
-                  ₹
-                  {(
-                    cartItems.reduce(
-                      (total, item) => total + item.price * item.quantity,
-                      0
-                    ) -
-                    discount +
-                    handlingCharge
-                  ).toFixed(2)}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 mt-4">
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="w-4 h-4 text-green-800 border-gray-300 rounded focus:ring-green-800"
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                />
-                <label htmlFor="terms" className="text-sm text-gray-700">
-                  I agree to the{" "}
-                  <Link
-                    href="/terms-and-conditions"
-                    target="_blank"
-                    className="text-green-800 hover:text-green-900 underline"
-                  >
-                    Terms & Conditions
-                  </Link>
-                </label>
-              </div>
-
-              <button
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-200 
-              ${
-                !selectedAddress || !acceptedTerms
-                  ? "bg-gray-400"
-                  : "bg-[#d4af37] hover:bg-[#014421]"
-              }`}
-                onClick={() => {
-                  if (!selectedAddress && !acceptedTerms) {
-                    toast.error(
-                      "Please select a delivery address and accept the Terms & Conditions"
-                    );
-                  } else if (!selectedAddress) {
-                    toast.error(
-                      "Please select a delivery address or add a new one"
-                    );
-                  } else if (!acceptedTerms) {
-                    toast.error(
-                      "Please accept the Terms & Conditions to proceed"
-                    );
-                  } else {
-                    handlePlaceOrder();
-                  }
-                }}
-              >
-                Place Order
-              </button>
-            </div>
-          </div>
+        <div className={styles.paymentLogos}>
+          <img
+            alt="Visa Logo"
+            className={styles.paymentLogo}
+            src="/payment/visa-icon.png"
+          />
+          <img
+            alt="Mastercard Logo"
+            className={styles.paymentLogo}
+            src="/payment/mastercard-icon.png"
+          />
+          <img
+            alt="Gpay Logo"
+            className={styles.paymentLogo}
+            src="/payment/gpay-icon.png"
+          />
+          <img
+            alt="UPI Logo"
+            className={styles.paymentLogo}
+            src="/payment/upi-icon.png"
+          />
         </div>
       </div>
+
+      {/* Bill Details Section */}
+      <div className={styles.billDetailsSection}>
+        <h2 className={styles.sectionTitle}>Bill Details</h2>
+        <div className={styles.billRow}>
+          <span>Subtotal</span>
+          <span>
+            ₹
+            {cartItems
+              .reduce((total, item) => total + item.price * item.quantity, 0)
+              .toFixed(2)}
+          </span>
+        </div>
+        <div className={styles.billRow}>
+          <span>Delivery Charges</span>
+          <span className={styles.freeDelivery}>FREE</span>
+        </div>
+        {paymentMethod === "cod" && (
+          <div className={styles.billRow}>
+            <span>Handling Charge (COD)</span>
+            <span>₹{handlingCharge.toFixed(2)}</span>
+          </div>
+        )}
+        {appliedCoupon && (
+          <div className={styles.billRow}>
+            <span>Coupon ({appliedCoupon.code})</span>
+            <span>- ₹{discount.toFixed(2)}</span>
+          </div>
+        )}
+        <div className={styles.totalRow}>
+          <span>Total</span>
+          <span>
+            ₹
+            {(
+              cartItems.reduce(
+                (total, item) => total + item.price * item.quantity,
+                0
+              ) -
+              discount +
+              handlingCharge
+            ).toFixed(2)}
+          </span>
+        </div>
+      </div>
+
+      {/* Terms and Place Order */}
+      <div className={styles.checkoutFooter}>
+        <label className={styles.termsCheckbox}>
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+          />
+          <span>
+            I agree to the{" "}
+            <Link
+              href="/terms-and-conditions"
+              target="_blank"
+              className={styles.termsLink}
+            >
+              Terms & Conditions
+            </Link>
+          </span>
+        </label>
+
+        <button
+          className={styles.placeOrderButton}
+          onClick={handlePlaceOrder}
+          disabled={!selectedAddress || !acceptedTerms || orderLoading}
+        >
+          {orderLoading ? (
+            <>
+              <div className={styles.buttonSpinner}></div>
+              Placing your order...
+            </>
+          ) : (
+            <>Place Order →</>
+          )}
+        </button>
+      </div>
+
+      {/* Coupons Modal */}
+      {showCouponsModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h3>Available Coupons</h3>
+              <button
+                onClick={() => setShowCouponsModal(false)}
+                className={styles.closeButton}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              {couponsLoading ? (
+                <div className={styles.loadingCoupons}>
+                  <div className={styles.spinner}></div>
+                  <p>Loading available coupons...</p>
+                </div>
+              ) : availableCoupons.length > 0 ? (
+                <div className={styles.couponsList}>
+                  {availableCoupons.map((coupon) => (
+                    <div key={coupon.id} className={styles.couponCard}>
+                      <div className={styles.couponHeader}>
+                        <div className={styles.couponCode}>{coupon.code}</div>
+                        <div className={styles.discountValue}>
+                          {coupon.discount_type === "percentage"
+                            ? `${coupon.discount_value}% OFF`
+                            : `₹${coupon.discount_value} OFF`}
+                        </div>
+                      </div>
+                      <div className={styles.couponDetails}>
+                        {coupon.min_order_value > 0 && (
+                          <p>
+                            Min. Order:{" "}
+                            <span className={styles.highlight}>
+                              ₹{coupon.min_order_value}
+                            </span>
+                          </p>
+                        )}
+                        {coupon.max_discount_value > 0 &&
+                          coupon.discount_type === "percentage" && (
+                            <p>
+                              Max Discount:{" "}
+                              <span className={styles.highlight}>
+                                ₹{coupon.max_discount_value}
+                              </span>
+                            </p>
+                          )}
+                        <p>
+                          <span className={styles.usageInfo}>
+                            <span className={styles.remainingUses}>
+                              {coupon.remaining_uses} uses left
+                            </span>
+                            {coupon.expiry_date && (
+                              <span className={styles.expiryDate}>
+                                Valid till:{" "}
+                                {
+                                  new Date(coupon.expiry_date)
+                                    .toISOString()
+                                    .split("T")[0]
+                                }
+                              </span>
+                            )}
+                          </span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setCouponCode(coupon.code);
+                          setShowCouponsModal(false);
+                          handleApplyCoupon(coupon.code);
+                        }}
+                        className={styles.applyCouponCardBtn}
+                      >
+                        Apply Coupon
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.noCoupons}>
+                  <p>No coupons available</p>
+                  <button
+                    onClick={() => setShowCouponsModal(false)}
+                    className={styles.backButton}
+                  >
+                    Back to Checkout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order Success Modal */}
+      {showOrderSuccess && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.successModal}>
+            <div className={styles.successHeader}>
+              <div className={styles.successIconContainer}>
+                <span className={styles.successIcon}>🎉</span>
+              </div>
+              <h2>Order Placed Successfully!</h2>
+              <p className={styles.successSubtitle}>
+                Thank you for your purchase. Your order has been placed and is
+                being processed.
+              </p>
+            </div>
+            <div className={styles.successBody}>
+              {orderSuccessDetails && (
+                <div className={styles.orderDetailsBox}>
+                  <div className={styles.orderDetailRow}>
+                    <span className={styles.orderDetailLabel}>
+                      <strong>Order ID:</strong>
+                    </span>
+                    <span className={styles.orderDetailValue}>
+                      {orderSuccessDetails.id}
+                    </span>
+                  </div>
+                  <div className={styles.orderDetailRow}>
+                    <span className={styles.orderDetailLabel}>
+                      <strong>Delivery to:</strong>
+                    </span>
+                    <span className={styles.orderDetailValue}>
+                      {selectedAddress.full_name}
+                      <br />
+                      {selectedAddress.address}, {selectedAddress.city},{" "}
+                      {selectedAddress.state} - {selectedAddress.pincode}
+                    </span>
+                  </div>
+                  <div className={styles.orderDetailRow}>
+                    <span className={styles.orderDetailLabel}></span>
+                    <span className={styles.orderDetailValue}>
+                      <strong>{deliveryEstimate || "2-3 business days"}</strong>
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={styles.successFooter}>
+              <button
+                className={styles.primaryBtn}
+                onClick={() => {
+                  setShowOrderSuccess(false);
+                  router.push("/orders");
+                }}
+              >
+                Go to My Orders
+              </button>
+              <button
+                className={styles.secondaryBtn}
+                onClick={() => {
+                  setShowOrderSuccess(false);
+                  router.push("/");
+                }}
+              >
+                Return to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+// Memoized cart item component
+const CartItem = React.memo(function CartItem({ item, onAdd, onRemove }) {
+  return (
+    <div className={styles.productCard}>
+      <div className={styles.productImage}>
+        <img src={item.image_url} alt={item.name} />
+      </div>
+      <div className={styles.productDetails}>
+        <h3 className={styles.productName}>{item.name}</h3>
+        <p className={styles.productWeight}>
+          No Of Pieces Per Box:{item.quantity_per_box}
+        </p>
+        <div className={styles.quantityControls}>
+          <button
+            onClick={() => onRemove(item.product_variant_id, 1)}
+            disabled={item.quantity <= 1}
+            className={styles.quantityBtn}
+          >
+            <FaMinus />
+          </button>
+          <span className={styles.quantity}>{item.quantity}</span>
+          <button
+            onClick={() => onAdd(item.product_variant_id)}
+            className={styles.quantityBtn}
+          >
+            <FaPlus />
+          </button>
+        </div>
+      </div>
+      <div className={styles.productPrice}>
+        ₹{(item.price * item.quantity).toFixed(2)}
+      </div>
+    </div>
+  );
+});
+
+export default function Checkout() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

@@ -114,7 +114,7 @@ export default function Cart() {
 
   return (
     <div className={styles.cartContainer}>
-      <h1 className={styles.title}>Shopping Cart</h1>
+      <h1 className="page-title">Shopping Cart</h1>
       {loading ? (
         <p>Loading...</p>
       ) : cartItems.length == 0 ? (
@@ -125,7 +125,7 @@ export default function Cart() {
             {cartItems?.map((item) => (
               <div key={item.product_variant_id} className={styles.cartItem}>
                 <img
-                  src="/card/image3.png"
+                  src={item.image_url}
                   alt={item.name}
                   className={styles.itemImage}
                 />

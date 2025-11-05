@@ -49,6 +49,10 @@ export default function AdminPanel() {
               <h3>View Recent Orders</h3>
               <FaChevronRight />
             </Link>
+            <Link href="/admin/noob/products" className={styles.actionCard}>
+              <h3>Manage Products</h3>
+              <FaChevronRight />
+            </Link>
             <Link href="/admin/noob/products/new" className={styles.actionCard}>
               <h3>Add New Product</h3>
               <FaChevronRight />

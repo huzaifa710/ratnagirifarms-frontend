@@ -110,122 +110,89 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.productGrid}>
-        <div className={styles.imageSection}>
-          <div className={styles.carouselContainer}>
-            <button
-              className={`${styles.carouselButton} ${styles.prevButton}`}
-              onClick={prevImage}
-            >
-              <FaChevronLeft />
-            </button>
-            <img
-              src={productImages[currentImageIndex]}
-              alt={product.name}
-              className={styles.productImage}
-            />
-            <button
-              className={`${styles.carouselButton} ${styles.nextButton}`}
-              onClick={nextImage}
-            >
-              <FaChevronRight />
-            </button>
-          </div>
-          <div className={styles.thumbnailContainer}>
-            {productImages.map((img, index) => (
-              <div
-                key={index}
-                className={`${styles.thumbnail} ${
-                  currentImageIndex === index ? styles.activeThumbnail : ""
-                }`}
-                onClick={() => setCurrentImageIndex(index)}
+    <div className={styles.singleProductPage}>
+      {/* Carousel */}
+      <div className={styles.carouselSection}>
+        <button className={styles.carouselArrow} onClick={prevImage}>
+          <span className="material-icons">chevron_left</span>
+        </button>
+        <img
+          src={productImages[currentImageIndex]}
+          alt={product.name}
+          className={styles.mainProductImage}
+        />
+        <button className={styles.carouselArrow} onClick={nextImage}>
+          <span className="material-icons">chevron_right</span>
+        </button>
+      </div>
+
+      {/* Product Info */}
+      <div className={styles.infoSection}>
+        <h1 className={styles.productTitle}>{product.name}</h1>
+        <div className={styles.productSubtitle}>
+          {product.subtitle || "King (250-300g)"}
+        </div>
+        <div className={styles.variantSelector}>
+          <span className={styles.variantLabel}>Select Variant</span>
+          <div className={styles.variantOptions}>
+            {product.product_variants.map((variant) => (
+              <button
+                key={variant.id}
+                className={
+                  selectedVariant?.id === variant.id
+                    ? styles.variantSelected
+                    : styles.variantOption
+                }
+                onClick={() => handleVariantChange(variant)}
               >
-                <img src={img} alt={`Thumbnail ${index + 1}`} />
-              </div>
+                {variant.quantity_per_box} pieces
+              </button>
             ))}
           </div>
         </div>
+        <div className={styles.priceRow}>
+          <span className={styles.price}>₹{selectedVariant?.price}</span>
+          {selectedVariant?.original_price && (
+            <span className={styles.originalPrice}>
+              ₹{selectedVariant.original_price}
+            </span>
+          )}
+        </div>
+        <button className={styles.addToCartButton} onClick={handleAddToCart}>
+          Add to Cart
+        </button>
+      </div>
+      <div className={styles.descriptionHeader}>
+        <h3>Product Description</h3>
+      </div>
+      <div className={styles.description}>
+        {product.description ? (
+          <div dangerouslySetInnerHTML={{ __html: product.description }} />
+        ) : (
+          <p>
+            Experience the authentic taste of Ratnagiri Alphonso mangoes,
+            carefully handpicked and delivered fresh to your doorstep.
+          </p>
+        )}
+      </div>
 
-        <div className={styles.detailsSection}>
-          <h1 className={styles.productTitle}>{product.name}</h1>
-
-          <div className={styles.variantsContainer}>
-            <h3 className={styles.variantsTitle}>Select Variant</h3>
-            <div className={styles.variantButtons}>
-              {product.product_variants.map((variant) => (
-                <button
-                  key={variant.id}
-                  className={
-                    selectedVariant?.id === variant.id
-                      ? styles.variantSelected
-                      : styles.variantButton
-                  }
-                  onClick={() => handleVariantChange(variant)}
-                >
-                  {variant.quantity_per_box} pieces
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.priceSection}>
-            {selectedVariant?.original_price && (
-              <span className={styles.originalPrice}>
-                {selectedVariant.original_price}
-              </span>
-            )}
-            <span className={styles.price}>{selectedVariant?.price}</span>
-          </div>
-
-          <div className={styles.addToCartSection}>
-            {selectedVariant?.is_active ? (
-              <>
-                {/* <div className={styles.quantityControl}>
-                  <button
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
-                  >
-                    <FaMinus />
-                  </button>
-                  <span>{quantity}</span>
-                  <button onClick={() => handleQuantityChange(1)}>
-                    <FaPlus />
-                  </button>
-                </div> */}
-                <button
-                  className={styles.addToCartButton}
-                  onClick={handleAddToCart}
-                >
-                  <FaShoppingCart /> Add to Cart
-                </button>
-              </>
-            ) : (
-              <button
-                className={styles.notifyButton}
-                onClick={() => setShowNotifyModal(true)}
-              >
-                <BiSolidBellRing /> Notify When Available
-              </button>
-            )}
-          </div>
-          <div className={styles.descriptionHeader}>
-            <h3>Product Description</h3>
-          </div>
-          <div className={styles.description}>
-            {product.description ? (
-              <div
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
-            ) : (
-              <p>
-                Experience the authentic taste of Ratnagiri Alphonso mangoes, carefully handpicked and delivered fresh to your doorstep.
-              </p>
-            )}
-          </div>
+      {/* Feature Icons */}
+      <div className={styles.featuresRow}>
+        <div className={styles.featureItem}>
+          <span className="material-icons text-green-600">spa</span>
+        </div>
+        <div className={styles.featureItem}>
+          <span className="material-icons text-green-600">air</span>
+        </div>
+        <div className={styles.featureItem}>
+          <span className="material-icons text-green-600">eco</span>
+        </div>
+        <div className={styles.featureItem}>
+          <span className="material-icons text-green-600">local_shipping</span>
         </div>
       </div>
 
+      {/* Notify Modal */}
       {showNotifyModal && (
         <NotifyModal
           productName={product.name}

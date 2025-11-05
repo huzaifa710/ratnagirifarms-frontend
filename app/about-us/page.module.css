@@ -9,26 +9,6 @@
   margin: 0 auto;
 }
 
-.sectionTitle {
-  text-align: center;
-  font-size: 2.5rem;
-  color: #014421;
-  margin-bottom: 3rem;
-  font-family: "Playfair Display", serif;
-  position: relative;
-}
-
-.sectionTitle::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
-  background-color: #d4af37;
-}
-
 .gridContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;

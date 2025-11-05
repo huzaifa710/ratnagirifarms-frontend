@@ -3,27 +3,25 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/app/auth-context/page";
 import api from "@/utils/axios";
 import { toast, Toaster } from "react-hot-toast";
-import {
-  FaChevronDown,
-  FaChevronUp,
-  FaExclamationTriangle,
-} from "react-icons/fa";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/cart-context/page";
 import AuthModal from "@/app/otp/page";
+import { FaExclamationTriangle } from "react-icons/fa";
 
 export default function Orders() {
   const { uuid, accessToken } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedOrderId, setExpandedOrderId] = useState(null);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const router = useRouter();
   const { updateCartCount } = useCart();
-  const [isCancelling, setIsCancelling] = useState(false);
+
+  // State to track which orders are expanded
+  const [expandedOrders, setExpandedOrders] = useState(new Set());
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
     if (!uuid && !accessToken) {
@@ -34,40 +32,46 @@ export default function Orders() {
     fetchOrders();
   }, [uuid, accessToken]);
 
-  useEffect(() => {
-    // Set the first order as expanded by default
-    if (orders.length > 0 && !expandedOrderId) {
-      setExpandedOrderId(orders[0].id);
-    }
-  }, [orders]);
-
   const fetchOrders = async () => {
     try {
       const response = await api.get(`/orders/${uuid}`);
-      setOrders(response.data.orders);
-      setLoading(false);
+      setOrders(response.data.orders || []);
     } catch (error) {
       toast.error("Failed to fetch orders");
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleOrderClick = (orderId) => {
-    setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
+  const toggleOrderExpansion = (orderId) => {
+    setExpandedOrders((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(orderId)) {
+        newSet.delete(orderId);
+      } else {
+        newSet.add(orderId);
+      }
+      return newSet;
+    });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "processing":
-        return "#ffd700";
-      case "shipped":
-        return "#1e90ff";
-      case "delivered":
-        return "#32cd32";
-      case "cancelled":
-        return "#ff4d4d";
-      default:
-        return "#888";
+  const handleReorder = async (order) => {
+    try {
+      // Simple reorder: add each item again
+      await Promise.all(
+        order.order_items.map((it) =>
+          api.post("/carts/add", {
+            uuid,
+            product_variant_id: it.product_variant_id,
+            quantity: it.quantity,
+          })
+        )
+      );
+      updateCartCount();
+      toast.success("Items added to cart");
+      router.push("/cart");
+    } catch {
+      toast.error("Failed to reorder");
     }
   };
 
@@ -99,170 +103,242 @@ export default function Orders() {
       setSelectedOrderId(null);
     }
   };
-  if (loading) return <div className={styles.loading}>Loading...</div>;
 
-  return (
-    <>
-      <script>
-        gtag('event', 'ads_conversion_Purchase_1',{" "}
-        {
-          // <event_parameters>
-        }
-        );
-      </script>
+  const getStatusMeta = (status) => {
+    switch (status) {
+      case "delivered":
+        return {
+          cls: styles.badgeDelivered,
+          icon: "check_circle",
+          label: "Delivered",
+        };
+      case "shipped":
+        return {
+          cls: styles.badgeShipped,
+          icon: "local_shipping",
+          label: "Shipped",
+        };
+      case "processing":
+        return {
+          cls: styles.badgeProcessing,
+          icon: "hourglass_top",
+          label: "Processing",
+        };
+      case "approved":
+        return {
+          cls: styles.badgeApproved,
+          icon: "verified",
+          label: "Approved",
+        };
+      case "cancelled":
+        return {
+          cls: styles.badgeCancelled,
+          icon: "cancel",
+          label: "Cancelled",
+        };
+      default:
+        return {
+          cls: styles.badgeProcessing,
+          icon: "hourglass_top",
+          label: status,
+        };
+    }
+  };
+
+  function getPaymentStatusMeta(status) {
+    switch (status?.toLowerCase()) {
+      case "paid":
+        return { cls: styles.paymentPaid, label: "Paid" };
+      case "pending":
+        return { cls: styles.paymentUnpaid, label: "Pending" };
+      case "refunded":
+        return { cls: styles.paymentRefunded, label: "Refunded" };
+      default:
+        return { cls: styles.paymentUnpaid, label: status };
+    }
+  }
+
+  if (loading) return <div className={styles.loading}>Loading...</div>;
+  if (!orders.length)
+    return (
       <div className={styles.ordersContainer}>
         <Toaster position="top-center" />
-        <h1 className={styles.title}>My Orders</h1>
+        <h1 className={styles.titleNew}>My Orders</h1>
+        <div className={styles.titleBar}></div>
+        <p className={styles.emptyOrders}>No orders found</p>
+      </div>
+    );
 
-        <div className={styles.ordersList}>
-          {orders.length === 0 ? (
-            <p className={styles.emptyOrders}>No orders found</p>
-          ) : (
-            orders.map((order) => (
-              <div key={order.id} className={styles.orderCard}>
-                <div
-                  className={styles.orderSummary}
-                  onClick={() => handleOrderClick(order.id)}
-                >
-                  <div className="flex justify-between mb-3">
-                    <div className={styles.orderIdDate}>
-                      <h2>Order ID: {order.order_id}</h2>
-                      <p>{new Date(order.createdAt).toLocaleDateString()}</p>
-                    </div>
-                    <div className={styles.orderAmount}>
-                      Total Amount: ₹{order.total_amount}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2.5">
-                    <div className="flex items-center gap-2">
-                      <span>Payment Status:</span>
-                      <span
-                        className={styles.statusBadge}
-                        style={{
-                          backgroundColor:
-                            order.payment_status === "paid"
-                              ? "#32cd32"
-                              : "#ff4d4d",
-                        }}
-                      >
-                        {order.payment_status.toUpperCase()}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <span>Order Status:</span>
-                        <span
-                          className={styles.statusBadge}
-                          style={{
-                            backgroundColor: getStatusColor(order.order_status),
-                          }}
-                        >
-                          {order.order_status.toUpperCase()}
-                        </span>
-                      </div>
-                      <span className="">
-                        {expandedOrderId === order.id ? (
-                          <FaChevronUp />
-                        ) : (
-                          <FaChevronDown />
-                        )}
-                      </span>
-                    </div>
-                  </div>
+  return (
+    <div className={styles.ordersContainer}>
+      <Toaster position="top-center" />
+      <h1 className={styles.titleNew}>My Orders</h1>
+      <div className={styles.titleBar}></div>
+
+      <div className={styles.cardsStack}>
+        {orders.map((order) => {
+          const meta = getStatusMeta(order.order_status);
+          const paymentMeta = getPaymentStatusMeta(order.payment_status);
+          const isExpanded = expandedOrders.has(order.id);
+          return (
+            <div key={order.id} className={styles.orderCardNew}>
+              <div
+                className={styles.cardTop}
+                onClick={() => toggleOrderExpansion(order.id)}
+                style={{ cursor: "pointer" }}
+              >
+                <div>
+                  <p className={styles.orderIdLine}>
+                    Order ID:{" "}
+                    <span className={styles.orderIdValue}>
+                      {order.order_id}
+                    </span>
+                  </p>
+                  <p className={styles.orderDateLine}>
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
+                <div className={styles.amountBlock}>
+                  <p className={styles.amountValue}>₹{order.total_amount}</p>
+                </div>
+              </div>
 
-                {expandedOrderId === order.id && (
-                  <div className={styles.orderDetails}>
-                    <div className={styles.orderItems}>
-                      <h3>Order Items</h3>
-                      {order.order_items.map((item) => (
-                        <div key={item.id} className={styles.item}>
-                          <div className={styles.itemInfo}>
-                            <h3 className="text-[#014421] font-semibold">
-                              {item.product_variant.product.name}
-                            </h3>
-                            <p className="text-[#014421]/70">
-                              Quantity: {item.quantity}
-                            </p>
-                            <p className="text-[#014421]/70">
-                              Price per unit: ₹{item.price_per_unit}
-                            </p>
-                            <p className="text-[#014421]/70">
-                              No Of Pieces Per Box :{" "}
-                              {item.product_variant.quantity_per_box}
-                            </p>
-                          </div>
-                          <div className={styles.itemTotal}>
-                            ₹{item.total_price}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+              <div
+                className={styles.statusRow}
+                onClick={() => toggleOrderExpansion(order.id)}
+                style={{ cursor: "pointer" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    gap: "1rem",
+                  }}
+                >
+                  <div className={styles.statusGroup}>
+                    <span className={styles.statusLabel}>Order Status:</span>
+                    <span className={`${styles.statusBadgeBase} ${meta.cls}`}>
+                      <span className={styles.materialIcon}>{meta.icon}</span>
+                      {meta.label}
+                    </span>
+                  </div>
+                  
+                  <div className={styles.statusGroup}>
+                    <span className={styles.statusLabel}>Payment:</span>
+                    <span className={`${styles.statusBadgeBase} ${paymentMeta.cls}`}>
+                      {paymentMeta.label}
+                    </span>
+                  </div>
+                  
+                  <span
+                    className={styles.materialIcon}
+                    style={{ color: "#6b7280" }}
+                  >
+                    {isExpanded ? "expand_less" : "expand_more"}
+                  </span>
+                </div>
+              </div>
 
-                    <div className={styles.orderFooter}>
-                      <div className={styles.deliveryAddress}>
-                        <div>
-                          <h3 className="text-[#014421] font-semibold">
-                            Delivery Address
-                          </h3>
-                          <p className="text-[#014421]/70">
-                            {order.user_address.address}
-                          </p>
-                          <p className="text-[#014421]/70">
-                            {order.user_address.city},{" "}
-                            {order.user_address.state}
-                          </p>
-                          <p className="text-[#014421]/70">
-                            {order.user_address.pincode}
-                          </p>
-                        </div>
-                        {order.order_status === "processing" && (
-                          <button
-                            onClick={() => handleCancelClick(order.id)}
-                            className={styles.cancelButton}
-                          >
-                            <FaExclamationTriangle />
-                            Cancel Order
-                          </button>
-                        )}
+              {isExpanded && (
+                <div className={styles.itemsSection}>
+                  {order.order_items.map((item) => (
+                    <div key={item.id} className={styles.itemRow}>
+                      <img
+                        src={item.product_variant.product.image_url}
+                        alt={item.product_variant.product.name}
+                        className={styles.itemImage}
+                      />
+                      <div className={styles.itemInfo}>
+                        <h3 className={styles.itemName}>
+                          {item.product_variant.product.name}
+                        </h3>
+                        <p className={styles.itemQty}>
+                          Quantity: {item.quantity}
+                        </p>
+                        <p className={styles.itemPrice}>
+                          ₹{item.price_per_unit}
+                        </p>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))
-          )}
-        </div>
+                  ))}
+                </div>
+              )}
 
-        {/* Confirmation Modal */}
-        {showConfirmation && (
-          <div className={styles.confirmationOverlay}>
-            <div className={styles.confirmationModal}>
-              <h3 className={styles.confirmationTitle}>Cancel Order?</h3>
-              <p className={styles.confirmationMessage}>
-                Are you sure you want to cancel this order? This action cannot
-                be undone.
-              </p>
-              <div className={styles.confirmationButtons}>
-                <button
-                  className={styles.cancelModalButton}
-                  onClick={() => setShowConfirmation(false)}
-                  disabled={isCancelling}
-                >
-                  No, Keep Order
-                </button>
-                <button
-                  className={styles.confirmButton}
-                  onClick={handleConfirmCancel}
-                  disabled={isCancelling}
-                >
-                  {isCancelling ? "Cancelling..." : "Yes, Cancel Order"}
-                </button>
+              <div className={styles.actionsRow}>
+                <div className={styles.leftActions}>
+                  <button
+                    onClick={() => router.push(`/orders/${order.id}`)}
+                    className={`${styles.actionBtn} ${styles.viewBtn}`}
+                  >
+                    <span className={styles.materialIconSmall}>visibility</span>
+                    View Details
+                  </button>
+                </div>
+                <div className={styles.rightActions}>
+                  {order.order_status === "delivered" && (
+                    <button
+                      onClick={() => handleReorder(order)}
+                      className={`${styles.actionBtn} ${styles.reorderBtn}`}
+                    >
+                      <span className={styles.materialIconSmall}>refresh</span>
+                      Reorder
+                    </button>
+                  )}
+                  {order.order_status === "processing" && (
+                    <>
+                      {isExpanded && (
+                        <button
+                          onClick={() => handleCancelClick(order.id)}
+                          className={`${styles.actionBtn} ${styles.cancelBtn}`}
+                        >
+                          Cancel order
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })}
       </div>
-    </>
+
+      {/* Global Confirmation Modal */}
+      {showConfirmation && (
+        <div className={styles.confirmationOverlay}>
+          <div className={styles.confirmationModal}>
+            <div className={styles.modalHeader}>
+              <FaExclamationTriangle className={styles.warningIcon} />
+              <h3 className={styles.confirmationTitle}>Cancel Order?</h3>
+            </div>
+            <p className={styles.confirmationMessage}>
+              Are you sure you want to cancel this order? This action cannot be
+              undone and any payment will be refunded within 5-7 business days.
+            </p>
+            <div className={styles.confirmationButtons}>
+              <button
+                className={styles.cancelModalButton}
+                onClick={() => {
+                  setShowConfirmation(false);
+                  setSelectedOrderId(null);
+                }}
+                disabled={isCancelling}
+              >
+                No, Keep Order
+              </button>
+              <button
+                className={styles.confirmButton}
+                onClick={handleConfirmCancel}
+                disabled={isCancelling}
+              >
+                {isCancelling ? "Cancelling..." : "Yes, Cancel Order"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
