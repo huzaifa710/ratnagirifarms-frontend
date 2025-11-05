@@ -35,8 +35,7 @@ public class MainActivity extends BridgeActivity {
         webView.setWebViewClient(new CustomWebViewClient());
         
         // Load main URL
-        // webView.loadUrl("https://ratnagirifarms.com");
-        webView.loadUrl("https://ratnagirifarms-frontend-git-urgent-fixes-huzaifa710s-projects.vercel.app?_vercel_share=lMGyRTCht06UGN88zVk5bRmtLu4Sml68");
+        webView.loadUrl("https://ratnagirifarms.com");
         
         // Setup network monitoring
         setupNetworkMonitoring();
@@ -56,8 +55,7 @@ public class MainActivity extends BridgeActivity {
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             // Keep navigation within WebView
             String url = request.getUrl().toString();
-            // if (url.startsWith("https://ratnagirifarms.com")) {
-            if (url.startsWith("https://ratnagirifarms-frontend-git-urgent-fixes-huzaifa710s-projects.vercel.app?_vercel_share=lMGyRTCht06UGN88zVk5bRmtLu4Sml68")) {
+            if (url.startsWith("https://ratnagirifarms.com")) {
                 return false; // Let WebView handle it
             }
             return false;
@@ -75,8 +73,7 @@ public class MainActivity extends BridgeActivity {
                         String currentUrl = webView.getUrl();
                         if (currentUrl != null && currentUrl.contains("offline.html")) {
                             // Force reload the live site
-                            // webView.loadUrl("https://ratnagirifarms.com");
-                            webView.loadUrl("https://ratnagirifarms-frontend-git-urgent-fixes-huzaifa710s-projects.vercel.app?_vercel_share=lMGyRTCht06UGN88zVk5bRmtLu4Sml68");
+                            webView.loadUrl("https://ratnagirifarms.com");
                         }
                     }
                 });
@@ -111,8 +108,7 @@ public class MainActivity extends BridgeActivity {
         if (isNetworkAvailable() && webView != null) {
             String currentUrl = webView.getUrl();
             if (currentUrl != null && currentUrl.contains("offline.html")) {
-                // webView.loadUrl("https://ratnagirifarms.com");
-                webView.loadUrl("https://ratnagirifarms-frontend-git-urgent-fixes-huzaifa710s-projects.vercel.app?_vercel_share=lMGyRTCht06UGN88zVk5bRmtLu4Sml68");
+                webView.loadUrl("https://ratnagirifarms.com");
             }
         }
     }
