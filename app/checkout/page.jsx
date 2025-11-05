@@ -949,7 +949,7 @@ function CheckoutContent() {
                   <div className={styles.orderDetailRow}>
                     <span className={styles.orderDetailLabel}></span>
                     <span className={styles.orderDetailValue}>
-                      <strong>{deliveryEstimate || "2-3 business days"}</strong>
+                      <strong>{`Estimated delivery within ${deliveryEstimate}` || "2-3 business days"}</strong>
                     </span>
                   </div>
                 </div>
