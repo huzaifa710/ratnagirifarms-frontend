@@ -1,412 +1,203 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
-import { FaSearch, FaFilter, FaEdit } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
-import api from "@/utils/axios";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import api from "../../../../utils/axios";
+import { toast } from "react-hot-toast";
 
-export default function AdminOrders() {
-  const router = useRouter();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    per_page: 10,
-    total_pages: 0,
-  });
-  const [filters, setFilters] = useState({
-    order_status: "",
-    payment_status: "",
-    name: "",
-    start_date: "",
-    end_date: "",
-    order_id: "",
-  });
-  const [appliedFilters, setAppliedFilters] = useState({
-    order_status: "",
-    payment_status: "",
-    name: "",
-    start_date: "",
-    end_date: "",
-    order_id: "",
-  });
-  const [editingOrder, setEditingOrder] = useState(null);
-  const [awbNumber, setAwbNumber] = useState("");
-  const [updating, setUpdating] = useState(false);
-
-  const fetchOrders = async () => {
-    try {
-      const response = await api.post("/orders/all", {
-        page: pagination.current_page,
-        limit: pagination.per_page,
-        ...appliedFilters,
-      });
-      setOrders(response.data.orders);
-      setPagination({
-        ...pagination,
-        total_pages: response.data.pagination.total_pages,
-      });
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
-    } finally {
-      setLoading(false);
+const getOrderStatusClass = (status) => {
+    if (!status) return '';
+    switch (status.toLowerCase()) {
+        case 'processing': return styles.statusProcessing;
+        case 'shipped': return styles.statusShipped;
+        case 'delivered': return styles.statusDelivered;
+        case 'cancelled': return styles.statusCancelled;
+        default: return '';
     }
-  };
+}
+
+const getPaymentStatusClass = (status) => {
+    if (!status) return '';
+    switch (status.toLowerCase()) {
+        case 'paid': return styles.paymentPaid;
+        case 'pending': return styles.paymentPending;
+        case 'failed': return styles.paymentFailed;
+        case 'unpaid': return styles.paymentFailed;
+        case 'refunded': return styles.paymentRefunded;
+        default: return '';
+    }
+}
+
+const OrdersPage = () => {
+  const [orders, setOrders] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await api.post("/orders/all");
+        if (response.data.success) {
+          setOrders(response.data.orders);
+          setPagination(response.data.pagination)
+        } else {
+          toast.error(response.data.message || "Failed to fetch orders.");
+        }
+      } catch (err) {
+        setError(err);
+        toast.error("Failed to fetch orders.");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchOrders();
-  }, [pagination.current_page, pagination.per_page, appliedFilters]); // Added pagination.per_page
-
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
-
-  const handleApplyFilters = () => {
-    setAppliedFilters(filters);
-    setPagination({ ...pagination, current_page: 1 });
-  };
-
-  const handleClearFilters = () => {
-    const clearedFilters = {
-      order_status: "",
-      payment_status: "",
-      name: "",
-      start_date: "",
-      end_date: "",
-      order_id: "",
-    };
-    setFilters(clearedFilters);
-    setAppliedFilters(clearedFilters);
-    setPagination({ ...pagination, current_page: 1 });
-  };
-
-  const handleStatusUpdate = async (orderId, newStatus) => {
-    if (updating) return;
-    // For shipped status, ensure we have a valid AWB number
-    if (newStatus === "shipped" && !awbNumber.trim()) {
-      toast.error("Please enter AWB number");
-      return;
-    }
-    setUpdating(true);
-    try {
-      const payload = {
-        order_id: orderId,
-        status: newStatus,
-      };
-      if (newStatus === "shipped") {
-        payload.awb = awbNumber.trim();
-      }
-      const response = await api.post("/orders/update-status", payload);
-      if (response.data.success) {
-        await fetchOrders();
-        toast.success(`Order ${newStatus} successfully`);
-        setEditingOrder(null);
-        setAwbNumber("");
-      } else {
-        toast.error(response.data.message || "Failed to update order status");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update order status");
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  const OrderStatusBadge = ({ status }) => {
-    const getStatusColor = (status) => {
-      switch (status) {
-        case "processing":
-          return "#ffd700";
-        case "approved":
-          return "#32cd32";
-        case "packed":
-          return "#32cd32";
-        case "shipped":
-          return "#1e90ff";
-        case "delivered":
-          return "#32cd32";
-        case "cancelled":
-          return "#ff4d4d";
-        default:
-          return "#888";
-      }
-    };
-    return (
-      <span
-        className={styles.statusBadge}
-        style={{ backgroundColor: getStatusColor(status) }}
-      >
-        {status.toUpperCase()}
-      </span>
-    );
-  };
+  }, []);
 
   return (
     <div className={styles.container}>
-      <Toaster position="top-center" />
-      <div className={styles.header}>
-        <h1>Orders Management</h1>
-      </div>
-
-      {/* Filters */}
-      <div className={styles.filters}>
-        <div className={styles.filterGroup}>
-          <select
-            name="order_status"
-            value={filters.order_status}
-            onChange={handleFilterChange}
-          >
-            <option value="">All Order Status</option>
-            <option value="processing">Processing</option>
-            <option value="approved">Approved</option>
-            <option value="packed">Packed</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-
-          <select
-            name="payment_status"
-            value={filters.payment_status}
-            onChange={handleFilterChange}
-          >
-            <option value="">All Payment Status</option>
-            <option value="pending">Pending</option>
-            <option value="paid">Paid</option>
-            <option value="failed">Failed</option>
-            <option value="refunded">Refunded</option>
-          </select>
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Search by name"
-            value={filters.name}
-            onChange={handleFilterChange}
-          />
-
-          <input
-            type="text"
-            name="order_id"
-            placeholder="Search by Order ID"
-            value={filters.order_id}
-            onChange={handleFilterChange}
-          />
-
-          <input
-            type="date"
-            name="start_date"
-            value={filters.start_date}
-            onChange={handleFilterChange}
-          />
-
-          <input
-            type="date"
-            name="end_date"
-            value={filters.end_date}
-            onChange={handleFilterChange}
-          />
+        <aside className={styles.sidebar}>
+        <div>
+          <div className={styles.sidebarHeader}>
+            <div className={styles.logo} style={{backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDy-Pzw1JLh7RqVHN67PF1hIVaZB9skVylRjKlqrSTy1UqDnIARuKZcibvdRCbS7-hqEFBfswz4_NBY1gHQFAT8z6uK6m4BY10auF7c-DPBFwNeUk_pTu09KgMn1ldqswDblHnJqLk8c2Uo_2TRRLrRm2Gw8OfoXFGtW0y5KoIMQ-ySwW01GQyIqJiR1IxKCKTjLz4dw3bsEXTEVxXTpIQsJ05D6awqt6x8ox4m62Negf2SQvMQVBoz7ilErJcPx_6heHPUeNRtI10')`}}></div>
+            <div className={styles.titleWrapper}>
+              <h1>Ratnagiri Farms</h1>
+              <p>Admin Dashboard</p>
+            </div>
+          </div>
+          <nav className={styles.navMenu}>
+                <Link href="/admin/noob/home" className={styles.navLink}>
+                    <span className="material-symbols-outlined">home</span>
+                    <span>Home</span>
+                </Link>
+                <Link href="/admin/noob/orders" className={`${styles.navLink} ${styles.active}`}>
+                    <span className="material-symbols-outlined">shopping_bag</span>
+                    <span>Orders</span>
+                </Link>
+                <Link href="#" className={styles.navLink}>
+                    <span className="material-symbols-outlined">tag</span>
+                    <span>Products</span>
+                </Link>
+                <Link href="#" className={styles.navLink}>
+                    <span className="material-symbols-outlined">group</span>
+                    <span>Customers</span>
+                </Link>
+                <Link href="#" className={styles.navLink}>
+                    <span className="material-symbols-outlined">bar_chart</span>
+                    <span>Analytics</span>
+                </Link>
+                <Link href="#" className={styles.navLink}>
+                    <span className="material-symbols-outlined">local_shipping</span>
+                    <span>Shipments</span>
+                </Link>
+          </nav>
         </div>
-        <div className={styles.filterButtons}>
-          <button className={styles.applyButton} onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-          <button className={styles.clearButton} onClick={handleClearFilters}>
-            Clear Filters
-          </button>
+        <div className={styles.sidebarFooter}>
+            <Link href="#" className={styles.navLink}>
+                <span className="material-symbols-outlined">settings</span>
+                <span>Settings</span>
+            </Link>
+            <div className={styles.userProfile}>
+                <div className={styles.avatar}>JD</div>
+                <div className={styles.userInfo}>
+                    <span>Jane Doe</span>
+                    <span className={styles.userRole}>Admin</span>
+                </div>
+            </div>
         </div>
-      </div>
-
-      {/* Orders per page selector */}
-      <div className={styles.ordersPerPage}>
-        <label htmlFor="per_page">Orders per page: </label>
-        <select
-          id="per_page"
-          value={pagination.per_page}
-          onChange={(e) => {
-            setPagination({
-              ...pagination,
-              per_page: parseInt(e.target.value),
-              current_page: 1,
-            });
-          }}
-        >
-          <option value={10}>10</option>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-          <option value={200}>200</option>
-          <option value={500}>500</option>
-        </select>
-      </div>
-
-      {/* Orders Table */}
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Order Status</th>
-              <th>Payment Status</th>
-              <th>Total Amount</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="7" className={styles.loading}>
-                  Loading...
-                </td>
-              </tr>
-            ) : (
-              orders.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.order_id}</td>
-                  <td>{order.user_address.full_name}</td>
-                  <td>
-                    {editingOrder === order.id ? (
-                      <div className={styles.statusEdit}>
-                        {/* If the order is in "packed" state, show AWB input and Ship Order button */}
-                        {order.order_status === "packed" ? (
-                          <div className={styles.awbInputContainer}>
-                            <input
-                              type="text"
-                              className={styles.awbInput}
-                              placeholder="Enter AWB Number"
-                              value={awbNumber}
-                              onChange={(e) => setAwbNumber(e.target.value)}
-                            />
-                            <button
-                              className={styles.saveButton}
-                              onClick={() => {
-                                if (!awbNumber.trim()) {
-                                  toast.error("Please enter AWB number");
-                                  return;
-                                }
-                                handleStatusUpdate(order.id, "shipped");
-                              }}
-                              disabled={updating}
-                            >
-                              Ship Order
-                            </button>
-                            <button
-                              className={styles.cancelButton}
-                              onClick={() => {
-                                setEditingOrder(null);
-                                setAwbNumber("");
-                              }}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          // For other statuses, use a select dropdown
-                          <div className={styles.selectContainer}>
-                            <select
-                              className={styles.statusSelect}
-                              value={order.order_status}
-                              onChange={(e) => {
-                                const newStatus = e.target.value;
-                                handleStatusUpdate(order.id, newStatus);
-                              }}
-                            >
-                              <option value={order.order_status} disabled>
-                                {order.order_status.toUpperCase()}
-                              </option>
-                              {order.order_status === "approved" && (
-                                <option value="packed">PACKED</option>
-                              )}
-                              {order.order_status === "processing" && (
-                                <option value="approved">APPROVE</option>
-                              )}
-                              {order.order_status === "shipped" && (
-                                <option value="delivered">DELIVER</option>
-                              )}
-                            </select>
-                            <button
-                              className={styles.cancelButton}
-                              onClick={() => setEditingOrder(null)}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className={styles.statusContainer}>
-                        <OrderStatusBadge status={order.order_status} />
-                        {order.order_status !== "delivered" &&
-                          order.order_status !== "cancelled" && (
-                            <button
-                              className={styles.editButton}
-                              onClick={() => setEditingOrder(order.id)}
-                            >
-                              <FaEdit />
-                            </button>
-                          )}
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    <span
-                      className={`${styles.statusBadge} ${
-                        styles[order.payment_status]
-                      }`}
-                    >
-                      {order.payment_status.toUpperCase()}
-                    </span>
-                  </td>
-                  <td>₹{order.total_amount}</td>
-                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <button
-                      className={styles.viewButton}
-                      onClick={() =>
-                        window.open(`/admin/noob/orders/${order.id}`, "_blank")
-                      }
-                    >
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <div className={styles.pagination}>
-        <button
-          disabled={pagination.current_page === 1}
-          onClick={() =>
-            setPagination({
-              ...pagination,
-              current_page: pagination.current_page - 1,
-            })
-          }
-        >
-          Previous
-        </button>
-        <span>
-          Page {pagination.current_page} of {pagination.total_pages}
-        </span>
-        <button
-          disabled={pagination.current_page === pagination.total_pages}
-          onClick={() =>
-            setPagination({
-              ...pagination,
-              current_page: pagination.current_page + 1,
-            })
-          }
-        >
-          Next
-        </button>
-      </div>
+      </aside>
+      <main className={styles.mainContent}>
+        <header className={styles.header}>
+            <div className={styles.breadcrumbs}>
+                <Link href="/admin/noob/home">Home</Link>
+                <span>/</span>
+                <span>Orders</span>
+            </div>
+            <div className={styles.headerActions}>
+                <h1>Orders</h1>
+                <button className={styles.exportButton}>
+                    <span className="material-symbols-outlined">file_upload</span>
+                    Export
+                </button>
+            </div>
+        </header>
+        <div className={styles.ordersContainer}>
+            <div className={styles.ordersContent}>
+                <div className={styles.tabs}>
+                    <button className={`${styles.tab} ${styles.activeTab}`}>All Orders</button>
+                    <button className={styles.tab}>Unfulfilled <span className={styles.tabCount}>24</span></button>
+                    <button className={styles.tab}>Unpaid</button>
+                    <button className={styles.tab}>Open</button>
+                </div>
+                <div className={styles.filters}>
+                    <div className={styles.searchWrapper}>
+                        <span className="material-symbols-outlined">search</span>
+                        <input type="text" placeholder="Filter orders by ID, customer, or product..." />
+                    </div>
+                    <div className={styles.filterButtons}>
+                        <button><span className="material-symbols-outlined">filter_list</span> Status</button>
+                        <button><span className="material-symbols-outlined">payments</span> Payment</button>
+                        <button><span className="material-symbols-outlined">calendar_today</span> Date</button>
+                        <button><span className="material-symbols-outlined">bookmark</span> Saved Views</button>
+                    </div>
+                </div>
+                <div className={styles.tableWrapper}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" /></th>
+                                <th>Order <span className="material-symbols-outlined">arrow_downward</span></th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th className={styles.textRight}>Total</th>
+                                <th>Payment</th>
+                                <th>Order Status</th>
+                                <th className={styles.textRight}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr><td colSpan="8" style={{textAlign: 'center', padding: '2rem'}}>Loading...</td></tr>
+                            ) : error ? (
+                                <tr><td colSpan="8" style={{textAlign: 'center', padding: '2rem'}}>Error loading orders.</td></tr>
+                            ) : orders.map((order) => (
+                                <tr key={order.order_id}>
+                                    <td><input type="checkbox" /></td>
+                                    <td className={styles.orderId}><Link href={`/admin/noob/orders/${order.order_id}`}>#{order.order_id}</Link></td>
+                                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                    <td>
+                                        <div className={styles.customerInfo}>
+                                            <span>{order.user_address.full_name}</span>
+                                            <span className={styles.customerLocation}>{order.user_address.city}, {order.user_address.state}</span>
+                                        </div>
+                                    </td>
+                                    <td className={styles.textRight}>₹{order.total_amount.toFixed(2)}</td>
+                                    <td><span className={`${styles.statusBadge} ${getPaymentStatusClass(order.payment_status)}`}>{order.payment_status}</span></td>
+                                    <td><span className={`${styles.statusBadge} ${getOrderStatusClass(order.order_status)}`}>{order.order_status}</span></td>
+                                    <td className={styles.textRight}>
+                                        <button className={styles.actionButton}>
+                                            <span className="material-symbols-outlined">more_horiz</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className={styles.pagination}>
+                    <div className={styles.paginationInfo}>Showing <strong>1</strong> to <strong>10</strong> of <strong>{pagination.total_count}</strong> orders</div>
+                    <div className={styles.paginationActions}>
+                        <button disabled><span className="material-symbols-outlined">chevron_left</span></button>
+                        <span>Page 1 of {Math.ceil(orders.length / 10)}</span>
+                        <button><span className="material-symbols-outlined">chevron_right</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </main>
     </div>
   );
-}
+};
+
+export default OrdersPage;
