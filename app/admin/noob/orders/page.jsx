@@ -121,6 +121,8 @@ export default function AdminOrders() {
           return "#ffd700";
         case "approved":
           return "#32cd32";
+        case "packed":
+          return "#32cd32";
         case "shipped":
           return "#1e90ff";
         case "delivered":
@@ -159,6 +161,7 @@ export default function AdminOrders() {
             <option value="">All Order Status</option>
             <option value="processing">Processing</option>
             <option value="approved">Approved</option>
+            <option value="packed">Packed</option>
             <option value="shipped">Shipped</option>
             <option value="delivered">Delivered</option>
             <option value="cancelled">Cancelled</option>
@@ -267,8 +270,8 @@ export default function AdminOrders() {
                   <td>
                     {editingOrder === order.id ? (
                       <div className={styles.statusEdit}>
-                        {/* If the order is in "approved" state, show AWB input and Ship Order button */}
-                        {order.order_status === "approved" ? (
+                        {/* If the order is in "packed" state, show AWB input and Ship Order button */}
+                        {order.order_status === "packed" ? (
                           <div className={styles.awbInputContainer}>
                             <input
                               type="text"
@@ -314,6 +317,9 @@ export default function AdminOrders() {
                               <option value={order.order_status} disabled>
                                 {order.order_status.toUpperCase()}
                               </option>
+                              {order.order_status === "approved" && (
+                                <option value="packed">PACKED</option>
+                              )}
                               {order.order_status === "processing" && (
                                 <option value="approved">APPROVE</option>
                               )}
